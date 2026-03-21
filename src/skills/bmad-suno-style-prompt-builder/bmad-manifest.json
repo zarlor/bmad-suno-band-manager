@@ -1,0 +1,13 @@
+{
+  "module-code": "suno",
+  "capabilities": [
+    {
+      "name": "build-style-prompt",
+      "menu-code": "SP",
+      "description": "Generates model-aware Suno style prompt package with exclusion prompt and slider recommendations.",
+      "supports-headless": true,
+      "phase-name": "anytime",
+      "after": ["manage-profiles"]
+    }
+  ]
+}

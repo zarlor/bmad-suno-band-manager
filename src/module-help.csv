@@ -1,0 +1,9 @@
+module,phase,name,code,sequence,workflow-file,command,required,agent-name,agent-command,agent-display-name,agent-title,options,description,output-location,outputs
+suno,anytime,Create Song,CS,,,,false,band-manager,bmad-suno-agent-band-manager,Mac,Band Manager,,Create a complete Suno-ready song package with style prompt + lyrics + parameters through guided creative conversation.,{songbook_folder},song package
+suno,anytime,Refine Song,RS,,,,false,band-manager,bmad-suno-agent-band-manager,Mac,Band Manager,,Post-generation refinement: translate feedback into concrete Suno parameter adjustments.,{songbook_folder},refined song package
+suno,anytime,Manage Bands,MB,,skill:bmad-suno-band-profile-manager,bmad-suno-band-profile-manager,false,,,,,,"Create, edit, or manage band identity profiles with genre, vocal direction, and writer voice.",{band_profiles_folder},band profile YAML
+suno,anytime,Build Style Prompt,SP,,skill:bmad-suno-style-prompt-builder,bmad-suno-style-prompt-builder,false,,,,,,Generate model-aware Suno style prompts optimized for your chosen model tier.,,style prompt package
+suno,anytime,Transform Lyrics,TL,,skill:bmad-suno-lyric-transformer,bmad-suno-lyric-transformer,false,,,,,,Transform poems and text into Suno-ready structured lyrics with metatags and cliche detection.,,structured lyrics
+suno,anytime,Refine Feedback,FE,,skill:bmad-suno-feedback-elicitor,bmad-suno-feedback-elicitor,false,,,,,,Guided post-generation feedback loop that translates subjective reactions into concrete parameter adjustments.,,adjustment recommendations
+suno,anytime,Browse Songbook,SB,,,,false,band-manager,bmad-suno-agent-band-manager,Mac,Band Manager,,Browse past songs and successful prompts from your creative history.,{songbook_folder},
+suno,anytime,Save Memory,SM,,,,false,band-manager,bmad-suno-agent-band-manager,Mac,Band Manager,,Save current session context to Mac's memory for next time.,,

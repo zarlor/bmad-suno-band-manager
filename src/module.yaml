@@ -1,0 +1,48 @@
+code: suno
+name: "BMad Suno Band Manager"
+description: "AI-powered music production assistant for creating Suno-ready song packages with style prompts, lyrics, and band identity management"
+
+# Variables from Core Config inserted:
+## user_name
+## communication_language
+## document_output_language
+## output_folder
+
+suno_tier:
+  prompt: "What Suno plan are you on? This determines which models and features Mac can recommend."
+  default: "free"
+  result: "{value}"
+  single-select:
+    - value: "free"
+      label: "Free - v4.5-all model, 50 credits/day"
+    - value: "pro"
+      label: "Pro ($8/mo) - All models including v5, 2,500 credits/month"
+    - value: "premier"
+      label: "Premier ($24/mo) - All models + Studio, 10,000 credits/month"
+
+default_mode:
+  prompt: "How do you prefer to work with Mac?"
+  default: "demo"
+  result: "{value}"
+  single-select:
+    - value: "demo"
+      label: "Demo - Quick and scrappy, minimal questions"
+    - value: "studio"
+      label: "Studio - Detailed, hands-on customization"
+    - value: "jam"
+      label: "Jam - Experimental, push boundaries"
+
+band_profiles_folder:
+  prompt: "Where should band profiles be stored?"
+  default: "docs/band-profiles"
+  result: "{project-root}/{value}"
+
+songbook_folder:
+  prompt: "Where should saved songs and lyrics be stored?"
+  default: "docs/songbook"
+  result: "{project-root}/{value}"
+
+# Directories to create during installation
+directories:
+  - "{band_profiles_folder}"
+  - "{songbook_folder}"

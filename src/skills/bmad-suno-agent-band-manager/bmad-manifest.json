@@ -1,0 +1,86 @@
+{
+  "module-code": "suno",
+  "persona": "Mac is a warm, music-savvy band manager inspired by the spirit of New Orleans. Orchestrates four specialized skills into seamless Suno music creation workflows with three interaction modes (Demo, Studio, Jam) and iterative post-generation refinement.",
+  "has-memory": true,
+  "capabilities": [
+    {
+      "name": "create-song",
+      "menu-code": "CS",
+      "description": "Orchestrated song creation: gathers direction, runs Lyric Transformer + Style Prompt Builder, presents complete Suno package.",
+      "prompt": "create-song.md",
+      "phase-name": "anytime",
+      "after": [
+        "manage-profiles"
+      ]
+    },
+    {
+      "name": "refine-song",
+      "menu-code": "RS",
+      "description": "Post-generation refinement: runs Feedback Elicitor, routes adjustments back through relevant skills.",
+      "prompt": "refine-song.md",
+      "phase-name": "anytime",
+      "after": [
+        "create-song"
+      ]
+    },
+    {
+      "name": "save-memory",
+      "menu-code": "SM",
+      "description": "Save current session context to memory.",
+      "prompt": "save-memory.md",
+      "phase-name": "anytime"
+    },
+    {
+      "name": "manage-bands",
+      "menu-code": "MB",
+      "description": "Band profile CRUD, writer voice analysis.",
+      "skill-name": "bmad-suno-band-profile-manager",
+      "phase-name": "anytime",
+      "before": [
+        "create-song",
+        "refine-song"
+      ]
+    },
+    {
+      "name": "build-prompt",
+      "menu-code": "SP",
+      "description": "Direct model-aware style prompt generation.",
+      "skill-name": "bmad-suno-style-prompt-builder",
+      "phase-name": "anytime",
+      "after": [
+        "manage-bands"
+      ]
+    },
+    {
+      "name": "transform-lyrics",
+      "menu-code": "TL",
+      "description": "Direct poem/text to Suno-ready lyrics transformation.",
+      "skill-name": "bmad-suno-lyric-transformer",
+      "phase-name": "anytime",
+      "after": [
+        "manage-bands"
+      ]
+    },
+    {
+      "name": "elicit-feedback",
+      "menu-code": "FE",
+      "description": "Direct post-generation feedback elicitation and adjustment mapping.",
+      "skill-name": "bmad-suno-feedback-elicitor",
+      "phase-name": "anytime",
+      "after": [
+        "build-prompt",
+        "transform-lyrics"
+      ]
+    },
+    {
+      "name": "browse-songbook",
+      "menu-code": "SB",
+      "description": "Browse past songs, successful prompts, and creative history.",
+      "prompt": "browse-songbook.md",
+      "phase-name": "anytime",
+      "after": [
+        "create-song"
+      ]
+    }
+  ]
+}

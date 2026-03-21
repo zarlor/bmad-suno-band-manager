@@ -1,0 +1,25 @@
+{
+  "module-code": "suno",
+  "capabilities": [
+    {
+      "name": "transform-lyrics",
+      "menu-code": "LT",
+      "description": "Transforms poems and raw text into Suno-ready structured lyrics with metatags.",
+      "supports-headless": true,
+      "phase-name": "anytime",
+      "after": ["manage-profiles", "analyze-writer-voice"],
+      "after-is-required": false,
+      "before": ["build-style-prompt"],
+      "output-location": "docs/songbook/"
+    },
+    {
+      "name": "analyze-lyrics",
+      "menu-code": "AL",
+      "description": "Analyzes raw text for song structure potential without transforming. Returns structure analysis, syllable patterns, and character budget.",
+      "supports-headless": true,
+      "phase-name": "anytime",
+      "after": ["manage-profiles"],
+      "after-is-required": false
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "module-code": "suno",
+  "capabilities": [
+    {
+      "name": "manage-profiles",
+      "menu-code": "BP",
+      "description": "Creates, edits, lists, duplicates, and deletes band identity profiles for Suno music generation. Supports headless modes: --headless:create, --headless:edit, --headless:load, --headless:delete, --headless:duplicate, --headless:validate.",
+      "supports-headless": true,
+      "phase-name": "anytime",
+      "before": ["build-style-prompt", "transform-lyrics"],
+      "output-location": "docs/band-profiles/"
+    },
+    {
+      "name": "analyze-writer-voice",
+      "menu-code": "WV",
+      "description": "Extracts writing voice patterns from samples and stores in band profile.",
+      "phase-name": "anytime",
+      "before": ["transform-lyrics"],
+      "output-location": "docs/band-profiles/"
+    },
+    {
+      "name": "health-check",
+      "menu-code": "HC",
+      "description": "Assesses profile completeness and quality beyond structural validation.",
+      "phase-name": "anytime"
+    }
+  ]
+}

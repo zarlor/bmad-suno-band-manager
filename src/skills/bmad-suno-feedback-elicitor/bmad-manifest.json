@@ -1,0 +1,16 @@
+{
+  "module-code": "suno",
+  "requires": ["bmad-init"],
+  "capabilities": [
+    {
+      "name": "elicit-feedback",
+      "menu-code": "FE",
+      "description": "Guides post-generation feedback into actionable Suno parameter adjustments.",
+      "supports-headless": true,
+      "phase-name": "anytime",
+      "after": ["build-style-prompt", "transform-lyrics"],
+      "before": ["build-style-prompt", "transform-lyrics"],
+      "note": "Bidirectional after/before is intentional — models the iterative feedback loop across skills"
+    }
+  ]
+}
