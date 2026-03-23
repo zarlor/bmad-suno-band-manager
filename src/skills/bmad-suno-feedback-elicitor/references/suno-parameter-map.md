@@ -20,6 +20,7 @@ When the user reports that the ending or energy arc doesn't match their intent, 
 |-----------------|---------------------|-----|
 | "Too loud at the end" | "crescendo dynamics" or similar build-only language | Replace with "dynamic shifts loud to quiet" |
 | "Builds but doesn't resolve" | "build to climax" with no release language | Replace with "slow build then fade" |
+| "Ending stays loud despite descent language" | Dynamic descent stated only once | A single mention of descent isn't enough — Suno latches onto the loudest directive. State the arc TWICE: both `building from gentle to crushing then returning to gentle` AND `dynamic arc quiet to massive to quiet` |
 | "All one energy level" | No dynamic language at all | Add explicit dynamic descriptors: "dynamic shifts", "quiet verses explosive chorus", etc. |
 
 ### Word Density as Primary Tempo Control
@@ -43,6 +44,17 @@ When the user reports tempo issues, adjusting lyric line density is more reliabl
 | "Second line drums sound like hip-hop" | "second line drums" only produces NOLA parade groove when the surrounding context is up-tempo + energetic + celebratory. Without that context, Suno defaults to hip-hop patterns. Add "New Orleans parade", "celebratory", "up-tempo" to the style prompt. | — |
 | "Piano feels wrong" | — | "no piano" (or specify: "no classical piano") |
 | "Bass too heavy" | "light bass, subtle low end" | "no heavy bass, no bass drops" |
+
+**Keyword Triggers to Avoid**
+
+Certain style prompt keywords reliably trigger unwanted arrangement choices. When the user reports theatrical, keyboard-heavy, or orchestral results they didn't want, check for these first.
+
+| Keyword | What Suno Produces | Alternative Approach |
+|---------|--------------------|---------------------|
+| "baroque" | Disney/theatrical arrangements | Describe desired qualities directly; specify instruments by name |
+| "rock opera" | Keyboard-heavy, theatrical arrangements | Use "power ballad" for dynamic range without keyboards |
+| "cinematic" | Orchestral/soundtrack feel | Specify desired instruments by name (cello, heavy strings, kettle drums) |
+| "orchestral" | Light strings/flutes, not the heavy orchestral sound users typically intend | Name the specific orchestral instruments desired (cello, heavy strings, kettle drums) |
 
 ### Vocal Direction
 
@@ -124,6 +136,7 @@ Prioritize 2-3 specific exclusions over filling the space. Supported syntax: 'no
 | Post-metal / atmospheric | 60-65 | 65 | Balanced exploration with genre grounding |
 | Prog with odd time signatures | 65-75 | 65 | High Weirdness helps with non-standard meters |
 | Circular / agitated | 75 | 65 | Near the structural ceiling — use [End] tags |
+| Acoustic tracks | 40 | 80 | Audio Influence 25%. Persona safe at full AI when style prompt clearly defines non-heavy genre |
 | Bass prominence attempts | Any | High SI (85) did not force bass prominence; low Audio Influence (15%) slightly shifted era feel instead | Bass-forward rock/metal remains a Suno limitation |
 
 **Upper limit findings (from live testing):**
@@ -132,6 +145,19 @@ Prioritize 2-3 specific exclusions over filling the space. Supported syntax: 'no
 - At Weirdness 85, coherence loss increases in longer songs — shorter songs or songs with strong repeating structure (chorus anchors) survive higher Weirdness better
 - **Recommendation:** Cap at 75 for songs needing structural compliance. Reserve 80+ for jam/experimental mode only.
 - Always use [Fade Out] + [End] combo at high Weirdness values — more reliable stop signal than [End] alone
+
+### Audio Influence (0-100%, default 25%) — Persona-dependent
+
+Audio Influence controls how much the loaded Persona's source audio shapes the generation. This parameter should never be omitted from song packages when a Persona is active.
+
+| Scenario | Recommended Range | Notes |
+|----------|-------------------|-------|
+| Standard tracks | 25% | Default. Reliable baseline for most genres. |
+| Acoustic tracks | 25% | Persona is safe at full Audio Influence when style prompt clearly defines a non-heavy genre. |
+| Genre-pushing tracks | 20% | Drop 5% when pushing outside the Persona's native genre to give the style prompt more room. |
+| Era mismatch (song sounds too modern/dated) | 10-15% | High Audio Influence anchors to the Persona's era. Reduce to let style prompt control era feel. |
+
+**Effective range is 15-25%.** Above 25% shows diminishing returns — the generation doesn't become noticeably more Persona-like, but style prompt influence decreases. Below 15%, the Persona contributes minimal character.
 
 ### Style Influence (0-100, default ~50-60) — Paid tiers only
 

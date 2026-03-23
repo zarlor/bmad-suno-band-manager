@@ -141,12 +141,28 @@ Specific genre terms produce specific results. This table documents what Suno ac
 | `progressive groove metal` | Mastodon-adjacent pocket grooves | Better choice for most prog-metal needs |
 | `prog rock` | Softer, more atmospheric progressive sound | Good for builds, dynamics, and patient arrangements |
 | `heavy swamp metal` | Down/Crowbar-style low-end weight | Reliable for southern heaviness |
+| `heavy swamp metal power ballad` | Gentle verses that build to heavy | Communicates "power ballad with weight" without invoking theatrical/keyboard territory |
+| `dark alternative rock, slow and heavy, raw emotional weight, spacious oppressive mix, claustrophobic atmosphere` | Non-metal heaviness with emotional devastation | Good for pushing a metal band into non-metal territory; works for songs about powerlessness rather than power |
 | `post-metal, post-hardcore` | Isis/Cult of Luna patient builds | Adding post-hardcore introduces off-tempo, prog-adjacent moments |
 | `speed metal` | Fast, aggressive, thrash-adjacent | Straightforward — does what it says |
 | `hard rock` | Straightforward driving energy | Clean, uncomplicated rock foundation |
 | `hard rock` + `NOLA second line groove` + `brass band accents` | NOLA parade groove with rock weight | The combination pulls toward parade-style rhythms |
 | `crushing slow heavy swamp metal` + `pounding heartbeat kick drum` | Heavy, deliberate, single-tempo weight | Stacking slow/heavy modifiers locks Suno into a plodding pace |
 | `prog rock` + `slow build then fade` | Atmospheric with proper decrescendo | One of the few reliable ways to get Suno to actually come back down |
+| `Acoustic, intimate, solo voice with gentle guitar, bluesy, swampy, sparse and warm, quiet reflection, raw clean vocals, stripped down, empty room atmosphere` | Acoustic track that retains band identity | `bluesy, swampy` keeps NOLA identity; `empty room atmosphere` = reverb/space; explicitly exclude `heavy guitars, drums` in Exclude Styles |
+
+### Dangerous Words and Keyboard Triggers
+
+Certain words reliably pull Suno into unwanted instrumental territory — typically theatrical, keyboard/synth-heavy, or cinematic-light arrangements. Avoid these when guitars and bass should lead.
+
+| Word/Phrase | What Suno Does | Fix |
+|---|---|---|
+| `baroque` | Maps to theatrical/classical keyboard territory — Disney-adjacent | Describe Baroque qualities without the word: Bach counterpoint = `intricate interlocking guitar and bass melodies`; minor key ornamentation = `dark minor key, precise and ornate` |
+| `orchestral`, `orchestral accents` | Defaults to light/cinematic strings, not heavy | Specify HEAVY orchestral instruments explicitly: `cello, heavy strings, kettle drums` — these live in metal's frequency range |
+| `cinematic` | Pulls keyboard/synth-heavy arrangements | Use `dynamic shifts`, `building from gentle to crushing` instead |
+| `rock opera` | Pulls keyboard/synth-heavy, theatrical arrangements | Use `power ballad`, `dynamic shifts`, `building from gentle to crushing` instead |
+
+**"Baroque" workaround in detail:** If the song concept calls for Baroque-influenced metal, never use the word. Instead, describe the specific qualities you want — `intricate interlocking guitar and bass melodies` for counterpoint, `dark minor key, precise and ornate` for ornamentation. For orchestral weight, specify instruments that live in metal's frequency range: `cello, heavy strings, kettle drums`. Avoid `orchestral` as a standalone descriptor.
 
 ## Vocal Behavior and Triggers
 
@@ -209,6 +225,10 @@ Getting Suno to bring energy back down is harder than building up. Patterns that
 
 **Key insight:** If a song needs to come DOWN after a peak, the decrescendo instruction must be in the style prompt. Lyric tags alone are not enough to counteract a style prompt that implies continuous build.
 
+### Three-Phase Dynamic Arc (Quiet → Massive → Quiet)
+
+Getting Suno to execute a full quiet-to-massive-to-quiet arc requires redundancy. State the arc **twice** in the style prompt using different phrasing: `building from gentle to crushing then returning to gentle` AND `dynamic arc quiet to massive to quiet`. One statement is not enough — Suno latches onto "crushing" and rides it out through the end of the song. The redundancy forces Suno to register the full arc rather than just the peak.
+
 ## Slider Guidelines
 
 ### Weirdness and Style Influence by Song Type
@@ -217,7 +237,9 @@ These are starting-point ranges based on production testing. Adjust per song, bu
 
 | Song Type | Weirdness | Style Influence | Notes |
 |---|---|---|---|
+| Acoustic/stripped | 40 | 80 | Lower Weirdness for compliance; high SI to honor the style prompt's genre descriptors |
 | Structured songs (verse-chorus) | 50-55 | 75-80 | Higher Style Influence keeps structure tight |
+| Dark alternative | 50-55 | 75-80 | Standard settings; may need lower Weirdness for compliance when pushing a metal band into non-metal territory |
 | Through-composed | 55-60 | 70-75 | Slightly looser to allow organic flow |
 | Funk-forward | 60 | 65-70 | Weirdness adds rhythmic surprise; lower SI lets funk breathe |
 | Post-metal | 60-65 | 65 | Needs room for patient builds and textural exploration |
@@ -239,6 +261,19 @@ Personas pull the overall sound toward the era of the source song used to create
 - Reducing Audio Influence to 10-15% helps but does not fully overcome the era pull
 - For era-specific pieces where production style matters, consider generating without a persona entirely
 - Alternatively, create era-specific personas — a "modern" persona and a "vintage" persona, for example — rather than fighting a single persona's baked-in era bias
+
+### Audio Influence Slider Behavior
+
+The Audio Influence slider controls how strongly the persona's source audio shapes the generation. The effective range is **15-25%** — values outside this range are either too detached or produce diminishing returns.
+
+| Audio Influence | Behavior |
+|---|---|
+| 15% | Nearly loses persona identity — too detached for most uses |
+| 20% | Holds identity loosely — allows significant genre departure. Use for experimental tracks or era-specific pieces where the persona's default era would interfere |
+| 25% (default) | Strong persona anchor — the standard setting for both typical tracks AND acoustic/stripped songs |
+| Above 25% | Diminishing returns — 40% tested, did not override an incompatible style prompt |
+
+**Critical finding:** Acoustic and stripped-down songs can handle full 25% Audio Influence. The style prompt's genre descriptors override the persona's instrumental heaviness — the persona contributes only vocal identity. Only reduce Audio Influence when pushing into a different *heavy* genre where the persona's heaviness would compete with the target genre's heaviness.
 
 ## Iteration Best Practices
 

@@ -51,6 +51,9 @@ Verse 2 (second half of poem)
 Chorus
 ```
 
+### Song Duration — Let the Words Decide
+Not all songs need to be 3-4 minutes. A short duration (e.g., 1:49) can be a feature when it matches the emotional content. Don't pad short poems just for runtime — let the song be the length the words demand. Short tracks create contrast in a playlist between longer epic tracks and short punches. A 90-second song that lands every line hits harder than a 3-minute song with filler.
+
 ### Very Short Poem (under 15 lines)
 Poems under 15 lines need special handling — Suno fills short content with looping instrumental, producing a song that feels empty or aimless. Strategies:
 

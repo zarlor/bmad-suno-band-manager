@@ -74,6 +74,8 @@ Common feedback patterns with non-obvious root causes. When you hear these, chec
 | "Song sounds too modern / wrong era" | Whether a Persona is loaded | Personas anchor sound to the era of the source song. Reduce Audio Influence to 10-15% or generate without Persona for era-specific pieces. |
 | "Vocals are screaming when they shouldn't be" | Style prompt for `metal`, `sludge`, `doom`; lyrics for `!` or ALL CAPS | These are scream triggers. Fix: add explicit positive vocal instructions (e.g., "clean vocals, melodic singing"), remove triggers, use `[Vocal Style: whispered]` to reset after aggressive sections. |
 | "Song loops / too much instrumental" | Source text length (under 15 lines?) + style prompt for `instrumental breaks` | Short lyrics cause looping and filler instrumentals. Suggest: double the delivery (repeat verses with variation), extract and repeat chorus, or place a hard `[End]` tag. |
+| "Sound is too theatrical / too many keyboards" | Style prompt for `baroque`, `rock opera`, `cinematic`, or `orchestral` | These keywords trigger keyboard-heavy theatrical arrangements. Fix: describe desired qualities without those words; specify heavy orchestral instruments by name (cello, heavy strings, kettle drums); use "power ballad" instead of "rock opera" for dynamic range. |
+| "Song doesn't come back down / ending stays loud" | Whether the dynamic arc is stated TWICE in the style prompt | A single mention of descent isn't enough — Suno latches onto the loudest directive. Both `building from gentle to crushing then returning to gentle` AND `dynamic arc quiet to massive to quiet` are needed to reliably produce a full arc. |
 
 ---
 

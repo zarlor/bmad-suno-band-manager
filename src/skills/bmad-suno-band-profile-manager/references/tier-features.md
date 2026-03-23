@@ -70,4 +70,8 @@
 
 **Audio Influence as Era Control (Pro/Premier):** When a persona's era-anchoring conflicts with the desired era for a track, reducing Audio Influence from the default 25% to 10-15% helps pull the sound away from the persona's source era. This doesn't fully eliminate the anchoring — for strong era shifts, consider generating without a persona or creating an era-specific persona from an era-appropriate source song.
 
+**Audio Influence Effective Range (Pro/Premier):** The practical range for Audio Influence is 15-25%. Values above 25% show diminishing returns — tested at 40%, it did not override an incompatible style prompt. The slider shapes the persona's contribution but cannot force the persona's character over a conflicting style direction.
+
+**Acoustic/Ballad Tracks and Audio Influence (Pro/Premier):** When the style prompt clearly defines a non-heavy genre (ballad, acoustic, stripped-back), the persona contributes only vocal identity — it does not drag in unwanted instrumentation. Do NOT reduce Audio Influence for ballads or stripped tracks; keep it at the normal working range. The style prompt governs the arrangement; the persona governs the voice.
+
 **Exclude Styles — Known Limitations:** The Exclude Styles field helps shape tone but does not reliably remove instruments entirely. For example, even with "guitar" in Exclude Styles, Suno still produces guitar in rock/metal contexts. Treat Exclude Styles as a nudge toward the desired balance rather than a hard instrument filter.

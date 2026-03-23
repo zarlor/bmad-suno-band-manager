@@ -141,6 +141,14 @@ These energy and vocal style descriptors have been tested in production and prod
 | `[Energy: building]` | Works for gradual intensity increase |
 | `[Vocal Style: whispered]` | More reliably quiet than `[Vocal Style: clean, distant]` — use as the go-to for quiet sections |
 | `[Vocal Style: acapella]` | Sometimes works, sometimes Suno adds light instrumentation anyway |
+| `[Whispered, vulnerable]` | The most reliable quiet-section tag confirmed across multiple songs — use for descent/resolution sections |
+
+### Three-Phase Dynamic Arcs (Up, Peak, Down)
+For songs that need to build UP and come back DOWN, place descent tags at the **transition point**, not just the outro. The mistake is saving all the quiet tags for `[Outro]` — by then the energy has already carried through. Instead:
+
+1. Place `[Energy: minimal, fading to silence]` and `[Vocal Style: whispered, vulnerable]` **before** the final lines, at the moment the song should begin its descent.
+2. `[Whispered, vulnerable]` is the single most reliable quiet-section tag — confirmed across multiple songs. Prefer it over `[Soft]` or `[Gentle]` when you need a guaranteed drop.
+3. The descent tag placement matters more than the outro tags. If the transition into the final section is already quiet, the outro follows naturally.
 
 ### Dual Vocals — What Works and What Doesn't
 - `dual male vocals harmonized and gritty` in the style prompt produces harmony/doubling on choruses — confirmed working.
@@ -296,6 +304,22 @@ Once Suno enters aggressive/scream mode, it tends to carry that energy forward i
 2. Every section after an aggressive one needs an explicit vocal style reset tag
 3. Never use `!` or ALL CAPS in sections immediately following an aggressive section
 4. Consider adding a `[Break]` or `[Instrumental]` buffer between aggressive and clean sections
+
+### Spaced-Out Letters as Vocal Effect
+Placing spaces between every letter of a word — e.g., `R I G H T N E S S` — is a coin flip. Sometimes Suno spells out each letter individually, creating a powerful wall-of-sound moment. Sometimes it just sings the word normally. Not reliable enough to depend on. Worth trying for high-impact single words where a spelled-out delivery would be dramatic, but always have a fallback plan if Suno ignores it.
+
+### Whispered Repeat as Closer
+Adding a final whispered repeat of the last word or phrase after the poem ends creates a powerful closing echo-into-silence effect. Suno handles this well — it's a good standard technique for closing tracks.
+```
+[Outro]
+Final lyric line here
+
+[Whispered]
+Forever
+
+[End]
+```
+The `[Whispered]` tag before the single repeated word, followed by `[End]`, produces a natural fade-to-silence moment. Use the most resonant word from the final line or the song's central image.
 
 ### Vowel Stretching & Syllable Manipulation
 | Technique | Effect |
