@@ -1,4 +1,56 @@
-## Gemini 3.1 Audio Analysis Workflow
+## Audio Analysis Workflow
+
+### Overview
+
+Three complementary audio analysis approaches, each with different strengths:
+- **librosa (Python)** — Programmatic analysis: BPM, key detection, tempo stability, energy arcs, section boundaries. Fast, batch-capable, objective measurements.
+- **Gemini 3.1 Pro** — AI audio analysis: upload MP3, get instrument identification, genre classification, dynamic arc description, style prompt accuracy feedback. Best with two-pass workflow for fusion genres.
+- **ChatGPT (with audio upload)** — AI audio analysis: upload MP3 for "blind" analysis without providing the style prompt. Useful for unbiased genre/instrument identification. May correctly identify sounds that Gemini hallucinates from seeing the style prompt text.
+
+### librosa Analysis Scripts
+
+Requirements: Python 3, librosa, numpy (`pip install librosa numpy`)
+
+**analyze-audio.py** — Batch BPM and key detection for all MP3s in a directory. Uses Krumhansl-Kessler chroma correlation for key estimation. Outputs a summary table with BPM, key, key confidence, and duration.
+```bash
+python scripts/analyze-audio.py /path/to/mp3s/
+```
+
+**audio-deep-analysis.py** — Deep single-track analysis: chord progression over time, energy curve, spectral features, section boundaries, harmonic/percussive separation.
+```bash
+python scripts/audio-deep-analysis.py track.mp3
+```
+
+**tempo-detail.py** — Detailed tempo analysis showing BPM over time in windows. Detects tempo changes, off-beats, and stability.
+```bash
+python scripts/tempo-detail.py track.mp3
+```
+
+**batch-full-analysis.py** — Batch full analysis across a catalog: tempo stability, energy arc, section boundaries, spectral balance. Outputs a comprehensive summary report.
+```bash
+python scripts/batch-full-analysis.py /path/to/mp3s/
+```
+
+#### librosa Notes
+
+- BPM may read double-time on faster tracks (e.g., 184 BPM may actually be ~92 half-time)
+- Key confidence below 0.5 is low reliability
+- Enharmonic equivalents: D# = Eb, C# = Db, A# = Bb, F# = Gb
+- librosa is deterministic — same file always produces the same results. Use as ground truth for BPM/key, cross-reference with LLM analysis for subjective qualities.
+
+### ChatGPT Audio Analysis
+
+ChatGPT can analyze uploaded MP3 files. Key workflow difference from Gemini:
+
+**Blind analysis (recommended first pass):** Upload the MP3 WITHOUT providing the style prompt or any context about what the song should sound like. Ask ChatGPT to describe what it hears — genre, instruments, mood, vocal style, production. This gives unbiased identification of what Suno actually produced.
+
+**Why blind matters:** When LLMs see the style prompt alongside the audio, they tend to hear what the prompt describes rather than what's actually there. In testing, ChatGPT's blind analysis correctly identified "southern rock / blues rock with fingerstyle bass" while Gemini (which saw the style prompt) hallucinated "funk-metal party groove with slap/pop bass" on the same track.
+
+**Calibrated follow-up:** After the blind pass, share the style prompt and ask ChatGPT to compare intent vs. reality. This two-step approach (blind → calibrated) produces the most honest assessment.
+
+**BPM comparison:** ChatGPT's BPM estimates are rough (120-125 range estimates vs. librosa's precise 123.0). Use librosa for BPM, LLMs for subjective qualities.
+
+### Gemini 3.1 Audio Analysis
 
 ### Setup
 - Use Google AI Studio (not gemini.google.com) for primary analysis — direct model access, upload audio, control parameters

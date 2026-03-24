@@ -596,7 +596,12 @@ Note: FR and WF are mutually exclusive.
 
 ### Audio Analysis with External Tools
 
-For detailed audio analysis of Suno output, Gemini 3.1 Pro can analyze uploaded MP3 files and provide instrument identification, dynamic arc breakdowns, and style prompt accuracy feedback. See the Feedback Elicitor's gemini-audio-analysis reference for the recommended workflow.
+For detailed audio analysis of Suno output, three complementary tools are available:
+- **librosa scripts** (included in the Feedback Elicitor) — programmatic BPM, key detection, tempo stability, and energy arc analysis. Run `analyze-audio.py` on a directory of MP3s for batch analysis, or `audio-deep-analysis.py` on individual tracks for deep dives. Requires Python 3 with librosa and numpy.
+- **Gemini 3.1 Pro** — upload MP3 to Google AI Studio for AI-powered instrument identification, genre classification, and style prompt accuracy feedback. A two-pass workflow is mandatory for fusion genres.
+- **ChatGPT** — upload MP3 for "blind" analysis (without the style prompt) to get unbiased genre and instrument identification. Useful for catching cases where the style prompt intent diverges from what Suno actually produced.
+
+See the Feedback Elicitor's audio-analysis-workflow reference for detailed setup and prompting guidance.
 
 ---
 
