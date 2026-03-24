@@ -104,6 +104,12 @@ Certain style prompt keywords reliably trigger unwanted arrangement choices. Whe
 | "Not emotional enough" | "emotional, yearning, deeply felt, passionate" | Style Influence ↑ |
 | "Too dramatic" | "understated, subtle, restrained, casual" | — |
 
+## Confirmed Suno Behavior
+
+- "NOLA funk swing" lands as syncopation not true swing; "Odd time signatures" consistently ignored in 4/4 rock/metal context
+- Suno adds unscripted guitar solos regularly
+- Structural/section directions in long style prompts are largely ignored (style prompt sets overall mood, metatags handle sections imperfectly)
+
 ## Exclusion Guidance
 
 Prioritize 2-3 specific exclusions over filling the space. Supported syntax: 'no [element]', 'without [element]', 'exclude [element]', 'avoid [element]'. Exclusions are influential but not absolute — regeneration may still be needed. Too many negatives reduce effectiveness.
@@ -235,6 +241,8 @@ Common quality issues that cannot be resolved through style prompt changes alone
 | "Vocals sound auto-tuned" | Add "natural vocal, organic phrasing, imperfect delivery" to style prompt; add "no auto-tune" to exclusions |
 | "Clipping/distortion (unwanted)" | Add "clean mix, headroom, dynamic range" to style prompt; reduce layering descriptors |
 | "Frequency mud / sounds muffled" | Add "crisp, clear mix, defined frequencies" to style prompt; v5 Remove FX can help |
+
+**External DAW editing (Audacity, etc.) is a one-way operation** — once you edit outside Suno, you lose Suno's editing capabilities on that version. Always keep the original Suno generation as a source of truth.
 
 **Key principle:** Audio quality issues are often generation-specific, not prompt-specific. Always try regenerating 3-5 times before modifying the prompt. Suno's randomness means the same prompt can produce both clean and artifact-heavy outputs.
 

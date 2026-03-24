@@ -86,6 +86,12 @@ Keep to **4-7 descriptors**. Each one should earn its place.
 - v5 had more dynamism and better section transitions than v4.5+ Pro for complex multi-tempo songs
 - "NOLA funk groove" functions as BOTH a genre descriptor AND a rhythmic looseness instruction — NOLA funk and jazz are inherently rhythmically loose (swing, syncopation, playing around the beat). This makes it a better vehicle for odd time signatures and time changes than pure metal, which tends to be metronomically precise. Non-obvious but powerful finding.
 
+**Confirmed Suno behavior (from Gemini analysis of production outputs):**
+- "NOLA funk swing" lands as syncopation, not true swing — Suno interprets swing as a syncopation instruction rather than a jazz swing feel
+- "Odd time signatures" is consistently ignored in 4/4 rock/metal context — the strong 4/4 pull of rock and metal genres overrides time signature instructions
+- Suno adds unscripted guitar solos regularly — expect them even when not requested, especially in rock/metal genres
+- Structural/section directions embedded in long style prompts are largely ignored — Suno treats the style prompt as a tonal palette, not a roadmap. Use metatags and the editor for structural control, not the style prompt.
+
 ## v4 Pro
 
 ### Prompt Style: Simple Descriptors
@@ -247,6 +253,16 @@ These are starting-point ranges based on production testing. Adjust per song, bu
 | Circular / agitated | 75 | 65 | High Weirdness for unsettling, looping energy |
 
 **General principle:** Weirdness adds unpredictability and non-obvious choices. Style Influence controls how tightly Suno follows the prompt versus doing its own thing. For conventional songs, keep SI high. For experimental work, back SI off and let Weirdness drive.
+
+## Persona Style Prompt Integration
+
+The Persona auto-populates the Style of Music field. Song-specific prompts should **build on** this base, not replace it. The Style Prompt Builder should assume the Persona's Styles content is already present and add song-specific elements on top. The Persona's Styles field contains universal band DNA — the sonic identity that should be consistent across all songs. Song-specific elements (odd time signatures, tempo changes, brass accents, genre departures) get layered per-song on top of that foundation.
+
+## Cover Feature
+
+Cover re-performs an existing song in a new style — it preserves the melody, lyrics, and structure while changing genre, instrumentation, vocal character, and production. Cover prompts use production language, clear genre descriptors, and specific instrumentation.
+
+**CRITICAL: Covers are NOT eligible for commercial use — even on your own songs.** For commercial releases, create a fresh generation instead. This is a Suno platform restriction, not a suggestion.
 
 ## Persona and Inspo Playlist Behavior
 

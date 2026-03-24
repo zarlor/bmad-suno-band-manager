@@ -594,6 +594,10 @@ Mac orchestrates four specialized skills. You can use them directly through Mac'
 
 Note: FR and WF are mutually exclusive.
 
+### Audio Analysis with External Tools
+
+For detailed audio analysis of Suno output, Gemini 3.1 Pro can analyze uploaded MP3 files and provide instrument identification, dynamic arc breakdowns, and style prompt accuracy feedback. See the Feedback Elicitor's gemini-audio-analysis reference for the recommended workflow.
+
 ---
 
 ## 7. Songbook & Memory
@@ -606,6 +610,8 @@ Mac scans these locations:
 - `docs/songbook/` -- Saved lyrics from the Lyric Transformer
 - `docs/feedback-history/` -- Iteration logs from the Feedback Elicitor
 - `_bmad/_memory/band-manager-sidecar/chronology.md` -- Session timeline
+
+Songbook entries should include a **Listening Notes** section — 2-3 lines capturing what the generation actually sounds like (how the intro opens, overall feel, standout sonic moments). Style prompts describe intent; listening notes describe reality. These diverge frequently and are critical for playlist ordering.
 
 Songs are grouped by band profile (or "Unaffiliated" for one-offs). For each song, you can:
 - **View details** -- Full lyrics, style prompt, parameters, iteration history

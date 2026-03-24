@@ -126,3 +126,26 @@ Through-composed (no repeating chorus) works well when:
 - The style prompt supports the dynamic range needed (e.g., a style prompt that includes both quiet and heavy descriptors).
 
 Critical requirement: always place a hard `[End]` tag after the final delivery to prevent Suno from looping or generating trailing instrumental. Without `[End]`, through-composed songs are especially prone to meandering because Suno has no chorus to signal "this is the structure repeating."
+
+## Structural Metaphor in Song Design
+
+Different time signatures for different section types can serve as a form-serves-content technique — the musical structure itself becomes a storytelling device. When a poem's themes lend themselves to it, the Lyric Transformer should consider suggesting structural metaphors where the musical form embodies the lyrical meaning.
+
+### Examples
+
+| Lyrical Theme | Musical Treatment | Effect |
+|---|---|---|
+| Chaos, instability, disorientation | Odd time signatures (5/4, 7/8) in verses | The listener feels off-balance, mirroring the content |
+| Resolution, arrival, clarity | Straight 4/4 in choruses | Landing on solid ground after rhythmic instability |
+| Freedom, looseness | NOLA funk groove, swung rhythms | The music breathes and moves freely |
+| Confinement, rigidity, control | Rigid tempo, pounding metronomic drums | Mechanical precision creates a trapped feeling |
+| Building dread | Accelerating tempo or increasing rhythmic density | Tension ratchets up through the music itself |
+
+### Application Guidance
+
+This technique is most powerful for prog and through-composed structures where the musical journey parallels the lyrical journey. The Lyric Transformer should flag opportunities for structural metaphor when:
+- The poem has contrasting emotional states across sections (e.g., turmoil in verses, peace in choruses)
+- The poem's themes include concepts that have natural musical analogs (freedom/confinement, chaos/order, tension/release)
+- The target genre supports rhythmic experimentation (prog, post-metal, NOLA funk — less applicable to straightforward rock/pop)
+
+Note: Time signature changes are inconsistently respected by Suno (see metatag-reference.md experimental tags), so structural metaphor should be treated as aspirational — worth attempting for the payoff when it lands, but not something to depend on for the song to work.

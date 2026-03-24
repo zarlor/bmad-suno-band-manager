@@ -91,6 +91,8 @@ Where each component of Mac's output package goes in Suno's Custom Mode:
 - **"Baroque" triggers Disney** -- do NOT use the word "baroque" in style prompts. Suno maps it to light, Disney-esque orchestration. Describe the qualities instead: `intricate interlocking guitar and bass melodies`, `dark minor key, precise and ornate`. Specify heavy orchestral instruments by name (`cello, heavy strings, kettle drums`) -- the word `orchestral` alone defaults to light/cinematic.
 - **"Rock Opera" and "Cinematic" are keyboard triggers** -- both terms pull keyboard/synth arrangements into the mix. Use `power ballad`, `dynamic shifts` instead when you want drama without keyboards.
 - **Three-phase dynamic arc needs double-stating** -- songs that go quiet → massive → quiet need the arc stated TWICE in the style prompt: once as a narrative description (`building from gentle to crushing then returning to gentle`) and once as a shorthand (`dynamic arc quiet to massive to quiet`). A single mention is not enough — Suno tends to flatten or ignore the return to quiet without the reinforcement.
+- **Suno adds unscripted guitar solos regularly** -- three of four analyzed tracks had solos not in the lyrics. Plan for this or use [End] tags to prevent post-vocal noodling.
+- **Section-by-section instructions in style prompts are largely ignored** -- Suno delivered consistently fast, dense tracks despite detailed per-section directions (slow intro, tempo drops, sparse bridge). Style prompt sets overall mood; metatags handle sections (imperfectly).
 
 ### Exclude Styles (Pro/Premier)
 
@@ -195,3 +197,33 @@ This table covers problems with Suno's output. For issues with Mac itself (wrong
 | **Cliche amplification** | Subtle lyrical cliches become obvious when sung | Run cliche detection before submitting lyrics |
 | **`[Intro]` unreliability** | Suno's `[Intro]` tag often produces unexpected results | Regenerate just the first 10 seconds, or skip the tag |
 | **"Not what I imagined"** | Output doesn't match your vision | Use the Refine Song flow (RS). Mac's feedback elicitation helps you articulate what needs to change. |
+
+---
+
+## Covers, Remixes, and Inspo
+
+### Cover Feature
+- Cover re-performs an existing song in a new style while preserving melody, lyrics, and structure
+- Works with any Suno-generated song, uploaded audio, instrumentals or vocal tracks
+- Step-by-step: three-dot menu → Create → Cover Song → describe the new style → generate
+- **CRITICAL: Covers are NOT eligible for commercial use** — even on your own songs. For commercial releases, use the original lyrics and create a fresh generation instead.
+- Stacking Covers (re-covering within the same genre) can smooth cohesion
+
+### Remix Umbrella — Four Workflows
+- **Cover** — re-sing in a different style/genre (preserves melody)
+- **Extend** — add more to an existing song
+- **Reuse** — reuse the prompt/settings from an existing song
+- **Speed** — adjust playback speed
+
+### v4.5+ Pro Additional Tools
+- **Instrumental Flip** — rebuilds backing track while preserving vocal structure
+- **Vocal Swap** — changes vocal persona while retaining melody and timing
+- **Spark from Playlist** — uses a reference playlist to shape mood/tempo/instrumentation
+
+### Cover vs Remix vs Inspo Decision Matrix
+
+| Tool | Use When | What It Does |
+|------|----------|-------------|
+| Cover | "Play this same song in a different style" | Re-performs with new style, keeps melody/lyrics/structure |
+| Remix (general) | "Tweak/transform this song" | Various transformations within same song identity |
+| Inspo | "Make something NEW inspired by these" | Analyzes a playlist, generates entirely new material |

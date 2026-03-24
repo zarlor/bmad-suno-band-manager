@@ -150,6 +150,12 @@ For songs that need to build UP and come back DOWN, place descent tags at the **
 2. `[Whispered, vulnerable]` is the single most reliable quiet-section tag — confirmed across multiple songs. Prefer it over `[Soft]` or `[Gentle]` when you need a guaranteed drop.
 3. The descent tag placement matters more than the outro tags. If the transition into the final section is already quiet, the outro follows naturally.
 
+### Vocal Style Findings — Harmonized as Sweet Spot
+`[Vocal Style: gritty]` combined with high energy and high Weirdness produces screaming even with Exclude Styles set to block it. `[Vocal Style: clean]` removes too much edge — it strips the character out of the vocals. **`[Vocal Style: harmonized]` on all sections is the sweet spot for dual-vocalist work** — it blends both voices naturally without pushing into scream territory or losing grit. "Raw gritty melodic singing" in the style prompt works fine when paired with `[Vocal Style: harmonized]` in the metatags — the style prompt provides the tonal character while the metatag controls the delivery mode.
+
+### Structural Metaphor via Time Signature Changes
+Using different time signatures for different section types creates structural metaphor where musical form embodies lyrical meaning. For example: odd time signatures for verses (chaos, instability) paired with straight 4/4 for choruses (resolution, arrival). This is a powerful technique for prog — the musical structure itself becomes a storytelling device. Implement via experimental BPM/time signature tags (e.g., `[Verse 1: 7/8]`, `[Chorus: 4/4]`), acknowledging these are inconsistently respected but worth attempting for the payoff when they land.
+
 ### Dual Vocals — What Works and What Doesn't
 - `dual male vocals harmonized and gritty` in the style prompt produces harmony/doubling on choruses — confirmed working.
 - `dual vocals trading` does NOT reliably make two voices trade lines.
