@@ -64,10 +64,9 @@ ChatGPT can analyze uploaded MP3 files. Key workflow difference from Gemini:
 
 ### Setup
 - Use Google AI Studio (not gemini.google.com) for primary analysis — direct model access, upload audio, control parameters
-- Settings: Gemini 3.1 Pro, Thinking: High, Temperature: 0.3, everything else off (no grounding, search, code execution, or structured output)
+- Settings: Gemini 3.1 Pro, Thinking: High, **Temperature: 0.5** (see Temperature Findings below), everything else off (no grounding, search, code execution, or structured output)
 - Export from Suno as MP3 — sufficient for analysis, WAV offers no practical benefit
 - New context per song — prevents bleed between analyses
-- Note: gemini.google.com may outperform AI Studio for fusion/atmospheric genres — its default (likely higher) temperature gives more room to describe nuance. Consider testing 0.5-0.7 in AI Studio as well
 - gemini.google.com rate limit is separate from AI Studio — alternate between them when daily limits are hit
 
 ### Two-Pass Workflow (Mandatory for Fusion Genres)
@@ -90,6 +89,32 @@ ChatGPT can analyze uploaded MP3 files. Key workflow difference from Gemini:
 - Misses volume dynamics on first pass — describes tracks as "consistently dense" when they have significant intensity shifts
 - Cannot parse detailed endings — fine detail on last 10 seconds is unreliable
 - Misses bass techniques on first pass — slap/pop, melodic runs, lead bass consistently missed until follow-up
+
+### Temperature Findings — 0.5 Outperforms 0.3
+
+A/B testing on the same track (brass-metal fusion) with blind prompts at different temperatures:
+
+**Gemini at 0.5 temp (blind, no style prompt):**
+- Genre: "Progressive metal, ska-core, hard rock, swing/jazz, dark cabaret" — best genre description from any LLM
+- Brass: Correctly detected on blind prompt (trumpet, trombone, saxophone)
+- Dynamics: Verse dropouts well captured — guitars drop out, sparse mix, builds for choruses
+- Bass (first pass): "Punchy, metallic, pick-driven, walking lines" — reasonable
+- BPM: ~145 (closer to librosa's 184.6 half-time than 0.3 temp's 165)
+
+**Gemini at 0.3 temp (with style prompt + follow-up calibration):**
+- Genre: "Manic carnival-punk, ska-core, funk-metal" — decent but needed follow-up to get there
+- Brass: Detected but classified as ska-punk rather than NOLA brass-metal
+- Bass: Hallucinated "slap/pop funk-metal techniques" — likely influenced by seeing "NOLA funk groove" in the style prompt
+- BPM: ~165 (same as a completely different track — unreliable)
+
+**Key takeaway:** 0.5 temp with a blind prompt produced better genre description, more accurate instrument detection, and fewer hallucinations than 0.3 temp with the style prompt provided. The extra temperature gives Gemini room to describe what it actually hears rather than fitting output into narrow categories.
+
+**Persistent gaps at both temperatures:**
+- Ending detail remains unreliable — neither caught the a capella moment, vocal yell, triple snare strike, or final brass blast
+- Intro accuracy: 0.5 temp said full band at 0:00 when actually brass-only for first 10 seconds
+- Follow-up prompts can trigger hallucinations — asking specifically about bass at 0.5 temp produced "slap and pop, lead melodic role" when bass was actually hidden behind guitar/tubas
+
+**Updated recommendation:** Use **0.5 temperature** in AI Studio as the default. Use **blind prompts** (no style prompt) for the first pass. Only share the style prompt in a calibrated follow-up. Be cautious with follow-up questions about specific instruments — they can trigger hallucinations where the first pass was accurate.
 
 ### Integration with Feedback Elicitor
 - Style Prompt Accuracy as feedback loop: compare what was prompted vs. what Gemini hears → identify what Suno ignores, misinterprets, or adds unbidden → adjust future prompts
