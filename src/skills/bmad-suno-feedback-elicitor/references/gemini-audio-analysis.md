@@ -123,3 +123,53 @@ A/B testing on the same track (brass-metal fusion) with blind prompts at differe
 
 ### Preferred Workflow
 Opus 4.6 (Claude) as primary prompter/orchestrator, Gemini 3.1 as audio analysis assistant. Claude builds Suno packages, Gemini analyzes resulting audio, Claude interprets analysis to inform next iteration.
+
+---
+
+## Playlist Sequencing
+
+### Methodology
+
+Playlist ordering requires balancing two dimensions simultaneously:
+- **Sonic flow** — BPM transitions, key compatibility (Camelot wheel), energy arcs, timbral variety
+- **Lyrical/narrative progression** — thematic arc across songs, emotional journey, story sequencing
+
+Neither dimension alone is sufficient. Adjacent tracks need to work musically AND thematically.
+
+### Sequencing Principles
+
+**Album sequencing fundamentals:**
+- Opener must grab attention — front-loading engaging material is critical in the streaming era
+- Variety within cohesion — avoid two songs with similar arrangement density, instrumentation, or timbral character back-to-back
+- Similar thematic songs need distance — tracks covering the same ground blur when adjacent
+- Sonic palette contrast is essential for maintaining interest
+- Silence between tracks is itself a sequencing decision — spacing signals mood group shifts
+
+**DJ Harmonic Mixing (Camelot Wheel):**
+- Same key (8A→8A): Perfect but monotonous if overused
+- +/-1 number, same letter (8A→7A or 9A): Most common professional move, changes one scale note
+- Relative major/minor (8A→8B): Mood shift without changing harmonic center. Minor→major lifts; major→minor darkens
+- +2 numbers: Energy boost, more noticeable — use sparingly
+- Beyond +2: Risk audible clashing — use only for intentional dramatic contrast
+
+**BPM takes priority over key:** A harmonically perfect transition with a 20 BPM jump sounds worse than a minor key clash at the same tempo. Double/half time relationships (70 BPM ↔ 140 BPM) share the same pulse grid and can work together.
+
+**Concert setlist design (W-Shape model):**
+- Featured songs at three peaks (beginning, middle, end) with complementary songs providing changes in key, tempo, timbre, and mood between them
+- Multiple peaks and valleys rather than a single arc
+- Peak-end rule: audiences remember the best moment and the final moment most vividly
+- Encore: a planned 3-5 song mini-set at high energy following a breath-catching break
+
+### Playlist Sequencing Scripts
+
+**playlist-sequencing-data.py** — Generates a full sequencing report: BPM, overall/entry/exit keys, Camelot codes, energy levels, intro/outro energy percentages, and transition quality ratings between adjacent tracks.
+```bash
+python scripts/playlist-sequencing-data.py /path/to/mp3s/
+```
+
+**chord-progression.py** — Analyzes chord changes and key centers in 30-second windows within a single track. Measure-by-measure detection is too noisy with distorted guitars, but 30-second key center summaries are useful.
+```bash
+python scripts/chord-progression.py track.mp3
+```
+
+**Camelot wheel mapping** is embedded in the sequencing script — all 24 keys (12 major, 12 minor) mapped to codes 1A-12A (minor) and 1B-12B (major).

@@ -603,6 +603,18 @@ For detailed audio analysis of Suno output, three complementary tools are availa
 
 See the Feedback Elicitor's audio-analysis-workflow reference for detailed setup and prompting guidance.
 
+### Playlist Sequencing
+
+Mac can assist with playlist/album ordering using both data and creative judgment. The workflow combines:
+
+- **librosa scripts** — `playlist-sequencing-data.py` generates BPM, key (with Camelot wheel codes), energy levels, and transition quality ratings between adjacent tracks. `chord-progression.py` analyzes key centers over time within individual tracks.
+- **Camelot wheel harmonic mixing** — key compatibility scoring based on DJ harmonic mixing principles (+/-1 number = safe, relative major/minor = mood shift, beyond +2 = intentional contrast)
+- **Narrative sequencing** — Mac considers thematic arcs, emotional progression, and lyrical connections between songs alongside the sonic data
+
+Tell Mac "help me order my playlist" or "sequence these songs for an album" and provide the audio files or sequencing data. Mac balances sonic flow (BPM transitions, key compatibility, timbral variety) with narrative progression (thematic arc, emotional journey) to suggest an ordering.
+
+See the Feedback Elicitor's audio-analysis-workflow reference for the full sequencing methodology and Camelot wheel details.
+
 ---
 
 ## 7. Songbook & Memory
