@@ -319,6 +319,8 @@ Mac includes this guidance on your first song or in Demo mode:
 8. Add your **Song Title**
 9. Hit **Create** and generate **3-5 versions** -- Suno interprets the same inputs differently each time
 
+**A note on tempo control:** BPM tags in lyrics (e.g., `[Verse: 65 BPM]`) have no detectable effect on Suno's output -- confirmed by librosa analysis across multiple songs. Perceived tempo is actually controlled through how lyrics are written: short fragmented lines feel slow, packed lines feel fast, and line breaks control where the singer breathes. For drum feel changes, use metatags like `[Heavy: halftime]` rather than BPM values. Mac handles this automatically when building your lyrics package.
+
 ---
 
 ## 4. Band Profiles

@@ -69,7 +69,7 @@ Keep to **4-7 descriptors**. Each one should earn its place.
 
 ### Tips
 
-- **Emotional descriptors beat technical ones:** "raw, yearning" > "120 BPM"
+- **Emotional descriptors beat technical ones:** "raw, yearning" > "120 BPM". **Never include BPM values** — they have zero effect on Suno's output (confirmed by librosa analysis across 5 songs). Use rhythm nouns instead: "halftime groove," "double-time driving," "shuffle feel."
 - **Production-quality descriptors work well:** "radio-ready mix", "wide stereo field", "punchy drums"
 - **Include mix notes:** register, tone, phrasing, harmony
 - **Vocals sound more natural** in v5 — breaths, phrasing, harmonies are authentic
@@ -128,6 +128,9 @@ Straightforward genre + mood + basic production notes. Less nuanced than v4.5+ m
 7. **Negative/exclusion prompts go in the separate Exclude Styles field**, not in the main prompt. Exception: a single "no X" in the main prompt is sometimes effective for emphasis (v5 handles in-prompt negatives better than v4.5), but keep exclusions in the dedicated field.
 8. **Comma separation works across all models** — consistent delimiter
 9. **Describe, don't command** — "dreamy shoegaze with female vocals" over "Create a dreamy shoegaze song." (v4.5 examples use "Create a..." which matches Suno's own v4.5 docs, but descriptive style generally works better.)
+10. **Never recommend BPM values in style prompts or lyrics** — BPM tags have zero detectable effect on Suno's output (confirmed by librosa analysis: songs tagged 60 BPM were delivered at 95.7 BPM; songs tagged 65-150 BPM across sections were delivered at a steady 123 BPM). Suno picks its own tempo based on genre context and arrangement.
+11. **Use rhythm nouns for tempo feel** — "halftime groove," "double-time driving," "shuffle," "breakbeat" lock rhythmic feel far more reliably than BPM numbers or tempo adjectives like "slow" or "fast." These describe specific drum patterns Suno can interpret.
+12. **Perceived tempo is controlled through lyrics, not the style prompt** — Suno delivers a single steady BPM per song. Perceived tempo changes come from lyrical density (short fragmented lines = slower feel, packed lines = faster feel), arrangement dynamics (instrument dropout = slower feel), and half-time/double-time drum patterns. The style prompt can request rhythm nouns and "tempo changes" as priming, but the actual perceived control lives in the lyrics field.
 
 ## Genre Keyword Ordering
 

@@ -154,7 +154,7 @@ For songs that need to build UP and come back DOWN, place descent tags at the **
 `[Vocal Style: gritty]` combined with high energy and high Weirdness produces screaming even with Exclude Styles set to block it. `[Vocal Style: clean]` removes too much edge — it strips the character out of the vocals. **`[Vocal Style: harmonized]` on all sections is the sweet spot for dual-vocalist work** — it blends both voices naturally without pushing into scream territory or losing grit. "Raw gritty melodic singing" in the style prompt works fine when paired with `[Vocal Style: harmonized]` in the metatags — the style prompt provides the tonal character while the metatag controls the delivery mode.
 
 ### Structural Metaphor via Time Signature Changes
-Using different time signatures for different section types creates structural metaphor where musical form embodies lyrical meaning. For example: odd time signatures for verses (chaos, instability) paired with straight 4/4 for choruses (resolution, arrival). This is a powerful technique for prog — the musical structure itself becomes a storytelling device. Implement via experimental BPM/time signature tags (e.g., `[Verse 1: 7/8]`, `[Chorus: 4/4]`), acknowledging these are inconsistently respected but worth attempting for the payoff when they land.
+Using different time signatures for different section types creates structural metaphor where musical form embodies lyrical meaning. For example: odd time signatures for verses (chaos, instability) paired with straight 4/4 for choruses (resolution, arrival). This is a powerful technique for prog — the musical structure itself becomes a storytelling device. Implement via experimental time signature tags (e.g., `[Verse 1: 7/8]`, `[Chorus: 4/4]`), acknowledging these are inconsistently respected but worth attempting for the payoff when they land. Note: BPM tags are confirmed ineffective (see Experimental Section Tags), but time signature tags are a separate mechanism worth trying.
 
 ### Dual Vocals — What Works and What Doesn't
 - `dual male vocals harmonized and gritty` in the style prompt produces harmony/doubling on choruses — confirmed working.
@@ -241,12 +241,21 @@ Brass separates well as a dedicated stem. This is the recommended approach for s
 
 ## Experimental Section Tags
 
-These are partially supported and may not work consistently across all models. Worth including but don't rely on them alone.
+These are partially supported and may not work consistently across all models.
 
 | Tag Syntax | Purpose | Notes |
 |-----------|---------|-------|
-| `[Verse 1: 65 BPM]` | BPM hint per section | Inconsistently respected on v4.5-all; may work better on v5 |
-| `[Verse 1: 65 BPM, 6/8]` | BPM + time signature | Studio 1.2's time signature picker does NOT yet send to generative models — in-lyric tags are currently the only way to attempt this |
+| `[Verse 1: 7/8]` / `[Chorus: 4/4]` | Time signature hint per section | Inconsistently respected but worth attempting for prog/experimental work. Studio 1.2's time signature picker does NOT yet send to generative models — in-lyric tags are currently the only way to attempt this |
+
+### BPM Tags — Confirmed Ineffective
+
+**BPM tags in lyrics have ZERO detectable effect on Suno's actual output.** This was tested across 5 songs with librosa analysis:
+- "Want" tagged at 60 BPM throughout — Suno delivered 95.7 BPM
+- "Back Woods" tagged 65-150 BPM across sections — Suno delivered 123 BPM steady, no variation
+
+Tags like `[Verse: 65 BPM]` or `[Chorus: 130 BPM]` are ignored by the generative model. Suno picks its own tempo based on genre, style prompt, and arrangement context. **Do not use BPM tags in lyrics — they waste character budget and create false expectations.**
+
+For actual tempo/pacing control, see "Line Density as Tempo Control" and "Half-Time / Double-Time Drum Feel" below.
 
 ## Lyric Formatting as Suno Controls
 
@@ -291,17 +300,33 @@ This is the **PRIMARY mechanism** for controlling perceived tempo in Suno-genera
 | Sparse words, long lines | Slow, spacious feel | `Drifting... on... the... tide` |
 | Line breaks | Musical breaths — write breaks where you want the singer to breathe | |
 
-**Key insight:** Word density is more reliable than BPM tags for tempo control. Energy metatags alone (`[Energy: high]`) do NOT reliably drive actual BPM shifts. They signal intensity but not tempo. Must be combined with line density strategy and style prompt priming with "tempo changes" for multi-tempo songs.
+**Key insight:** Word density is the PRIMARY mechanism for controlling perceived tempo. BPM tags have zero effect (confirmed by librosa — see Experimental Section Tags above). Energy metatags alone (`[Energy: high]`) do NOT reliably drive actual BPM shifts — they signal intensity but not tempo. Suno picks a single steady BPM for the entire song regardless of tags; what changes is *perceived* tempo through delivery density and arrangement.
 
-**Recommended multi-technique approach for tempo contrast (from v5 Pro testing):**
-The most effective tempo contrast uses ALL of these together — no single technique is reliable alone:
-1. **Line density** — short fragmented lines for slow sections, packed lines for fast
-2. **BPM tags** — `[Verse: 65 BPM]` for slow, `[Chorus: 130 BPM]` for fast (partially supported)
-3. **Energy metatags** — `[Energy: low]` / `[Energy: high]` to signal intensity shifts
-4. **Style prompt priming** — include "tempo changes" in the style prompt
-5. **Weirdness slider** (Pro/Premier) — higher values (60-65+ tested) encourage rhythmic variation
+**Why it works:** Librosa analysis confirms that BPM does not actually change between sections, even when sections *feel* dramatically different in speed. A "hustle bustle" section with packed syllables feels like acceleration, but the underlying tempo is identical. The perception of speed comes from how much vocal content Suno must deliver per beat.
 
-Each technique reinforces the others. Relying on any single one produces inconsistent results.
+**Recommended multi-technique approach for perceived tempo contrast:**
+The most effective tempo contrast uses these together — line density is the most reliable single technique:
+1. **Line density (PRIMARY)** — short fragmented lines for slow sections, packed lines for fast. Most reliable mechanism.
+2. **Half-time / double-time drum feel** — use rhythm nouns in metatags: `[Heavy: halftime]`, `[Double Time]`. Creates perception of halved or doubled tempo without BPM change. See below.
+3. **Instrumental density / arrangement dropout** — pulling instruments out creates space that feels slower. Adding everything back feels like acceleration. Use `[Energy: stripped, minimal]` for slow feel, `[Energy: massive]` for fast feel.
+4. **Line breaks as breath points** — more line breaks = more pauses = slower perceived delivery. Fewer breaks = longer phrases = faster feel. Write breaks where you want the singer to breathe.
+5. **Energy metatags** — `[Energy: low]` / `[Energy: high]` to signal intensity shifts (affects feel, not actual BPM)
+6. **Style prompt priming** — include "tempo changes" in the style prompt
+7. **Weirdness slider** (Pro/Premier) — higher values (60-65+ tested) encourage rhythmic variation
+
+**Do NOT use BPM tags** — they are confirmed ineffective (see above). Each of the above techniques reinforces the others. Line density alone produces the most consistent results.
+
+### Half-Time / Double-Time Drum Feel
+
+Drums can switch to half-time snare patterns without the actual BPM changing, creating the perception of halved tempo. This is one of the most effective perceived tempo control techniques after line density.
+
+| Tag | Effect | Notes |
+|-----|--------|-------|
+| `[Heavy: halftime]` | Half-time drum feel — snare on beat 3 only | Creates perception of halved tempo. Powerful for heavy/slow sections. |
+| `[Double Time]` | Double-time drum feel — snare on every beat | Creates perception of doubled tempo. Good for energy surges. |
+| `[Breakdown]` + halftime language | Stripped-back half-time section | Combine with short fragmented lines for maximum slow-down effect |
+
+**Rhythm nouns over tempo adjectives:** "Halftime," "double-time," "shuffle," "breakbeat" lock rhythmic feel better than "slow," "fast," "upbeat." These nouns describe specific drum patterns Suno can interpret; adjectives like "slow" are vague and often ignored.
 
 ### Scream Bleed-Through Prevention
 Once Suno enters aggressive/scream mode, it tends to carry that energy forward into subsequent sections. Prevention strategies:

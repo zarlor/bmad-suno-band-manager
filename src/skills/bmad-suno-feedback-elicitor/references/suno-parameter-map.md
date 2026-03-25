@@ -23,9 +23,19 @@ When the user reports that the ending or energy arc doesn't match their intent, 
 | "Ending stays loud despite descent language" | Dynamic descent stated only once | A single mention of descent isn't enough — Suno latches onto the loudest directive. State the arc TWICE: both `building from gentle to crushing then returning to gentle` AND `dynamic arc quiet to massive to quiet` |
 | "All one energy level" | No dynamic language at all | Add explicit dynamic descriptors: "dynamic shifts", "quiet verses explosive chorus", etc. |
 
-### Word Density as Primary Tempo Control
+### Perceived Tempo Control (BPM Tags Are Ineffective)
 
-When the user reports tempo issues, adjusting lyric line density is more reliable than BPM tags. Suno infers pacing from how much text it needs to deliver per section. Sparse, long lines push toward slower delivery; short, packed lines push toward faster delivery. Try restructuring the lyrics before adding tempo descriptors to the style prompt.
+**BPM tags in lyrics have ZERO detectable effect on Suno's actual output** — confirmed by librosa analysis across 5 songs. Suno picks a single steady tempo per song regardless of any BPM tags. Do not recommend BPM tags as a solution for tempo issues.
+
+When the user reports tempo issues, the recommended adjustment path uses perceived tempo techniques:
+
+1. **Word/line density (PRIMARY):** Restructure lyrics — short fragmented lines (1-3 words) for slower perceived delivery, long packed lines with many syllables for faster perceived delivery. This is the most reliable single technique.
+2. **Half-time / double-time drum feel:** Add rhythm noun metatags like `[Heavy: halftime]` or `[Double Time]` in the lyrics. Creates perception of halved or doubled tempo without actual BPM change.
+3. **Instrumental density / arrangement dropout:** Use `[Energy: stripped, minimal]` to create space that feels slower. Use `[Energy: massive]` for density that feels faster.
+4. **Line breaks as breath points:** More line breaks = more pauses = slower perceived delivery. Fewer breaks = longer phrases = faster feel.
+5. **Rhythm nouns in style prompt:** "Halftime groove," "double-time driving," "shuffle," "breakbeat" lock feel better than "slow," "fast," or "upbeat."
+
+Try restructuring the lyrics first (techniques 1 and 4) before modifying the style prompt or metatags.
 
 ## Style Prompt Adjustment Patterns
 
@@ -74,8 +84,8 @@ Certain style prompt keywords reliably trigger unwanted arrangement choices. Whe
 
 | Feedback | Add to Style Prompt | Slider Adjustment |
 |----------|--------------------|--------------------|
-| "Too fast" | "slow tempo, laid-back, relaxed groove" (also try longer lyric lines — see Word Density above) | — |
-| "Too slow" | "uptempo, driving rhythm, energetic pace" (also try shorter, denser lyric lines — see Word Density above) | — |
+| "Too fast" | "halftime groove, laid-back, relaxed groove" (also restructure lyrics: short fragmented lines, more line breaks — see Perceived Tempo Control above). Do NOT add BPM tags — they have no effect. | — |
+| "Too slow" | "double-time driving, driving rhythm, energetic pace" (also restructure lyrics: pack more syllables per line, fewer line breaks — see Perceived Tempo Control above). Do NOT add BPM tags — they have no effect. | — |
 | "Not energetic enough" | "high energy, powerful, dynamic, driving" | Style Influence ↓ (loosen) |
 | "Too intense" | "gentle, soft, understated, subtle" | — |
 | "Energy is flat" | "building energy, dynamic shifts, crescendo" | Weirdness ↑ slightly |
@@ -125,7 +135,7 @@ Prioritize 2-3 specific exclusions over filling the space. Supported syntax: 'no
 | Good but could explore | ↑ Slight increase | +10-15 from current | Nudge toward discovery |
 
 **Observations from live testing (not exhaustive — wider range testing needed):**
-- Weirdness 50 (default) produced overly steady/predictable results for multi-tempo songs
+- Weirdness 50 (default) produced overly steady/predictable results for multi-tempo songs (note: actual BPM does not change — Weirdness affects rhythmic feel and arrangement variation, not tempo)
 - Weirdness 60 improved rhythmic variation
 - Weirdness 65 produced the best tempo/rhythm variation in testing so far
 - Higher values (70+) have not been tested and may produce interesting results for experimental work
