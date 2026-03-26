@@ -2,6 +2,8 @@
 
 Metatags are keywords in square brackets `[ ]` placed in the lyrics field to guide Suno's generation. This reference covers all known working tags as of March 2026. Suno evolves frequently — when uncertain about a tag's effectiveness, use web search to verify against current documentation.
 
+**Confidence Levels:** Tags are marked HIGH (multiple sources confirm), MEDIUM/Experimental (1-2 sources, may not work consistently), or unmarked (established/proven). HIGH-confidence new additions from March 2026 research are integrated into existing sections. MEDIUM-confidence tags are marked with "(Experimental)" throughout.
+
 ## Section Structure Tags
 
 Core tags that define song structure. Suno uses these to organize musical sections.
@@ -19,6 +21,13 @@ Core tags that define song structure. Suno uses these to organize musical sectio
 | `[Final Chorus]` | Last chorus iteration | Often bigger/louder than standard chorus |
 | `[Hook]` | Short catchy phrase | Distinct from chorus — can be a repeated motif |
 | `[Refrain]` | Repeated line or phrase | Simpler than a full chorus |
+| `[Instrumental Intro]` | Instrumental-only opening | More reliable than bare `[Intro]` for ensuring no vocals (HIGH) |
+| `[Instrumental Break]` | Explicit instrumental mid-song break | Clearer intent than `[Break]` alone (HIGH) |
+| `[Drum Break]` | Percussion-only break section | Strips everything except drums (HIGH) |
+| `[Percussion Break]` | Percussion-focused break | Similar to Drum Break but may include auxiliary percussion (HIGH) |
+| `[Build]` | Rising energy section | Shorthand for `[Build-Up]`; confirmed on v5 (HIGH) |
+| `[Big Finish]` | Grand climactic ending section | Signals a big, climactic ending (HIGH) |
+| `[Chorus x2]` | Repeat chorus twice | Chorus doubling without rewriting lyrics (HIGH) |
 
 ## Instrumental & Solo Section Tags
 
@@ -38,6 +47,10 @@ Tags that create instrumental moments with no lyrics. These add duration to the 
 | `[Breakdown]` | Stripped-back section, reduces energy | 8-20 sec |
 | `[Build-Up]` / `[Buildup]` | Rising energy, leads into a climax | 5-15 sec |
 | `[Drop]` | Sudden energy release (EDM/electronic) | 10-20 sec |
+| `[Synth Solo]` | Synthesizer solo section (HIGH) | 10-25 sec |
+| `[Violin Solo]` | Violin solo section (HIGH) | 10-25 sec |
+| `[Bass Drop]` | Sudden heavy bass entry, EDM style (HIGH) | 5-15 sec |
+| `[Strings Rise]` | Strings gradually build/swell (HIGH) | 8-20 sec |
 
 ## Vocal Delivery Tags
 
@@ -53,6 +66,9 @@ Control how Suno's vocal engine performs specific sections. Place right before t
 | `[Belted]` / `[Belting]` | Powerful, full-voice, high-energy singing |
 | `[Shouted]` / `[Screamed]` | Aggressive, loud delivery |
 | `[Growled]` / `[Growl]` | Low, guttural vocal delivery |
+| `[Gritty]` | Gritty, rough vocal tone (HIGH) |
+| `[Monotone]` | Flat, monotone delivery (HIGH) |
+| `[Breathless]` | Breathless, urgent delivery (HIGH) |
 
 ### Vocal Style & Technique
 | Tag | Effect |
@@ -78,6 +94,16 @@ Control how Suno's vocal engine performs specific sections. Place right before t
 | `[Scat]` | Improvised nonsense syllables (jazz) |
 | `[Hummed]` / `[Humming]` | Hummed melody, no words |
 | `[Whistled]` / `[Whistling]` | Whistled melody |
+| `[Backing Vocals]` | Explicit backing vocal layer (distinct from parentheses technique) (HIGH) |
+| `[Stacked Harmonies]` | Dense layered harmonies (HIGH) |
+| `[Gospel Choir]` | Gospel-style choir (HIGH) |
+| `[Narrator]` / `[Female Narrator]` | Narration voice, distinct from `[Spoken Word]` (HIGH) |
+| `[Announcer]` / `[Reporter]` | Announcer or reporter voice style (HIGH) |
+| `[Primal Scream]` | Raw, primal scream vocal (Experimental) |
+| `[Diva Solo]` | Big diva-style vocal moment (Experimental) |
+| `[Vocaloid]` | Vocaloid-style synthetic vocal (Experimental) |
+| `[Gregorian Chant]` | Gregorian chant style (Experimental) |
+| `[Androgynous Vocals]` | Gender-ambiguous voice (Experimental) |
 
 ### Rap & Hip-Hop Delivery
 | Tag | Effect |
@@ -88,6 +114,7 @@ Control how Suno's vocal engine performs specific sections. Place right before t
 | `[Melodic Rap]` | Singing-rapping hybrid |
 | `[Trap Flow]` | Trap-style cadence with hi-hat patterns |
 | `[Boom Bap Flow]` | Classic hip-hop rhythmic delivery |
+| `[Mumble Rap]` | Mumbled, indistinct rap delivery (HIGH) |
 
 ### Vocal Identity
 | Tag | Effect |
@@ -107,6 +134,7 @@ Control how Suno's vocal engine performs specific sections. Place right before t
 | `[Filtered Vocals]` | Filtered/muffled vocal sound |
 | `[Vocoder]` | Robotic/synthesized vocal effect |
 | `[Telephone Effect]` | Lo-fi phone-quality vocal |
+| `[Glitch]` | Glitch effect on vocals (Experimental) |
 
 ### Vocal Emotion
 | Tag | Effect |
@@ -122,12 +150,36 @@ Control how Suno's vocal engine performs specific sections. Place right before t
 
 Provide guidance to Suno's interpretation. Keep text short: 1-3 words.
 
+### Core Descriptor Tags (Established)
 | Tag | Example | Placement |
 |-----|---------|-----------|
 | `[Mood: ...]` | `[Mood: haunting]` | Top (global) or before section (local) |
 | `[Energy: ...]` | `[Energy: building]` | Before section |
 | `[Vocal Style: ...]` | `[Vocal Style: whispered]` | Before section |
 | `[Instrument: ...]` | `[Instrument: solo piano]` | Before section |
+
+### Additional Descriptor Families (HIGH confidence — colon syntax)
+These follow the same `[Category: value]` pattern as the core descriptors above:
+
+| Tag | Examples | Notes |
+|-----|---------|-------|
+| `[Atmosphere: ...]` | `[Atmosphere: Dreamy]`, `[Atmosphere: Cyberpunk]`, `[Atmosphere: Medieval]` | Sets environmental/spatial context |
+| `[Texture: ...]` | `[Texture: Grainy]`, `[Texture: Velvet]` | Controls sonic texture quality |
+| `[Effect: ...]` | `[Effect: Lo-fi]`, `[Effect: Reverb: Hall]`, `[Effect: Delay: Ping-pong]`, `[Effect: Distortion]`, `[Effect: Sidechain]`, `[Effect: Radio Filter]` | Production effects — supports nested colon syntax for specificity |
+| `[Harmony: ...]` | `[Harmony: High]` | Harmony register/style guidance |
+| `[Voice: ...]` | `[Voice: Auto-tune]` | Vocal processing direction |
+| `[Vibe: ...]` | `[Vibe: Cinematic]` | Overall vibe/feel — similar to Mood but more production-oriented |
+| `[Tempo: ...]` | `[Tempo: slow]` | Tempo suggestion (note: BPM-specific tags remain ineffective — see Experimental Section Tags) |
+
+### Standalone Mood Tags (bare bracket — no colon needed) (HIGH)
+These work as simple bracket tags without the `[Mood: ...]` prefix:
+
+`[Uplifting]`, `[Haunting]`, `[Dark]`, `[Nostalgic]`, `[Somber]`, `[Romantic]`, `[Dreamy]`, `[Peaceful]`, `[Anxious]`, `[Euphoric]`, `[Mysterious]`, `[Playful]`, `[Epic]`, `[Intimate]`, `[Bittersweet]`, `[Triumphant]`
+
+### Standalone Energy Tags (bare bracket — no colon needed) (HIGH)
+These work as simple bracket tags without the `[Energy: ...]` prefix:
+
+`[High Energy]`, `[Medium Energy]`, `[Low Energy]`, `[Chill]`, `[Driving]`, `[Explosive]`, `[Building]`, `[Relaxed]`, `[Frantic]`, `[Steady]`
 
 **Mood word effectiveness:** Vivid, visceral words work better than polite ones. `[Mood: Mardi Gras]`, `[Mood: wild, party]`, `[Mood: dark, haunting]` are more effective than `[Mood: festive]` or `[Mood: celebratory]`. Suno responds to emotional intensity in tag language.
 
@@ -176,6 +228,14 @@ Tags that control energy flow and transitions within the song.
 | `[Silence]` | Brief moment of silence |
 | `[Stop]` | Abrupt stop |
 | `[End]` | Hard stop — prevents trailing instrumental generation after lyrics |
+| `[Soft End]` | Gentle ending variation (HIGH) |
+| `[Dramatic End]` | Dramatic ending variation (HIGH) |
+| `[Big Finish]` | Grand climactic ending (HIGH) — also works as a section tag |
+| `[Unresolved tension]` | Avoids tonic resolution, ends on suspended chord (HIGH) |
+| `[Key Change]` / `[Key Modulation]` | Signal a key change, usually upward for a lift (HIGH) |
+| `[Metric Modulation]` | Rhythmic shift changing perceived tempo (HIGH) |
+| `[Accelerando]` | Gradually speed up tempo (HIGH) |
+| `[Ritardando]` | Gradually slow down tempo (HIGH) |
 
 ## Sound Effect Tags
 
@@ -189,6 +249,57 @@ Environmental and ambient sounds Suno can generate. Use sparingly — these work
 | **Music** | `[Record Scratch]`, `[Bell Dings]`, `[Fire Crackling]` |
 | **Animals** | `[Barking]`, `[Squawking]`, `[Howling]` |
 | **Meta** | `[Censored]` (bleep sound) |
+
+## Production & Mix Tags (HIGH)
+
+Tags that control production quality and mix effects. Place before sections or at top for global effect.
+
+| Tag | Effect |
+|-----|--------|
+| `[Lo-fi]` | Lo-fi production quality |
+| `[Reverb Tail]` | Extended reverb decay effect |
+| `[Echo]` | Echo effect |
+| `[Vinyl Crackle]` / `[Vinyl Hiss]` | Vinyl texture overlay |
+| `[Distant Voices]` | Distant/far-away vocal texture |
+
+## Timing & Rhythm Tags (HIGH)
+
+Tags that control rhythmic feel and timing within sections. These are distinct from BPM tags (which remain ineffective — see Experimental Section Tags). These tags describe rhythmic patterns and feels that Suno can interpret.
+
+| Tag | Effect |
+|-----|--------|
+| `[Half-Time]` | Half-time feel — slower, heavier beat |
+| `[Swung Feel]` / `[Shuffle]` | Swing/shuffle rhythm |
+| `[Triplet Feel]` | Triplet-based rhythmic feel |
+| `[Syncopated]` | Syncopated rhythm |
+| `[Straight]` | Straight (non-swung) rhythm |
+| `[Four on the Floor]` | Steady kick on every beat |
+| `[Polyrhythmic]` | Multiple simultaneous rhythms |
+| `[Breakbeat]` | Breakbeat rhythm pattern |
+
+**Rhythm nouns over tempo adjectives:** "Halftime," "double-time," "shuffle," "breakbeat" lock rhythmic feel better than "slow," "fast," "upbeat." These nouns describe specific drum patterns Suno can interpret; adjectives are vague and often ignored.
+
+## Standalone Instrument Tags (HIGH)
+
+These work as bare bracket tags in the lyrics field — not just via `[Instrument: ...]` colon syntax. Place before a section to feature that instrument, or use as section tags for solos/features.
+
+### Keys
+`[Piano]`, `[Electric Piano]`, `[Rhodes]`, `[Wurlitzer]`, `[Organ]`, `[Hammond Organ]`, `[Harpsichord]`, `[Clavinet]`, `[Mellotron]`
+
+### Synths
+`[Synth]`, `[Analog Synth]`, `[Moog Synth]`, `[Synth Pad]`, `[Lead Synth]`, `[Synth Stabs]`, `[Pad]`, `[Pluck Synth]`, `[Arpeggiated Synth]`, `[Synth Bass]`, `[Acid Bass]`, `[Supersaw]`, `[Wobbly Bass]`
+
+### Strings
+`[Acoustic Guitar]`, `[Electric Guitar]`, `[Distorted Guitar]`, `[Bass Guitar]`, `[Slap Bass]`, `[Upright Bass]`, `[Violin]`, `[Strings]`, `[String Quartet]`, `[Cello]`, `[Harp]`, `[Ukulele]`, `[Banjo]`, `[Mandolin]`, `[Sitar]`
+
+### Brass & Winds
+`[Saxophone]`, `[Tenor Sax]`, `[Alto Sax]`, `[Trumpet]`, `[Trombone]`, `[French Horn]`, `[Brass Section]`, `[Flute]`, `[Clarinet]`, `[Oboe]`, `[Harmonica]`, `[Accordion]`, `[Bagpipes]`, `[Didgeridoo]`
+
+### Percussion
+`[Drums]`, `[Acoustic Drums]`, `[Electronic Drums]`, `[808s]`, `[808 Bass]`, `[Drum Machine]`, `[TR-909]`, `[Taiko Drums]`, `[Congas]`, `[Bongos]`, `[Tambourine]`, `[Handclaps]`, `[Gong]`, `[Timpani]`, `[Cinematic Percussion]`
+
+### Orchestral
+`[Orchestra]`, `[Full Orchestra]`, `[Chamber Orchestra]`, `[Brass Stabs]`
 
 ## Per-Section Instrument Control
 
@@ -239,6 +350,29 @@ Brass separates well as a dedicated stem. This is the recommended approach for s
 
 **Important:** External DAW editing is a one-way operation. Once you edit outside Suno, you lose Suno's editing capabilities (Replace Section, Extend, etc.) on that version. Plan your Suno edits BEFORE exporting to a DAW.
 
+## Parameterized Section Tags (HIGH — MAJOR v5 Feature)
+
+Section tags support inline arrangement instructions via colon (`:`) or pipe (`|`) syntax. This allows per-section arrangement control directly in the section tag itself, without needing separate descriptor tags.
+
+### Colon Syntax — Arrangement Instructions
+```
+[Verse: whispered vocals, acoustic guitar only]
+[Chorus: full band, powerful vocals]
+[Bridge: stripped back, piano only]
+[Verse 2: lo-fi, distant vocals, minimal drums]
+```
+
+### Pipe Syntax — Rhythmic/Feel Modifiers
+```
+[Chorus | Half-Time]
+[Chorus | Double-Time]
+[Verse 3 | Swung Feel]
+```
+
+Both syntaxes are confirmed working on v5. The colon syntax is more flexible (accepts comma-separated arrangement descriptions), while the pipe syntax is cleaner for single modifiers. These can be combined with separate descriptor tags on subsequent lines for maximum control, but the inline approach is often sufficient and saves character budget.
+
+**Relationship to BPM tags:** Note that `[Verse 1: 65 BPM]` style BPM parameterization remains ineffective (see Experimental Section Tags below). The parameterized syntax works for arrangement/feel instructions, not for tempo numbers.
+
 ## Experimental Section Tags
 
 These are partially supported and may not work consistently across all models.
@@ -246,6 +380,7 @@ These are partially supported and may not work consistently across all models.
 | Tag Syntax | Purpose | Notes |
 |-----------|---------|-------|
 | `[Verse 1: 7/8]` / `[Chorus: 4/4]` | Time signature hint per section | Inconsistently respected but worth attempting for prog/experimental work. Studio 1.2's time signature picker does NOT yet send to generative models — in-lyric tags are currently the only way to attempt this |
+| `[Callback: ...]` | During Extend/Replace, references a prior section's feel (Experimental) | e.g., `[Callback: Verse 1 energy]` — useful for maintaining continuity across generations |
 
 ### BPM Tags — Confirmed Ineffective
 
@@ -288,6 +423,27 @@ These are NOT metatags but critical formatting techniques that directly control 
 - Works best as single-word echoes in early verses, full-phrase echoes in later verses.
 - Confirmed working: Suno rendered `(blasting)` as a distinct backing vocal layer.
 - This is the most reliable way to get a dual-voice effect (more reliable than `[Duet]` or style prompt dual vocals).
+
+### Inline Performance Modifiers (HIGH)
+Parenthetical performance cues placed at the END of a lyric line to direct vocal delivery for that specific line. **This is a SEPARATE use of parentheses from backing vocals** — context determines interpretation. Backing vocals typically echo/repeat a word from the line; performance modifiers are delivery instructions.
+
+| Cue | Effect | Example |
+|-----|--------|---------|
+| `(breathy)` | Breathy delivery on that line | `I can't stop thinking about you (breathy)` |
+| `(belt)` | Belted/powerful delivery | `HOLD ON (belt)` |
+| `(breath)` | Audible breath/pause | `wait for me... (breath)` |
+| `(hold)` | Sustained/held note | `stay with me (hold)` |
+
+**Disambiguation from backing vocals:** Backing vocal parentheses contain lyric words that Suno sings as a second voice — e.g., `running through the fire(fire)`. Performance modifiers contain delivery instructions — e.g., `running through the fire (breathy)`. When in doubt, the presence of a recognizable delivery keyword (`breathy`, `belt`, `hold`, `breath`) signals a performance modifier.
+
+### Structural Timing in Lyrics (HIGH)
+Direct timing instructions can be embedded in the lyrics field to control when vocals begin or end relative to the track duration:
+
+```
+lyrics begin at 0:15; instrumental only after 1:45
+```
+
+Place at the very top of the lyrics field before any section tags. This tells Suno to generate instrumental content before vocals start and/or after vocals end, providing explicit control over song structure timing.
 
 ### Line Density as Tempo Control
 This is the **PRIMARY mechanism** for controlling perceived tempo in Suno-generated vocals.
@@ -395,7 +551,7 @@ Instrumental tags without clear boundaries cause Suno to generate excessive inst
 - Commas create breath pauses, dashes create connected delivery, ellipses create micro-pauses — use intentionally
 - **Exclamation points trigger bark/attack delivery** — avoid in clean sections
 - **ALL CAPS sets the loudness ceiling** — save for peak moments only
-- **Parentheses signal backing vocals** — not lead melody
+- **Parentheses signal backing vocals** — not lead melody (but also used for inline performance modifiers like `(breathy)`, `(belt)` — see Inline Performance Modifiers section)
 - Consistent line lengths within a section improve phrasing stability
 - Line density (short vs long lines) is the primary tempo control mechanism
 
@@ -455,6 +611,19 @@ We were never meant to stay
 
 - [Suno Help: How long will my song be?](https://help.suno.com/en/articles/2409473)
 - [HookGenius: All Suno Metatags Complete List (2026)](https://hookgenius.app/learn/suno-metatags-complete-list/)
+- [HookGenius: The Art of Prompting Suno](https://hookgenius.app/learn/art-of-prompting-suno/)
+- [HookGenius: Suno Negative Prompting Guide](https://hookgenius.app/learn/suno-negative-prompting/)
+- [HookGenius: Suno v5 Complete Guide](https://hookgenius.app/learn/suno-v5-complete-guide/)
+- [HookGenius: Suno Character Limits](https://hookgenius.app/learn/suno-character-limits/)
 - [Musci.io: Suno Tags List Complete Guide (2026)](https://musci.io/blog/suno-tags)
 - [Suno Wiki: List of Metatags](https://sunoaiwiki.com/resources/2024-05-13-list-of-metatags/)
 - [SunoMetaTagCreator: Complete Guide (1000+ tags)](https://sunometatagcreator.com/metatags-guide)
+- [OpenMusicPrompt: 500+ Pro Tags & Templates (2026)](https://openmusicprompt.com/blog/suno-ai-metatags-guide)
+- [BlakeCrosley: Suno AI Definitive Technical Reference](https://blakecrosley.com/guides/suno)
+- [Lilys/Suno Prompting Secrets](https://lilys.ai/notes/en/suno-ai-v5-20251020/suno-prompting-secrets-powerful-metatags)
+- [StokeMcToke: Complete Suno AI Meta Tags Guide](https://stokemctoke.com/the-complete-suno-ai-meta-tags-guide/)
+- [JackRighteous: Suno AI Meta Tags Guide](https://jackrighteous.com/en-us/pages/suno-ai-meta-tags-guide)
+- [CometAPI: How to Instruct Suno v5 with Lyrics](https://www.cometapi.com/how-to-instruct-suno-v5-with-lyrics/)
+- [MusicSmith: AI Music Generation Prompts Best Practices](https://musicsmith.ai/blog/ai-music-generation-prompts-best-practices)
+- [howtopromptsuno.com: Voice Tags Guide](https://howtopromptsuno.com/making-music/voice-tags)
+- [Plain English: 10 Suno v5 Prompt Patterns That Never Miss](https://plainenglish.io/blog/i-made-10-suno-v5-prompt-patterns-that-never-miss)

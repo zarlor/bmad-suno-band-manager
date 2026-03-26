@@ -1,6 +1,6 @@
 # Model-Specific Prompt Strategies
 
-> **Last validated:** March 2026 (Suno v5 Pro, v4.5-all, v4.5 Pro, v4.5+ Pro, v4 Pro). Suno updates models and prompt behavior frequently — use web search to verify strategies against current documentation when uncertain.
+> **Last validated:** March 26, 2026 (Suno v5 Pro, v4.5-all, v4.5 Pro, v4.5+ Pro, v4 Pro). Updated with community research findings on character limits, descriptor effects, and v5-specific behaviors. Suno updates models and prompt behavior frequently — use web search to verify strategies against current documentation when uncertain.
 
 ## Quick Reference
 
@@ -69,11 +69,15 @@ Keep to **4-7 descriptors**. Each one should earn its place.
 
 ### Tips
 
-- **Emotional descriptors beat technical ones:** "raw, yearning" > "120 BPM". **Never include BPM values** — they have zero effect on Suno's output (confirmed by librosa analysis across 5 songs). Use rhythm nouns instead: "halftime groove," "double-time driving," "shuffle feel."
-- **Production-quality descriptors work well:** "radio-ready mix", "wide stereo field", "punchy drums"
+- **Emotional descriptors beat technical ones:** "raw, yearning" > "120 BPM". Use rhythm nouns instead of BPM values: "halftime groove," "double-time driving," "shuffle feel." (v5 may respond better to BPM in style prompts than v4/v4.5 — see Universal Rules — but rhythm nouns remain more reliable.)
+- **Production-quality descriptors are highly effective in v5:** "radio-ready mix", "punchy drums", "wide stereo field", "crisp high-end", "warm bass"
 - **Include mix notes:** register, tone, phrasing, harmony
 - **Vocals sound more natural** in v5 — breaths, phrasing, harmonies are authentic
 - **Better instrument separation** — can request specific instrument prominence
+- **Composition-aware architecture** — v5 uses early style/genre info to maintain coherent sections throughout the song
+- **Better nuanced interpretation** of complex prompts vs. v4.5
+- **Full negative prompting support** — v5 handles in-prompt negatives ("no [element]") more reliably than v4.5's limited support
+- **Existing v4/v4.5 prompts often work "even better" on v5** — migration is typically seamless
 - **Section-level editing** available in editor — structure control shifted from prompt to editor
 - Don't waste characters on things the editor handles (song structure, section ordering)
 
@@ -85,6 +89,34 @@ Keep to **4-7 descriptors**. Each one should earn its place.
 - NOLA funk elements came through well across multiple sections on v5
 - v5 had more dynamism and better section transitions than v4.5+ Pro for complex multi-tempo songs
 - "NOLA funk groove" functions as BOTH a genre descriptor AND a rhythmic looseness instruction — NOLA funk and jazz are inherently rhythmically loose (swing, syncopation, playing around the beat). This makes it a better vehicle for odd time signatures and time changes than pure metal, which tends to be metronomically precise. Non-obvious but powerful finding.
+
+**Confirmed Descriptor Effects (from community research):**
+
+These descriptors produce consistent, predictable results across v5 generations:
+
+| Descriptor | What Suno Produces |
+|---|---|
+| `atmospheric` | Reverb, space, ambient pads |
+| `airy` | Reverb/space on vocals |
+| `lo-fi warmth` | Vintage character, low-pass filtering |
+| `polished radio-ready` | Clean, modern, commercial mix |
+| `raw live recording` | Less processed, room sound |
+| `driving` | Forward momentum, energetic basslines |
+| `lush` | Layered pads, dense production |
+| `punchy` | Low-end presence, tight transients |
+| `wide stereo` | Spatial separation |
+| `gated drums` | 80s-style drum processing |
+| `vintage Rhodes` | More specific/effective than "piano" |
+
+**Three-Pass Layered Prompting (v5 technique):**
+
+For complex songs, build the prompt in three conceptual passes rather than trying to specify everything at once:
+
+1. **Idea pass** — define concept, mood, genre (the style prompt core)
+2. **Lyric pass** — write/refine lyrics with structural tags
+3. **Performance pass** — add vocal delivery cues, energy tags, dynamics
+
+This separates concerns and prevents overloading any single input field.
 
 **Confirmed Suno behavior (from Gemini analysis of production outputs):**
 - "NOLA funk swing" lands as syncopation, not true swing — Suno interprets swing as a syncopation instruction rather than a jazz swing feel
@@ -119,18 +151,21 @@ Straightforward genre + mood + basic production notes. Less nuanced than v4.5+ m
 
 ## Universal Rules (All Models)
 
-1. **Character limits** — v4 Pro: 200 chars. v4.5+/v5: 1,000 chars. All silently truncated.
-2. **Critical zone (first 200 chars)** — community testing suggests content beyond ~200 characters may have diminished influence on generation, even for v4.5+/v5. Front-load all essential genre, mood, and vocal descriptors within the first 200 characters. Content beyond this is supplementary.
-3. **Genre and mood always go first** — they're the strongest signal
-4. **Never put style cues inside lyrics** — style prompt and lyrics are separate inputs
-5. **No asterisks or special formatting** in style prompts
-6. **Never put artist names in style prompts** — Suno does not reliably replicate named artists. Decompose references into concrete sonic descriptors instead.
-7. **Negative/exclusion prompts go in the separate Exclude Styles field**, not in the main prompt. Exception: a single "no X" in the main prompt is sometimes effective for emphasis (v5 handles in-prompt negatives better than v4.5), but keep exclusions in the dedicated field.
-8. **Comma separation works across all models** — consistent delimiter
-9. **Describe, don't command** — "dreamy shoegaze with female vocals" over "Create a dreamy shoegaze song." (v4.5 examples use "Create a..." which matches Suno's own v4.5 docs, but descriptive style generally works better.)
-10. **Never recommend BPM values in style prompts or lyrics** — BPM tags have zero detectable effect on Suno's output (confirmed by librosa analysis: songs tagged 60 BPM were delivered at 95.7 BPM; songs tagged 65-150 BPM across sections were delivered at a steady 123 BPM). Suno picks its own tempo based on genre context and arrangement.
-11. **Use rhythm nouns for tempo feel** — "halftime groove," "double-time driving," "shuffle," "breakbeat" lock rhythmic feel far more reliably than BPM numbers or tempo adjectives like "slow" or "fast." These describe specific drum patterns Suno can interpret.
-12. **Perceived tempo is controlled through lyrics, not the style prompt** — Suno delivers a single steady BPM per song. Perceived tempo changes come from lyrical density (short fragmented lines = slower feel, packed lines = faster feel), arrangement dynamics (instrument dropout = slower feel), and half-time/double-time drum patterns. The style prompt can request rhythm nouns and "tempo changes" as priming, but the actual perceived control lives in the lyrics field.
+1. **Character limits** — v4 Pro: 200-char hard limit. v4.5+/v5: 1,000-char technical limit (API confirmed). All silently truncated at their respective limits.
+2. **Critical zone (first 200 chars)** — community testing suggests content beyond ~200 characters may have diminished influence on generation, even for v4.5+/v5. Front-load all essential genre, mood, and vocal descriptors within the first 200 characters. A concise 100-char prompt can outperform a cluttered 200-char one. Content beyond ~200 is supplementary and may introduce competing instructions.
+3. **Word order is weighted** — front-loaded terms dominate generation. Priority order: Genre → Mood/Energy → Instruments → Vocals → Production. Whatever appears first sets the primary sound; everything after is progressively more "flavoring."
+4. **4-7 descriptors is the sweet spot** — more confuses the model. Each descriptor should earn its place.
+5. **Hyper-specific beats generic** — "1980s synth-pop" not "pop"; "distorted electric guitar, power chords" not "guitar." Era descriptors instead of artist names: "late 70s disco" not an artist name.
+6. **Genre and mood always go first** — they're the strongest signal (see rule 3)
+7. **Never put style cues inside lyrics** — style prompt and lyrics are separate inputs
+8. **No asterisks or special formatting** in style prompts
+9. **Never put artist names in style prompts** — Suno does not reliably replicate named artists. Decompose references into concrete sonic descriptors instead.
+10. **Negative/exclusion prompts go at the END of the style prompt** — positive descriptors first, cleanup last. "no [element]" is the most reliable in-prompt phrasing. Alternatively, use the separate Exclude Styles field. v5 handles in-prompt negatives better than v4.5.
+11. **Comma separation works across all models** — consistent delimiter
+12. **Describe, don't command** — "dreamy shoegaze with female vocals" over "Create a dreamy shoegaze song." (v4.5 examples use "Create a..." which matches Suno's own v4.5 docs, but descriptive style generally works better.)
+13. **BPM in style prompts — model-dependent** — on v4/v4.5, BPM tags have zero detectable effect on Suno's output (confirmed by librosa analysis: songs tagged 60 BPM were delivered at 95.7 BPM; songs tagged 65-150 BPM across sections were delivered at a steady 123 BPM). On v5, BPM and key in the style prompt may be more effective than lyric tags (e.g., `"deep house, 122 BPM, A minor, hypnotic groove"`), though rhythm nouns remain more reliable for most use cases. Suno still picks its own tempo based on genre context and arrangement.
+14. **Use rhythm nouns for tempo feel** — "halftime groove," "double-time driving," "shuffle," "breakbeat" lock rhythmic feel far more reliably than BPM numbers or tempo adjectives like "slow" or "fast." These describe specific drum patterns Suno can interpret.
+15. **Perceived tempo is controlled through lyrics, not the style prompt** — Suno delivers a single steady BPM per song. Perceived tempo changes come from lyrical density (short fragmented lines = slower feel, packed lines = faster feel), arrangement dynamics (instrument dropout = slower feel), and half-time/double-time drum patterns. The style prompt can request rhythm nouns and "tempo changes" as priming, but the actual perceived control lives in the lyrics field.
 
 ## Genre Keyword Ordering
 
@@ -172,6 +207,15 @@ Certain words reliably pull Suno into unwanted instrumental territory — typica
 | `rock opera` | Pulls keyboard/synth-heavy, theatrical arrangements | Use `power ballad`, `dynamic shifts`, `building from gentle to crushing` instead |
 
 **"Baroque" workaround in detail:** If the song concept calls for Baroque-influenced metal, never use the word. Instead, describe the specific qualities you want — `intricate interlocking guitar and bass melodies` for counterpoint, `dark minor key, precise and ornate` for ornamentation. For orchestral weight, specify instruments that live in metal's frequency range: `cello, heavy strings, kettle drums`. Avoid `orchestral` as a standalone descriptor.
+
+## Exclude Styles Field
+
+The Exclude Styles field (Pro/Premier only) is a separate input from the style prompt. Key behaviors:
+
+- **Functions as probability reduction, not a hard ban** — excluded elements are less likely but can still appear. Treat it as strong guidance, not a guarantee.
+- **In-prompt negatives also work:** "no [element]" at the end of the style prompt is an alternative or supplement. v5 handles these more reliably than v4.5.
+- **Limit to 2-3 most important exclusions** — too many exclusions destabilize the arrangement and produce unpredictable results. Prioritize the exclusions that matter most for the song.
+- **Combine with positive instructions** — telling Suno what you DO want is more reliable than only excluding what you don't. Use Exclude Styles as a safety net alongside positive vocal/instrument guidance in the style prompt.
 
 ## Vocal Behavior and Triggers
 
@@ -270,6 +314,13 @@ These are starting-point ranges based on production testing. Adjust per song, bu
 ## Persona Style Prompt Integration
 
 The Persona auto-populates the Style of Music field. Song-specific prompts should **build on** this base, not replace it. The Style Prompt Builder should assume the Persona's Styles content is already present and add song-specific elements on top. The Persona's Styles field contains universal band DNA — the sonic identity that should be consistent across all songs. Song-specific elements (odd time signatures, tempo changes, brass accents, genre departures) get layered per-song on top of that foundation.
+
+### Persona Interaction Guidelines
+
+- **Edit the auto-filled Style of Music intentionally** — the Persona populates it, but don't just leave it and pile on. Review and trim.
+- **Keep style simple when Persona is active:** 1-2 genres, 1 mood, 2-4 instruments max. The Persona already carries vocal identity and character — the style prompt is the producer brief, not the artist identity.
+- **Change ONE variable at a time** — adjust either the music direction OR the Persona settings, not both simultaneously. This isolates what's working vs. what's not.
+- **Mental model:** Persona = artist identity (vocals, character); Style prompt = producer brief (sonic direction for this specific song).
 
 ## Cover Feature
 

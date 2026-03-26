@@ -14,10 +14,21 @@ Quick-reference for Suno models, plans, parameters, metatags, and common pitfall
 | **v4.5+ Pro** | Conversational descriptions | 1,000 | Advanced creation methods | Paid |
 | **v5 Pro** | Crisp film-brief (4-7 descriptors) | 1,000 | Authentic vocals, superior audio quality, section editing | Paid |
 
+**Character limit details:**
+- **v4 Pro:** 200 chars (hard limit, silently truncated)
+- **v4.5+ / v5:** 1,000 chars (API confirmed), but the effective window is still ~200 chars -- front-loaded terms dominate, and content beyond ~200 chars has diminishing returns. 4-7 descriptors is the sweet spot.
+
 **Key differences:**
 - **v4.5-all** wants flowing, conversational sentences. Example: "Create a melodic, emotional deep house song with organic textures and hypnotic rhythms."
 - **v5 Pro** wants crisp descriptors and emotional language over technical. Example: "raw indie folk, yearning vocals, acoustic guitar, lo-fi tape warmth, intimate"
 - **v4 Pro** has a hard 200-character limit, not 1,000.
+
+**v5-specific behaviors:**
+- Full negative prompting support (v4.5 had limited support)
+- Better BPM and key recognition in style prompt (e.g., `deep house, 122 BPM, A minor`)
+- Production-quality descriptors more effective (e.g., "radio-ready mix, punchy drums, wide stereo field")
+- Composition-aware architecture -- uses early style/genre info for coherent section transitions
+- Existing v4 prompts often work "even better" on v5
 
 ---
 
@@ -73,12 +84,14 @@ Where each component of Mac's output package goes in Suno's Custom Mode:
 
 ## Style Prompt Best Practices
 
-- **1,000-character limit** (200 for v4 Pro) -- content beyond this is silently truncated
-- **Front-load essentials** -- community testing suggests the first ~200 characters carry the strongest influence. Treat this as the "critical zone" where genre, mood, and vocal descriptors must appear.
-- **Genre and mood first**, secondary details after
+- **1,000-character limit** (200 for v4 Pro) -- content beyond this is silently truncated. Effective window is ~200 chars; 4-7 descriptors is the sweet spot.
+- **Word order is weighted** -- front-loaded terms dominate. Priority order: Genre > Mood/Energy > Instruments > Vocals > Production. Treat the first ~200 characters as the "critical zone."
+- **Hyper-specific beats generic** -- "1980s synth-pop" not "pop"; "distorted electric guitar, power chords" not "guitar"
+- **BPM and key in style prompt (v5)** -- may work better in v5 than in lyric tags: `deep house, 122 BPM, A minor, hypnotic groove`. Still ineffective in v4/v4.5.
+- **Production descriptors (v5)** -- "radio-ready mix, punchy drums, wide stereo field, crisp high-end, warm bass" are effective in v5
 - **Never put artist names in the style prompt** -- Suno does not reliably replicate named artists. Decompose into concrete sonic descriptors instead.
 - **Never put sound cues, asterisks, or style descriptions inside lyrics** -- the style prompt and lyrics are separate inputs
-- **Negative/exclusion prompts go in the Exclude Styles field**, not in the main style prompt
+- **Negative/exclusion prompts go in the Exclude Styles field**, not in the main style prompt. In-prompt negatives ("no [element]" at the end) also work as a fallback.
 - **Style prompt sets ONE overall mood** -- it cannot describe a tempo journey ("halftime to double-time" gets averaged). Suno delivers a single steady BPM per song. Use lyric density and rhythm noun metatags (`[Heavy: halftime]`, `[Double Time]`) in lyrics for perceived section-level tempo changes.
 - **Negative prompts are unreliable** -- "no screaming" in the style prompt often gets ignored. Use the Exclude Styles field (Pro/Premier) or translate to positive instructions ("clean singing with grit on peaks").
 - **Genre keyword ordering matters** -- front-loaded terms dominate. Whatever appears first sets the primary sound. When a genre should be secondary/flavoring, use "accents" or "undertones": e.g., `atmospheric swamp metal accents`.
@@ -98,11 +111,12 @@ Where each component of Mac's output package goes in Suno's Custom Mode:
 
 ### Exclude Styles (Pro/Premier)
 
-The Exclude Styles field is a dedicated exclusion input separate from the style prompt.
+The Exclude Styles field is a dedicated exclusion input separate from the style prompt. It functions as **probability reduction** -- guidance, not a hard ban.
 
 - Format as a **comma-separated list** for easy copy-paste: `screaming vocals, steel guitar, autotune`
 - Be specific: "screaming vocals" is better than "screaming"
-- Prioritize 2-3 most important exclusions
+- **Limit to 2-3 most important exclusions** -- too many destabilizes the arrangement
+- In-prompt negatives also work: add "no [element]" at the end of your style prompt as a supplement
 - With Exclude Styles handling exclusions, the style prompt can focus entirely on POSITIVE instructions
 - Heavier genre words ("metal", "sludge") become usable in the style prompt when the Exclude Styles field blocks their unwanted defaults
 - **Note:** Exclude Styles is currently in Early Access Beta and may not be 100% reliable for all instrument exclusions
@@ -135,6 +149,17 @@ The Exclude Styles field is a dedicated exclusion input separate from the style 
 | `[Hook]` | Short catchy phrase or motif |
 | `[Post-Chorus]` | Extends or cools down chorus energy |
 | `[Fade Out]` | Gradual volume decrease |
+
+### Parameterized Section Tags
+
+Section tags can include per-section arrangement instructions using colon or pipe syntax:
+
+- `[Verse: whispered vocals, acoustic guitar only]`
+- `[Chorus: full band, powerful vocals]`
+- `[Bridge: stripped back, piano only]`
+- `[Chorus | Half-Time]`
+
+This allows section-specific arrangement control directly in the tag itself, rather than relying solely on separate descriptor tags.
 
 ### Descriptor Tags
 
@@ -179,7 +204,7 @@ This table covers problems with Suno's output. For issues with Mac itself (wrong
 | **Dense punctuation** | Heavy punctuation confuses vocal cadence | Simplify; use commas and dashes intentionally |
 | **Scream bleed-through** | Aggressive vocals carry into subsequent sections | Add `[Vocal Style: whispered]` reset after aggressive sections |
 | **Sections sound flat despite energy tags** | Energy metatags alone don't drive tempo changes | Combine with line density changes (short lines = slow, packed lines = fast), half-time/double-time drum metatags (`[Heavy: halftime]`, `[Double Time]`), arrangement density changes, and Weirdness slider. Do NOT use BPM tags — they are confirmed ineffective. |
-| **Persona style conflicts** | Persona's auto-style clashes with your style prompt | Keep additional style modifications simple (1-2 genres, 1 mood, 2-4 instruments max) |
+| **Persona style conflicts** | Persona's auto-style clashes with your style prompt | Persona auto-fills Style of Music -- keep additions simple (1-2 genres, 1 mood, 2-4 instruments max). Change ONE variable at a time (music direction OR Persona, not both). |
 | **Unwanted instrument in wrong section** | Suno's style prompt is global | Move section-specific instruments to end of prompt, use `[Instrument: ...]` metatags, or generate sections separately via Legacy Editor (Pro) |
 
 ### Audio Quality Issues

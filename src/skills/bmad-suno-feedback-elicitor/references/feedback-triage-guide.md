@@ -48,7 +48,9 @@
 - "The vocals should be more prominent but also blend in more"
 - "It needs to be simpler but also more interesting"
 
-**Action:** First Principles reset — find the one anchor, rebuild from there. Reframe contradictions as potential structural insights (verse vs. chorus contrast).
+**Action:** First Principles reset — find the one anchor, rebuild from there. Reframe contradictions as potential structural insights (verse vs. chorus contrast). When the contradiction spans multiple dimensions (arrangement + lyrics + delivery), use **three-pass layered prompting** to isolate changes: adjust concept/mood first, then lyrics/structure, then performance cues — never all at once. See suno-parameter-map.md "Three-Pass Layered Prompting" for the workflow.
+
+**When feedback touches both vocal identity and style:** If the user wants to change the singing voice AND the musical direction simultaneously, apply the **one-variable-at-a-time rule** — adjust either the Persona/vocal identity OR the style prompt, not both in the same generation. Changing both creates compounding unpredictability. Persona controls artist identity (vocals, character); style prompt controls the producer brief (genre, mood, arrangement).
 
 ### Technical/Quality Feedback
 **Signals:** Quality-specific language ("glitchy," "robotic," "artifact," "clipping," "distortion," "cuts off"), timestamp references ("at 1:23"), pronunciation complaints, audio fidelity terms ("muffled," "compressed," "tinny"), generation-specific issues distinct from creative direction.
@@ -76,6 +78,7 @@ Common feedback patterns with non-obvious root causes. When you hear these, chec
 | "Song loops / too much instrumental" | Source text length (under 15 lines?) + style prompt for `instrumental breaks` | Short lyrics cause looping and filler instrumentals. Suggest: double the delivery (repeat verses with variation), extract and repeat chorus, or place a hard `[End]` tag. |
 | "Sound is too theatrical / too many keyboards" | Style prompt for `baroque`, `rock opera`, `cinematic`, or `orchestral` | These keywords trigger keyboard-heavy theatrical arrangements. Fix: describe desired qualities without those words; specify heavy orchestral instruments by name (cello, heavy strings, kettle drums); use "power ballad" instead of "rock opera" for dynamic range. |
 | "Song doesn't come back down / ending stays loud" | Whether the dynamic arc is stated TWICE in the style prompt | A single mention of descent isn't enough — Suno latches onto the loudest directive. Both `building from gentle to crushing then returning to gentle` AND `dynamic arc quiet to massive to quiet` are needed to reliably produce a full arc. |
+| "One section sounds wrong but the rest is fine" | Whether the issue is section-specific or global | Use **parameterized section tags** for per-section fixes: `[Verse: whispered vocals, acoustic guitar only]`, `[Chorus: full band, powerful vocals]`. This targets the problem section without changing the overall style prompt. See suno-parameter-map.md "Parameterized Section Tags". |
 
 ---
 
@@ -127,6 +130,10 @@ Map subjective feelings to Suno-actionable parameters.
 | Tight ↔ Loose | Precise timing, quantized, controlled | Swing, human feel, organic timing, relaxed |
 | Simple ↔ Complex | Minimal arrangement, few instruments, straightforward | Layered, intricate arrangement, multiple textures (↑ Weirdness slider) |
 | Organic ↔ Synthetic | Live instruments, acoustic, natural, analog warmth | Electronic, digital, synthesized, programmed beats |
+| Atmospheric ↔ Punchy | Reverb, space, ambient pads, "atmospheric" | Low-end presence, tight transients, "punchy" |
+| Lo-fi Warmth ↔ Polished Radio-Ready | Vintage character, low-pass filtering, "lo-fi warmth" | Clean, modern, commercial mix, "polished radio-ready" |
+| Driving ↔ Lush | Forward momentum, energetic basslines, "driving" | Layered pads, dense production, "lush" |
+| Raw Live ↔ Produced | Less processed, room sound, "raw live recording" | Spatial separation, "wide stereo", processed |
 
 **Rules:**
 - Only present pairs relevant to the narrowed dimension

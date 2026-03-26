@@ -25,7 +25,9 @@ When the user reports that the ending or energy arc doesn't match their intent, 
 
 ### Perceived Tempo Control (BPM Tags Are Ineffective)
 
-**BPM tags in lyrics have ZERO detectable effect on Suno's actual output** — confirmed by librosa analysis across 5 songs. Suno picks a single steady tempo per song regardless of any BPM tags. Do not recommend BPM tags as a solution for tempo issues.
+**BPM tags in lyrics have ZERO detectable effect on Suno's actual output** — confirmed by librosa analysis across 5 songs. Suno picks a single steady tempo per song regardless of any BPM tags. Do not recommend BPM tags in lyrics as a solution for tempo issues.
+
+**v5 alternative:** BPM and key specified in the style prompt (not lyrics) may be more effective in v5: e.g., `"deep house, 122 BPM, A minor, hypnotic groove"`. This is not confirmed as reliable but is worth trying when perceived tempo techniques alone are insufficient.
 
 When the user reports tempo issues, the recommended adjustment path uses perceived tempo techniques:
 
@@ -36,6 +38,89 @@ When the user reports tempo issues, the recommended adjustment path uses perceiv
 5. **Rhythm nouns in style prompt:** "Halftime groove," "double-time driving," "shuffle," "breakbeat" lock feel better than "slow," "fast," or "upbeat."
 
 Try restructuring the lyrics first (techniques 1 and 4) before modifying the style prompt or metatags.
+
+## Descriptor Families as Adjustment Targets
+
+Beyond `[Mood: ...]`, `[Energy: ...]`, `[Vocal Style: ...]`, and `[Instrument: ...]`, these additional descriptor families are available as adjustment targets in the lyrics field:
+
+| Descriptor Family | Examples | Use When Feedback Says |
+|-------------------|---------|----------------------|
+| `[Atmosphere: ...]` | `[Atmosphere: Dreamy]`, `[Atmosphere: Cyberpunk]`, `[Atmosphere: Medieval]` | "The vibe/setting feels wrong", "needs more atmosphere" |
+| `[Texture: ...]` | `[Texture: Grainy]`, `[Texture: Velvet]` | "The sound quality/feel is wrong", "too smooth/rough" |
+| `[Effect: ...]` | `[Effect: Lo-fi]`, `[Effect: Reverb: Hall]`, `[Effect: Delay: Ping-pong]`, `[Effect: Distortion]`, `[Effect: Sidechain]`, `[Effect: Radio Filter]` | "Too much/little reverb", "needs effects", "too dry/wet" |
+
+These families provide more targeted control than style prompt descriptors alone. Place them before the section they should affect.
+
+## Parameterized Section Tags
+
+Section tags can include per-section arrangement instructions using colon (`:`) or pipe (`|`) syntax. This enables per-section fixes without changing the overall style prompt.
+
+```
+[Verse: whispered vocals, acoustic guitar only]
+[Chorus: full band, powerful vocals]
+[Bridge: stripped back, piano only]
+[Chorus | Half-Time]
+[Chorus | Double-Time]
+```
+
+| Feedback | Parameterized Section Tag Fix |
+|----------|-------------------------------|
+| "The verse is too loud/busy" | `[Verse: stripped back, minimal arrangement]` |
+| "The chorus doesn't hit hard enough" | `[Chorus: full band, powerful vocals, high energy]` |
+| "The bridge needs a different feel" | `[Bridge: acoustic guitar only, intimate]` |
+| "The chorus tempo feels wrong" | `[Chorus | Half-Time]` or `[Chorus | Double-Time]` |
+
+This is often more effective than global style prompt changes when the issue is section-specific.
+
+## Inline Performance Modifiers
+
+Parenthetical cues placed after lyric lines control vocal delivery on a per-line basis. Distinct from the backing-vocal parentheses technique — these are performance directions.
+
+```
+I can't stop thinking about you (breathy)
+HOLD ON (belt)
+wait for me... (breath)
+stay with me (hold)
+```
+
+| Feedback | Inline Modifier |
+|----------|----------------|
+| "Vocals too forceful on this line" | Add `(breathy)` or `(soft)` after the line |
+| "This line needs more power" | Add `(belt)` after the line |
+| "Needs a pause/breath feel here" | Add `(breath)` after the line |
+| "The note should sustain longer" | Add `(hold)` after the line |
+
+Use sparingly — these are line-level adjustments, not section-level.
+
+## Confirmed Descriptor Effects
+
+These style prompt descriptors have confirmed, predictable effects on Suno output:
+
+| Descriptor | Produces |
+|-----------|----------|
+| "atmospheric" | Reverb, space, ambient pads |
+| "airy" | Reverb/space on vocals |
+| "lo-fi warmth" | Vintage character, low-pass filtering |
+| "polished radio-ready" | Clean, modern, commercial mix |
+| "raw live recording" | Less processed, room sound |
+| "driving" | Forward momentum, energetic basslines |
+| "lush" | Layered pads, dense production |
+| "punchy" | Low-end presence, tight transients |
+| "wide stereo" | Spatial separation |
+| "gated drums" | 80s-style drum processing |
+| "vintage Rhodes" | More specific/effective than "piano" |
+
+Use these as precise adjustment tools when feedback maps to one of these effects.
+
+## Three-Pass Layered Prompting
+
+For complex adjustments that touch multiple dimensions (arrangement, lyrics, and delivery), use a three-pass approach rather than trying to fix everything at once:
+
+1. **Idea pass** — adjust the concept, mood, and genre in the style prompt
+2. **Lyric pass** — revise lyrics with structural tags, section tags, and arrangement cues
+3. **Performance pass** — add vocal delivery cues (inline modifiers), energy tags, and dynamics metatags
+
+This reduces the chance of conflicting instructions and makes it easier to isolate which change fixed (or broke) something.
 
 ## Style Prompt Adjustment Patterns
 
@@ -96,7 +181,7 @@ Certain style prompt keywords reliably trigger unwanted arrangement choices. Whe
 | Feedback | Add to Style Prompt | Slider Adjustment |
 |----------|--------------------|--------------------|
 | "Too polished" | "lo-fi, raw production, analog warmth, rough edges" | Weirdness ↑ |
-| "Too rough/lo-fi" | "radio-ready mix, clean production, crisp, polished" | Weirdness ↓ |
+| "Too rough/lo-fi" | "radio-ready mix, clean production, crisp, polished" (v5 responds well to production-quality descriptors like "punchy drums, wide stereo field, crisp high-end, warm bass") | Weirdness ↓ |
 | "Sounds compressed" | "dynamic range, open mix, breathing room" | — |
 | "Too much reverb" | "dry mix, close mic, intimate" | — |
 | "Too dry" | "spacious, reverb, ambient, atmospheric" | — |
@@ -122,7 +207,7 @@ Certain style prompt keywords reliably trigger unwanted arrangement choices. Whe
 
 ## Exclusion Guidance
 
-Prioritize 2-3 specific exclusions over filling the space. Supported syntax: 'no [element]', 'without [element]', 'exclude [element]', 'avoid [element]'. Exclusions are influential but not absolute — regeneration may still be needed. Too many negatives reduce effectiveness.
+Prioritize 2-3 specific exclusions over filling the space. Supported syntax: 'no [element]', 'without [element]', 'exclude [element]', 'avoid [element]'. The Exclude Styles field (Pro/Premier only) and in-prompt negatives both function as **probability reduction, not hard bans** — excluded elements may still appear, and regeneration may be needed. Limit to 2-3 most important exclusions; too many destabilizes the arrangement and reduces overall effectiveness.
 
 ## Slider Adjustment Guide
 
