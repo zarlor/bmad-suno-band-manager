@@ -1,0 +1,329 @@
+{
+  "scanner": "enhancement-opportunities",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-feedback-elicitor",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 69,
+      "severity": "high-opportunity",
+      "category": "experience-gap",
+      "title": "No audio file intake -- the agent cannot bridge the gap between what the user hears and what it can analyze",
+      "detail": "The skill explicitly states the agent cannot hear the generated songs, yet references/gemini-audio-analysis.md documents a complete audio analysis pipeline (librosa, Gemini, ChatGPT). The feedback loop depends entirely on the user's subjective vocabulary, but the skill never offers to run objective audio analysis on the user's MP3 to establish ground truth. A user saying 'the vibe is off' could be narrowed instantly if the agent ran librosa for BPM/key and Gemini for a blind genre analysis, then compared those facts against the original style prompt. This would dramatically shorten the vague-feedback elicitation path.",
+      "action": "Add an optional 'audio intake' branch after Step 1: if the user can provide the MP3 path, run analyze-audio.py and optionally Gemini blind analysis before triaging. Use the objective data to pre-narrow dimensions (e.g., if librosa BPM is 184 and the user wanted 'slow groove', the problem is immediately clear). Fall back gracefully to pure conversational elicitation when no audio file is available."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 85,
+      "severity": "high-opportunity",
+      "category": "facilitative-pattern",
+      "title": "Intent-Before-Ingestion is present but Context Gathering asks too many questions before understanding what matters",
+      "detail": "Step 2 lists seven types of context (style prompt, lyrics, band profile, model, sliders, creativity mode, intent) and says 'gather only the context relevant to what was raised.' In practice, an LLM following this will still ask multiple questions because it cannot reliably judge relevance from vague feedback alone. The first-timer and confused user will feel interrogated. The expert will feel slowed down. The skill would benefit from a smarter context-gathering strategy: ask for the ONE thing most likely to unlock the feedback (usually the original style prompt), then infer what else is needed from the triage result.",
+      "action": "Restructure Step 2 to prioritize a single context question ('Can you share the style prompt you used?') with a soft gate before asking anything else. After triage in Step 3, selectively request remaining context only for the dimensions that matter. This reduces perceived interrogation and respects the user's flow."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "high-opportunity",
+      "category": "delight-opportunity",
+      "title": "Before/After style prompt diff would let users learn prompt engineering through their own feedback",
+      "detail": "Step 6 presents the adjusted style prompt alongside the original, but it is a flat 'Current / Recommended' display. Users who iterate multiple rounds never build an intuition for WHY certain words move the sound. Showing a word-level diff with brief annotations ('added: raw vocal -- pulls Suno toward less processed delivery') would turn each feedback round into a micro-lesson in Suno prompt engineering. Over time, users would need the Feedback Elicitor less -- which is actually the highest compliment a teaching tool can receive.",
+      "action": "In Step 6, add a 'What Changed and Why' micro-diff that highlights added, removed, and repositioned words in the style prompt with one-line explanations. This is already partially present as 'Changes: bullet list of what changed and why' but could be elevated to a structured diff format that makes the learning more visceral."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 148,
+      "severity": "medium-opportunity",
+      "category": "edge-case",
+      "title": "Binary narrowing assumes the user can distinguish between dimensions they may not understand",
+      "detail": "Phase 1 of vague feedback elicitation asks the user to distinguish 'music/production vs. vocals/singing' and 'energy level vs. structure.' A non-musician who says 'something is off' may not know whether the problem is production, vocals, or energy -- that is literally why they gave vague feedback. Asking them to choose a dimension can feel like a quiz they are failing. The escape hatch (pivot to reference-first after 3-4 questions) is good but comes late.",
+      "action": "Consider leading with comparative anchoring for users who give maximally vague feedback ('it is all off' or 'I do not know'). Ask 'Name a song that sounds like what you wanted' FIRST -- this is natural for non-musicians and provides richer signal than binary narrowing. Reserve binary narrowing for users who show dimensional awareness in their initial feedback. The escape hatch effectively already describes this -- promote it from fallback to primary path for the vaguest feedback."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 207,
+      "severity": "medium-opportunity",
+      "category": "facilitative-pattern",
+      "title": "Missing Parallel Review Lenses before presenting adjustment recommendations",
+      "detail": "Step 5 maps feedback to adjustments in a single analytical pass. For complex or mixed feedback, a single-pass mapping can miss interactions between adjustments (e.g., adding 'raw vocal' while also adding 'polished production' creates a tension the user did not intend). A quick internal review from two perspectives -- a 'consistency checker' lens and a 'creative opportunity' lens -- before presenting would catch these conflicts and surface unexpected synergies.",
+      "action": "Before presenting in Step 6, add an internal consistency check: do any style prompt additions conflict with exclusions? Do slider recommendations contradict style prompt direction? Also add a brief creative opportunity note: 'Based on these adjustments, you might also enjoy trying X.' The map-adjustments.py script already validates add/exclude conflicts -- extend this principle to the full recommendation set."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 310,
+      "severity": "medium-opportunity",
+      "category": "experience-gap",
+      "title": "Handoff to other skills assumes the user knows what 'Style Prompt Builder' and 'Lyric Transformer' are",
+      "detail": "Step 7 offers 'Want me to run the Style Prompt Builder with these adjustments?' A first-timer who came to refine a song has no context for what the Style Prompt Builder does or why they would want to invoke it. The handoff names tools without explaining value. This creates a dead-end moment for users who do not know the broader skill ecosystem.",
+      "action": "Reframe handoff offers in terms of outcomes, not tools: 'Want me to build you an updated style prompt you can paste directly into Suno?' and 'Want me to rewrite the lyrics with these structural changes?' Mention the skill name parenthetically for power users, but lead with the value proposition."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 53,
+      "severity": "medium-opportunity",
+      "category": "edge-case",
+      "title": "bmad-init failure path does not address missing band profile or project context",
+      "detail": "The On Activation section handles bmad-init unavailability gracefully (generic greeting, default to English). But it does not address the scenario where bmad-init succeeds but the user has no band profile, no previous generations, and no project-root configured. This is the true first-timer scenario -- they heard about Feedback Elicitor, tried a Suno song, and landed here with zero ecosystem context. The skill should handle this as gracefully as it handles bmad-init failure.",
+      "action": "Add a 'cold start' path after bmad-init: if no band profile exists and no project-root is configured, acknowledge the minimal context and adjust the workflow to skip profile-dependent features (band profile lookups, iteration log persistence, profile update offers). Mention that creating a band profile through the Band Manager would unlock these features for future sessions."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 303,
+      "severity": "medium-opportunity",
+      "category": "journey-friction",
+      "title": "Iteration log format is defined but persistence and retrieval are underspecified",
+      "detail": "Step 6 generates an iteration log JSON and offers to save it. Step 7 mentions persistence to docs/feedback-history/. Step 5 says to accept iteration logs on re-invocation. But the actual mechanism for finding and loading previous logs is undefined -- does the agent scan the directory? Does the user paste it? Does Mac pass it? A user returning for round 2 has to manually remember and provide the log, which defeats the purpose of iterative refinement tracking.",
+      "action": "Specify in Step 2 that if a band profile is active, the agent should check docs/feedback-history/{band-profile}/ for the most recent iteration log and automatically load it. If found, summarize what was tried last time before asking for new feedback. This makes the 'return value' of the user journey concrete -- previous work is accessible, not lost."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 100,
+      "severity": "medium-opportunity",
+      "category": "autonomous-potential",
+      "title": "Headless mode references parse-feedback.py but does not specify how to pass the original style prompt for comparison",
+      "detail": "The headless output contract includes adjustment_recommendations that modify the style prompt, but the headless input path only mentions accepting feedback as text/JSON and running parse-feedback.py. To generate meaningful style prompt adjustments headlessly, the agent needs the original style prompt as input. The --headless:adjustments flag description mentions 'accept feedback + original prompts' but the actual input contract for structured headless invocation is undefined.",
+      "action": "Define the headless input contract explicitly: --feedback (required), --style-prompt (optional but recommended for adjustment mode), --model (optional), --sliders (optional JSON), --lyrics (optional file path), --iteration-log (optional file path for multi-round). Document which fields are required for each headless sub-mode (analyze vs adjustments)."
+    },
+    {
+      "file": "references/gemini-audio-analysis.md",
+      "line": null,
+      "severity": "medium-opportunity",
+      "category": "delight-opportunity",
+      "title": "The audio analysis reference is a goldmine that the interactive workflow never surfaces to the user",
+      "detail": "gemini-audio-analysis.md contains a sophisticated multi-tool audio analysis workflow (librosa + Gemini blind + ChatGPT cross-reference) that could transform feedback elicitation. Instead of relying solely on the user's vocabulary to describe what is wrong, the agent could offer: 'I can analyze the audio file directly -- want to share the MP3 path?' This would let the agent say things like 'librosa shows BPM at 184 which is double what you wanted, and Gemini detects ska-core influences rather than the NOLA funk you prompted for.' This moves the conversation from 'what feels wrong' to 'here is what actually happened.'",
+      "action": "Add an optional audio analysis intake at the top of Step 2: 'If you have the MP3 file, I can analyze it to see exactly what Suno produced vs. what you prompted. This often reveals surprises.' Gate this behind file availability. When available, use librosa for BPM/key ground truth and Gemini blind analysis for genre/instrument identification. Fold findings into the triage step as objective evidence alongside subjective feedback."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 159,
+      "severity": "low-opportunity",
+      "category": "delight-opportunity",
+      "title": "Non-convergence variant generation could include a 'wild card' option alongside safe variations",
+      "detail": "When elicitation does not converge, the skill suggests generating 2-3 variants with different parameter profiles. This is a smart fallback. But all suggested variants are along the axis the user was struggling to articulate. Adding one 'wild card' variant that takes the original feedback and deliberately interprets it in an unexpected direction could break the user out of their rut. Sometimes the user cannot describe what they want because they have not heard it yet.",
+      "action": "When suggesting variants for non-convergent feedback, make one of the 2-3 variants a deliberate creative departure: higher Weirdness slider, different genre interpretation, or a production style the user did not mention. Label it clearly as 'creative wild card -- might surprise you.' This leverages Suno's randomness as a feature rather than a problem."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "low-opportunity",
+      "category": "facilitative-pattern",
+      "title": "Dual-Output pattern partially present but LLM-optimized distillate could be more explicitly structured",
+      "detail": "The skill produces both a human-readable recommendation (Step 6 markdown format) and a machine-readable iteration log (JSON). The headless output contract also produces structured JSON. However, the interactive mode's JSON iteration log is compact but not designed for downstream LLM consumption -- it captures what was done but not the reasoning chain. If Mac or another orchestrating agent needs to understand WHY certain adjustments were recommended (to inform its own decisions about next steps), the current log is insufficient.",
+      "action": "Add an optional 'reasoning_chain' field to the iteration log that captures the triage type, elicitation path taken, key user signals, and the mapping logic from signal to adjustment. This would let an orchestrating agent make smarter decisions about whether to suggest another feedback round, switch to a different skill, or propose a fundamentally different approach."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "low-opportunity",
+      "category": "assumption-risk",
+      "title": "Skill assumes feedback is about a single song -- multi-song comparison feedback is unhandled",
+      "detail": "The entire workflow assumes the user is giving feedback about one Suno generation. But a common real-world scenario is: 'I generated 5 versions and version 3 is closest but version 1 had better vocals.' Comparative feedback across multiple generations is a natural way users refine -- they triangulate from multiple outputs. The current skill has no mechanism to capture and leverage cross-generation comparison.",
+      "action": "Add a 'comparative feedback' sub-path in Step 1: if the user mentions multiple generations, capture what worked in each and synthesize a composite target. This is more efficient than treating each generation independently -- the user has already done A/B testing, and the agent should leverage that work."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "low-opportunity",
+      "category": "journey-friction",
+      "title": "No explicit session save/resume for long elicitation conversations",
+      "detail": "Vague feedback elicitation through three phases can be a long conversation. If context compaction occurs mid-elicitation (or the user closes their browser and returns later), all gathered elicitation state is lost. The iteration log is only generated at Step 6, after elicitation is complete. There is no mid-conversation state checkpoint.",
+      "action": "Consider checkpointing elicitation state after each phase: after binary narrowing, capture which dimensions were identified; after comparative anchoring, capture reference points and spectrum placements. If the conversation resumes or compacts, the agent can reconstruct context from the checkpoint rather than starting over. This could be as simple as generating a partial iteration log after Phase 1 that includes 'elicitation_progress' fields."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "facilitative-pattern",
+      "title": "Capture-Don't-Interrupt pattern is explicitly implemented and well-placed",
+      "detail": "Step 1 explicitly instructs the agent to capture creative context (concept album plans, song sequencing ideas) without redirecting the user, and to carry that context forward to Step 5. This is a textbook implementation of the Capture-Don't-Interrupt pattern and will produce significantly richer adjustment recommendations than a strict 'stay on topic' approach.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "facilitative-pattern",
+      "title": "Soft Gate Elicitation is used at natural transition points",
+      "detail": "Steps 4c and 4d both include soft gates ('anything else before I build the recommendations?') at exactly the right moments -- after elicitation but before committing to adjustment mapping. This draws out information the user forgot to mention and prevents premature closure.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "edge-case",
+      "title": "Contradictory feedback handler elegantly checks for structural contrast before assuming genuine contradiction",
+      "detail": "Step 4d's 'structural contrast quick-check' is a brilliant design choice. Many users who say 'more energetic but also more chill' are actually describing dynamic contrast between sections -- quiet verses and loud choruses. Checking for this before launching a First Principles reset saves users from an unnecessarily heavy intervention and shows genuine musical understanding.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "delight-opportunity",
+      "title": "Before/After narrative preview humanizes the technical recommendations",
+      "detail": "Step 6 opens with a non-technical narrative comparing current output to target output ('Right now it probably sounds like a big arena rock track... The adjustments should pull it toward a coffee-shop acoustic feel'). This grounds the technical parameter changes in the user's emotional experience and helps them evaluate whether the recommendations match their intent before trying them.",
+      "action": ""
+    },
+    {
+      "file": "references/feedback-triage-guide.md",
+      "line": null,
+      "severity": "strength",
+      "category": "edge-case",
+      "title": "Production Diagnostic Patterns table catches non-obvious root causes that would stump most users",
+      "detail": "The table mapping feedback patterns like 'guitar dominates' to root causes like 'bass prominence is a Suno limitation in rock/metal' and 'funk triggers slap/pop bass' demonstrates deep platform-specific knowledge. These are exactly the patterns a user would never figure out alone and where the skill earns its value as a specialized collaborator.",
+      "action": ""
+    }
+  ],
+  "assessments": {
+    "skill_understanding": {
+      "purpose": "Translates subjective musical reactions into concrete Suno parameter adjustments through guided elicitation, bridging the vocabulary gap between what users feel and what Suno needs to hear",
+      "primary_user": "Non-technical music creators using Suno who know something is wrong with their generation but lack the musical vocabulary to articulate what, ranging from complete beginners to experienced musicians",
+      "key_assumptions": [
+        "The agent cannot hear the generated audio -- all analysis is through user description",
+        "Users give feedback about a single generation at a time",
+        "Users will complete the feedback loop in a single session",
+        "The bmad-init and band profile ecosystem is available or gracefully absent",
+        "Users can provide the original style prompt when asked",
+        "Feedback falls cleanly into one of five types or a manageable mix"
+      ]
+    },
+    "user_journeys": [
+      {
+        "archetype": "first-timer",
+        "summary": "A user who just tried Suno for the first time and got something that 'does not sound right.' They land in the Feedback Elicitor with no band profile, no ecosystem context, and possibly no original style prompt (used Suno's simple mode). The greeting is warm, the intent check is helpful, and the vague feedback path is well-designed. However, the context-gathering step may feel like an interrogation ('What model? What sliders? What mode?') when they barely know what those things are. The handoff to Style Prompt Builder is confusing because they do not know what that is.",
+        "friction_points": [
+          "Context gathering asks for information the first-timer does not have (model, sliders, creativity mode)",
+          "Binary narrowing may feel like a quiz they are failing",
+          "Handoff names tools instead of describing outcomes",
+          "No cold-start path for users without band profiles or project roots"
+        ],
+        "bright_spots": [
+          "Intent check catches misrouted users early",
+          "Prompt reconstruction handles missing style prompts gracefully",
+          "Before/After narrative preview makes recommendations tangible",
+          "Non-convergence fallback (generate variants) turns analysis paralysis into selection"
+        ]
+      },
+      {
+        "archetype": "expert",
+        "summary": "A musician who knows exactly what is wrong ('the bass is buried under the guitars in the verse') and wants fast parameter mapping. This user flies through Steps 1-3 (clear feedback, already has context, direct triage). Step 4a maps efficiently. The expert will appreciate the depth of the parameter map and the production diagnostic patterns. The main friction is that the workflow forces sequential steps when the expert could skip directly from feedback to adjustments.",
+        "friction_points": [
+          "Sequential step structure when expert feedback could map directly to adjustments",
+          "No fast-track mode: 'I know what is wrong, just give me the parameter changes'"
+        ],
+        "bright_spots": [
+          "Clear feedback path is genuinely fast and direct",
+          "Deep Suno-specific knowledge in parameter map and triage guide",
+          "Production diagnostic patterns catch non-obvious root causes",
+          "Iteration log enables multi-round refinement with memory"
+        ]
+      },
+      {
+        "archetype": "confused",
+        "summary": "A user who invoked the Feedback Elicitor by accident or wanted to create a new song, not refine an existing one. Step 3 in On Activation catches this cleanly with an intent check and redirects to the Band Manager or Style Prompt Builder. This is well-handled.",
+        "friction_points": [
+          "None significant -- the intent check is well-placed and helpful"
+        ],
+        "bright_spots": [
+          "Intent check at activation catches misrouted users before any work is done",
+          "Redirect suggestions are specific (Band Manager, Style Prompt Builder)"
+        ]
+      },
+      {
+        "archetype": "edge-case",
+        "summary": "A user giving comparative feedback across multiple Suno generations ('version 3 is closest but version 1 had better vocals'). The skill has no mechanism to capture cross-generation comparison. The user would need to treat each observation as separate feedback, losing the comparative signal. Also: a user whose feedback spans all five types simultaneously ('the vocals are robotic AND the vibe is off AND I want it more energetic but also chill AND there is a glitch at 1:23 AND I love the chorus'). The mixed feedback handling is documented but five-way mixed feedback would challenge any LLM.",
+        "friction_points": [
+          "No multi-generation comparative feedback path",
+          "Five-way mixed feedback is theoretically handled but practically overwhelming",
+          "Section-specific feedback across many sections creates combinatorial complexity"
+        ],
+        "bright_spots": [
+          "Mixed feedback handling is explicitly documented with priority ordering",
+          "Per-section capture is built into Step 1",
+          "Non-convergence fallbacks prevent infinite elicitation loops"
+        ]
+      },
+      {
+        "archetype": "hostile-environment",
+        "summary": "bmad-init is unavailable, no band profile exists, no project-root is configured, and the user provides feedback with no original style prompt. The skill handles bmad-init failure gracefully. Prompt reconstruction handles missing style prompts. The 'work with what you have' directive in Step 2 is the right philosophy. The main gap is iteration log persistence -- with no project-root, there is nowhere to save logs, and this is never acknowledged.",
+        "friction_points": [
+          "Iteration log persistence fails silently with no project-root",
+          "Band profile update offers are irrelevant without a profile",
+          "Script invocations (parse-feedback.py, map-adjustments.py) may fail if Python is not available"
+        ],
+        "bright_spots": [
+          "bmad-init fallback is explicit and graceful",
+          "Prompt reconstruction handles the most common missing-context scenario",
+          "'Work with what you have' philosophy prevents dead-ends"
+        ]
+      },
+      {
+        "archetype": "automator",
+        "summary": "A CI pipeline or orchestrating agent invoking Feedback Elicitor headlessly with structured feedback JSON. The headless mode is well-designed with three sub-modes (analyze, adjustments, full). The output contract is clearly specified. The main gap is the input contract -- what fields are required for each sub-mode is implied but not explicitly documented. Also, parse-feedback.py and map-adjustments.py are invoked but their exact CLI interfaces require reading the scripts.",
+        "friction_points": [
+          "Headless input contract is not explicitly defined per sub-mode",
+          "Script CLI interfaces require reading script help text, not documented in SKILL.md",
+          "No error contract for headless mode -- what does the output look like when analysis fails?"
+        ],
+        "bright_spots": [
+          "Three headless sub-modes cover the most common automation scenarios",
+          "Output contract is clearly specified as JSON",
+          "Scripts handle validation and consistency checking programmatically"
+        ]
+      }
+    ],
+    "autonomous_assessment": {
+      "potential": "headless-ready",
+      "hitl_points": 7,
+      "auto_resolvable": 5,
+      "needs_input": 2,
+      "suggested_output_contract": "JSON with feedback_analysis (triage type, dimensions, confidence), adjustment_recommendations (style prompt changes, exclusions, sliders, lyrics, model, studio features), confidence_scores, iteration_log, and suggested_next_action",
+      "required_inputs": [
+        "--feedback (text or JSON, required)",
+        "--style-prompt (original style prompt, required for adjustment mode)",
+        "--model (Suno model used, optional but improves recommendations)",
+        "--sliders (JSON with Weirdness/StyleInfluence values, optional)",
+        "--lyrics (file path to original lyrics, optional)",
+        "--band-profile (profile name for context, optional)",
+        "--iteration-log (file path to previous round log, optional)"
+      ],
+      "notes": "The skill is already headless-ready with explicit --headless flags and a defined output contract. The main gap is formalizing the input contract per sub-mode. The interactive elicitation steps (binary narrowing, comparative anchoring, emotional vocabulary bridge) are the genuinely interactive value -- in headless mode these are bypassed via LLM triage, which is the right design. The two HITL points that truly need input are: (1) feedback itself, which cannot be auto-generated, and (2) the original style prompt for adjustment mode, which is needed for meaningful diff recommendations."
+    },
+    "top_insights": [
+      {
+        "title": "The skill owns a sophisticated audio analysis pipeline but never offers to use it during feedback elicitation",
+        "detail": "gemini-audio-analysis.md documents librosa, Gemini blind analysis, and ChatGPT cross-referencing -- tools that could objectively identify what Suno produced vs. what was prompted. The entire vague-feedback elicitation path (the skill's hardest and most valuable capability) could be dramatically shortened by saying 'let me listen to the file and tell you what I hear.' The agent cannot hear, but its tools can.",
+        "action": "Add optional audio file intake at Step 2. When available, run librosa for BPM/key and Gemini blind analysis for genre/instruments. Use objective findings to pre-narrow dimensions before asking the user to articulate what feels wrong. This transforms the skill from 'translating feelings into parameters' to 'confirming what the data already shows.'"
+      },
+      {
+        "title": "Comparative multi-generation feedback is a natural user behavior the skill does not support",
+        "detail": "Users who generate 3-5 versions on Suno (as the skill itself recommends) naturally compare them: 'version 3 is closest but version 1 had better vocals.' This comparative signal is richer than single-generation feedback and the skill should capture and leverage it rather than forcing single-generation analysis.",
+        "action": "Add a comparative feedback sub-path in Step 1 that captures what worked and what did not across multiple generations, synthesizing a composite target from the best elements of each."
+      },
+      {
+        "title": "Lead with reference-based elicitation for the vaguest feedback instead of binary narrowing",
+        "detail": "The current escape hatch -- 'name a song that sounds like what you wanted' -- is already the most natural and powerful elicitation technique for non-musicians. Promoting it from fallback to primary path for maximally vague feedback would reduce the quiz-like feeling of binary narrowing and reach actionable signal faster.",
+        "action": "Restructure Phase 1 of vague feedback elicitation: if initial feedback shows no dimensional awareness, lead with comparative anchoring (reference song) instead of binary narrowing. Reserve binary narrowing for users who show some dimensional awareness in their initial feedback."
+      }
+    ]
+  },
+  "summary": {
+    "total_findings": 19,
+    "by_severity": {
+      "high-opportunity": 3,
+      "medium-opportunity": 7,
+      "low-opportunity": 4,
+      "strength": 5
+    },
+    "by_category": {
+      "edge_case": 4,
+      "experience_gap": 2,
+      "delight_opportunity": 4,
+      "assumption_risk": 1,
+      "journey_friction": 2,
+      "autonomous_potential": 1,
+      "facilitative_pattern": 5
+    },
+    "assessment": "This is an exceptionally well-designed feedback elicitation skill with deep Suno-specific knowledge, thoughtful facilitative patterns (Capture-Don't-Interrupt, soft gates, structural contrast checking), and a genuinely useful three-phase elicitation sequence. The boldest practical improvement: integrate the existing audio analysis pipeline (librosa + Gemini blind) as an optional intake step -- the skill already owns the tools to objectively hear what the user cannot describe, but never offers to use them during the feedback conversation. This single addition would collapse the vague-feedback path from a multi-phase conversation to a data-informed confirmation."
+  }
+}

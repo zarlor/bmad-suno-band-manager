@@ -1,0 +1,152 @@
+{
+  "scanner": "script-opportunities",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-lyric-transformer",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 148,
+      "severity": "medium",
+      "category": "extraction",
+      "title": "LLM computes compaction state summary (source hash, character budget, transform codes) that a script could assemble",
+      "detail": "Determinism confidence: certain. Estimated token savings: 150 per invocation. Implementation complexity: trivial. Language: python. Could be prepass: yes. Feeds scanner: none. Reusable across skills: no. Help pattern savings: 30 tokens. The compaction survival block at line 148 asks the LLM to emit a state summary including source_hash, character_budget, and transform codes. All of these are deterministic values already available from script outputs (analyze-input.py provides character count, validate-options.py has the codes, and sha256 is trivial). A script could assemble this comment block from existing script outputs.",
+      "action": "Create a build-compaction-state.py script that accepts analyze-input.py output JSON, the selected transform codes, and optional profile name, then emits the formatted HTML comment block. The LLM would paste it rather than compute it."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 238,
+      "severity": "medium",
+      "category": "validation",
+      "title": "LLM performs character budget check after transformations that a script already partially covers",
+      "detail": "Determinism confidence: certain. Estimated token savings: 100 per invocation. Implementation complexity: trivial. Language: python. Could be prepass: no. Feeds scanner: none. Reusable across skills: no. Help pattern savings: 0. At line 238, the prompt instructs the LLM to check total character count and flag if approaching 2700 or over 3000. validate-lyrics.py already checks character count, but this instruction asks the LLM to do an intermediate check after Step 3 transformations, before Step 4 validation. The LLM is counting characters when a script could do it instantly.",
+      "action": "The existing validate-lyrics.py already covers this in Step 4. Consider adding a lightweight char-count check mode (e.g., validate-lyrics.py --quick-charcount) that just returns character count and budget status, so the LLM can call it mid-transformation without running full validation. Alternatively, rely on Step 4 validation and remove the mid-step instruction to avoid the LLM doing redundant counting."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 46,
+      "severity": "low",
+      "category": "extraction",
+      "title": "LLM computes original_hash (sha256 of source text) in headless output that a script could provide",
+      "detail": "Determinism confidence: certain. Estimated token savings: 50 per invocation. Implementation complexity: trivial. Language: python. Could be prepass: yes. Feeds scanner: none. Reusable across skills: no. Help pattern savings: 0. The headless output contract at line 46 includes original_hash as sha256 of source text. analyze-input.py could easily include this in its output, or a one-liner Python script could compute it. Currently the LLM is asked to produce a hash value, which it cannot reliably do.",
+      "action": "Add a --include-hash flag to analyze-input.py that computes and includes sha256 of the source text in its JSON output. The LLM can then copy it into the headless output contract rather than attempting to compute a hash (which LLMs cannot do correctly)."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 39,
+      "severity": "medium",
+      "category": "transformation",
+      "title": "LLM assembles headless output contract JSON structure that is mostly deterministic data from script outputs",
+      "detail": "Determinism confidence: high. Estimated token savings: 300 per invocation. Implementation complexity: moderate. Language: python. Could be prepass: no. Feeds scanner: none. Reusable across skills: no. Help pattern savings: 50 tokens. The headless output contract (lines 31-48) is a JSON structure where most fields are deterministic: section list and count (from validate-lyrics.py), duration estimate (from syllable-counter.py), character count/budget (from validate-lyrics.py), syllable range (from syllable-counter.py), cliche report (from cliche-detector.py), validation result (from validate-lyrics.py). Only transformed_lyrics requires LLM output. The LLM spends tokens assembling JSON from data that scripts already computed.",
+      "action": "Extend assemble-summary.py (or create assemble-headless-output.py) to accept the transformed lyrics text plus JSON outputs from validate-lyrics.py, syllable-counter.py, and cliche-detector.py, then produce the complete headless output contract JSON. The LLM provides only the transformed_lyrics string; the script assembles everything else."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 260,
+      "severity": "medium",
+      "category": "transformation",
+      "title": "LLM formats the Transformation Summary presentation block from data already available in script outputs",
+      "detail": "Determinism confidence: certain. Estimated token savings: 200 per invocation. Implementation complexity: trivial. Language: python. Could be prepass: no. Feeds scanner: none. Reusable across skills: yes (any skill with structured output presentation). Help pattern savings: 30 tokens. The Step 5 output format (lines 260-280) is a markdown template filled with section count, duration, character budget, transformations applied, and syllable range. assemble-summary.py already exists and partially does this, but the prompt still instructs the LLM to produce this formatted block. If assemble-summary.py fully covers this template, the LLM should just invoke it rather than format it manually.",
+      "action": "Verify assemble-summary.py output matches the Step 5 template exactly. If it does, update SKILL.md Step 5 to say 'Run assemble-summary.py and present its output' instead of listing the format for the LLM to fill. If assemble-summary.py is missing fields (like the cliche report section), extend it to produce the complete presentation block."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 167,
+      "severity": "low",
+      "category": "validation",
+      "title": "LLM checks for exclamation points and ALL CAPS in lyrics that a script could flag deterministically",
+      "detail": "Determinism confidence: certain. Estimated token savings: 80 per invocation. Implementation complexity: trivial. Language: python. Could be prepass: yes. Feeds scanner: none. Reusable across skills: no. Help pattern savings: 0. Lines 167-170 (scream bleed-through prevention) and 209 (exclamation point warning) and 216 (ALL CAPS awareness) instruct the LLM to find exclamation points and ALL CAPS words in lyrics. These are simple regex operations. validate-lyrics.py may already check punctuation density, but the specific flagging of ! count and ALL CAPS word locations by section could be a dedicated lint pass.",
+      "action": "Extend validate-lyrics.py to include specific findings for: (1) exclamation point count per section with warning about bark/attack trigger, (2) ALL CAPS words per section with warning about loudness ceiling, (3) parenthetical words that might be unintentional backing vocals. These are deterministic pattern matches the LLM should not spend tokens finding."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 217,
+      "severity": "low",
+      "category": "validation",
+      "title": "LLM detects unintentional parenthetical usage (backing vocals) that a regex could flag",
+      "detail": "Determinism confidence: certain. Estimated token savings: 40 per invocation. Implementation complexity: trivial. Language: python. Could be prepass: yes. Feeds scanner: none. Reusable across skills: no. Help pattern savings: 0. Line 217 instructs the LLM to flag parenthetical words that might be unintentional backing vocals. This is a simple regex scan for (text) patterns in lyric lines.",
+      "action": "Add parenthetical detection to validate-lyrics.py. Flag any (word) or (phrase) patterns in lyrics with a note that Suno interprets these as backing vocals. The LLM then only needs to assess whether the parenthetical was intentional, not find them."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 299,
+      "severity": "low",
+      "category": "transformation",
+      "title": "LLM creates songbook save file with frontmatter that a script could generate",
+      "detail": "Determinism confidence: high. Estimated token savings: 100 per invocation (when saving). Implementation complexity: moderate. Language: python. Could be prepass: no. Feeds scanner: none. Reusable across skills: yes (any skill saving structured output files). Help pattern savings: 20 tokens. Line 299 describes saving lyrics to songbook with frontmatter (original source hash, transformations applied, date, band profile, character count, notes). All frontmatter fields except 'notes' are deterministic. A script could generate the file with proper YAML frontmatter from the existing script outputs.",
+      "action": "Create a save-to-songbook.py script that accepts: lyrics text, project root, band profile name, song title, transformation codes, and the JSON outputs from other scripts. It generates the markdown file with proper YAML frontmatter at the correct path. The LLM only needs to provide the optional 'notes' field."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 135,
+      "severity": "strength",
+      "category": "validation",
+      "title": "Mutual exclusion validation correctly delegated to validate-options.py script",
+      "detail": "The transformation option mutual exclusion rules (FR vs WF, CE skipped with FR, CC skipped with CE) are validated by validate-options.py rather than asking the LLM to remember and check rules. This is exactly the right pattern.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 83,
+      "severity": "strength",
+      "category": "preprocessing",
+      "title": "Excellent pre-processing pattern: analyze-input.py and syllable-counter.py run as pre-pass before LLM analysis",
+      "detail": "Step 1 runs analyze-input.py and syllable-counter.py in parallel as a pre-pass on raw input text. This extracts structure metrics, repeated phrases, rhyme pairs, and syllable counts deterministically before the LLM processes the text. The LLM gets structured data rather than doing extraction from raw text. This is the gold standard for script/LLM division of labor.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 242,
+      "severity": "strength",
+      "category": "validation",
+      "title": "Quality check step runs three validation scripts in parallel batch",
+      "detail": "Step 4 runs validate-lyrics.py, syllable-counter.py, and section-length-checker.py in parallel. Post-processing validation of LLM-generated output is handled by scripts, not the LLM re-reading its own work. This is the correct pattern for post-processing validation.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 282,
+      "severity": "strength",
+      "category": "comparison",
+      "title": "Lyrics diff comparison delegated to lyrics-diff.py script",
+      "detail": "The before/after comparison in Step 5 is handled by lyrics-diff.py rather than asking the LLM to compute diffs. This is exactly right -- diffing is a deterministic operation that scripts do faster and more accurately.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 304,
+      "severity": "strength",
+      "category": "preprocessing",
+      "title": "All scripts document --help usage pattern in SKILL.md",
+      "detail": "The Scripts section at line 301 documents each script with a reference to --help. This means the LLM can invoke --help at runtime instead of the prompt inlining full interface documentation, saving tokens on every invocation. Good pattern.",
+      "action": ""
+    }
+  ],
+  "assessments": {
+    "existing_scripts": [
+      "scripts/validate-lyrics.py",
+      "scripts/cliche-detector.py",
+      "scripts/syllable-counter.py",
+      "scripts/validate-options.py",
+      "scripts/section-length-checker.py",
+      "scripts/analyze-input.py",
+      "scripts/lyrics-diff.py",
+      "scripts/assemble-summary.py"
+    ]
+  },
+  "summary": {
+    "total_findings": 13,
+    "by_severity": {
+      "medium": 4,
+      "low": 3,
+      "strength": 5,
+      "high": 0
+    },
+    "by_category": {
+      "extraction": 2,
+      "validation": 4,
+      "transformation": 3,
+      "preprocessing": 2,
+      "comparison": 1
+    },
+    "assessment": "This skill has an exceptionally mature script ecosystem -- 8 scripts covering input analysis, validation, syllable counting, cliche detection, section length checking, option validation, diffing, and summary assembly. The remaining script opportunities are incremental: assembling headless output JSON from existing script outputs (~300 tokens/invocation), extending validate-lyrics.py with exclamation/caps/parenthetical linting (~120 tokens), and a songbook save utility (~100 tokens). Total estimated savings: ~1,020 tokens per invocation across all findings. The highest-value opportunity is extending assemble-summary.py to produce the complete headless output contract, eliminating LLM JSON assembly from deterministic data. Two findings could become pre-pass scripts (hash computation, compaction state block)."
+  }
+}

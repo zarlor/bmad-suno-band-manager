@@ -1,0 +1,202 @@
+{
+  "scanner": "structure-capabilities-prepass",
+  "script": "prepass-structure-capabilities.py",
+  "version": "1.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-feedback-elicitor",
+  "timestamp": "2026-03-26T14:42:09.267211+00:00",
+  "status": "warning",
+  "metadata": {
+    "frontmatter": {
+      "name": "bmad-suno-feedback-elicitor",
+      "description": "Guides post-generation feedback refinement for Suno music output. Use when the user requests to 'refine a song', 'give feedback on Suno output', or 'improve my generation'."
+    },
+    "sections": [
+      {
+        "level": 2,
+        "title": "Overview",
+        "line": 8
+      },
+      {
+        "level": 2,
+        "title": "Activation Mode Detection",
+        "line": 16
+      },
+      {
+        "level": 2,
+        "title": "On Activation",
+        "line": 51
+      },
+      {
+        "level": 2,
+        "title": "Workflow Steps",
+        "line": 65
+      },
+      {
+        "level": 3,
+        "title": "Step 1: Receive Feedback",
+        "line": 67
+      },
+      {
+        "level": 3,
+        "title": "Step 2: Gather Context",
+        "line": 83
+      },
+      {
+        "level": 3,
+        "title": "Step 3: Triage Feedback",
+        "line": 102
+      },
+      {
+        "level": 3,
+        "title": "Step 4a: Direct Mapping (Clear Feedback)",
+        "line": 120
+      },
+      {
+        "level": 3,
+        "title": "Step 4b: Positive Refinement (Positive Feedback)",
+        "line": 134
+      },
+      {
+        "level": 3,
+        "title": "Step 4c: Guided Elicitation (Vague Feedback)",
+        "line": 146
+      },
+      {
+        "level": 3,
+        "title": "Step 4d: First Principles Reset (Contradictory Feedback)",
+        "line": 166
+      },
+      {
+        "level": 3,
+        "title": "Step 4e: Technical Resolution (Technical/Quality Feedback)",
+        "line": 184
+      },
+      {
+        "level": 3,
+        "title": "Step 5: Map to Adjustments",
+        "line": 207
+      },
+      {
+        "level": 3,
+        "title": "Step 6: Present Recommendations",
+        "line": 261
+      },
+      {
+        "level": 2,
+        "title": "Feedback Summary",
+        "line": 270
+      },
+      {
+        "level": 2,
+        "title": "Before/After Preview",
+        "line": 273
+      },
+      {
+        "level": 2,
+        "title": "Style Prompt Adjustments",
+        "line": 277
+      },
+      {
+        "level": 2,
+        "title": "Exclusion Prompt Adjustments",
+        "line": 283
+      },
+      {
+        "level": 2,
+        "title": "Slider Adjustments",
+        "line": 287
+      },
+      {
+        "level": 2,
+        "title": "Lyric Adjustments",
+        "line": 290
+      },
+      {
+        "level": 2,
+        "title": "Studio Features",
+        "line": 293
+      },
+      {
+        "level": 2,
+        "title": "Strategy Note",
+        "line": 296
+      },
+      {
+        "level": 2,
+        "title": "Additional Notes",
+        "line": 299
+      },
+      {
+        "level": 3,
+        "title": "Step 7: Handoff",
+        "line": 313
+      },
+      {
+        "level": 2,
+        "title": "Scripts",
+        "line": 331
+      }
+    ]
+  },
+  "prompt_details": [
+    {
+      "file": "README.md",
+      "has_config_header": false,
+      "has_progression": false
+    }
+  ],
+  "memory_paths": [],
+  "issues": [
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "frontmatter",
+      "issue": "Name \"bmad-suno-feedback-elicitor\" does not follow bmad-{code}-agent-{name} or bmad-agent-{name} pattern"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "issue": "Missing ## Identity section"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "issue": "Missing ## Communication Style section"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "issue": "Missing ## Principles section"
+    },
+    {
+      "file": "README.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "issue": "No config header with language variables found"
+    },
+    {
+      "file": "README.md",
+      "line": 66,
+      "severity": "high",
+      "category": "progression",
+      "issue": "No progression condition keywords found"
+    }
+  ],
+  "summary": {
+    "total_issues": 6,
+    "by_severity": {
+      "critical": 0,
+      "high": 4,
+      "medium": 2,
+      "low": 0
+    }
+  }
+}

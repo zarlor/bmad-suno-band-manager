@@ -87,7 +87,7 @@ Now that you have the feedback, gather only the context relevant to what was rai
 **Valuable context (ask based on feedback dimensions):**
 - **Original style prompt** — What style prompt did they use? Critical for style/production/vibe feedback.
 - **Original lyrics** — What lyrics were used? Important if feedback touches structure, phrasing, or vocal delivery.
-- **Band profile** — Are they working with a saved profile? If yes, read from `{project-root}/docs/band-profiles/{profile-name}.yaml` for baseline intent.
+- **Band profile** — Are they working with a saved profile? If yes, read from `{project-root}/_bmad/band-profiles/{profile-name}.yaml` for baseline intent.
 - **Model used** — Which Suno model generated the song? (v4.5-all, v4 Pro, v4.5 Pro, v4.5+ Pro, v5 Pro)
 - **Slider settings** — If on a paid tier, what Weirdness and Style Influence values were used?
 - **Creativity mode** — Were they in Demo, Studio, or Jam mode? (Affects slider baselines.)
@@ -97,11 +97,11 @@ Now that you have the feedback, gather only the context relevant to what was rai
 
 **If context is sparse:** Work with what you have — even just "I made a rock song and it doesn't sound right" is enough. You can infer context from the feedback itself as you proceed.
 
-**Headless mode:** Accept all context fields as structured input. Run `scripts/parse-feedback.py` to validate input structure and extract structured dimensions in a single pass. Carry the parsed output forward to Step 3.
+**Headless mode:** Accept all context fields as structured input. Run `./scripts/parse-feedback.py` to validate input structure and extract structured dimensions in a single pass. Carry the parsed output forward to Step 3.
 
 ### Step 3: Triage Feedback
 
-Classify the feedback into one of five types. Load `references/feedback-triage-guide.md` for detailed classification rules and elicitation strategies.
+Classify the feedback into one of five types. Load `./references/feedback-triage-guide.md` for detailed classification rules and elicitation strategies.
 
 **Feedback types:**
 
@@ -115,14 +115,14 @@ Classify the feedback into one of five types. Load `references/feedback-triage-g
 
 **Mixed feedback:** If feedback spans multiple types, handle each component with its appropriate strategy. Address clear and technical parts first — resolving concrete issues often clarifies the vague ones. For mixed feedback with more than two types, briefly outline the plan: "Let me address the guitar volume first (clear fix), then we'll dig into that vibe issue (needs more conversation)."
 
-**Headless mode:** Use the parsed output from Step 2's `parse-feedback.py` invocation. Apply LLM triage to classify the overall feedback type.
+**Headless mode:** Use the parsed output from Step 2's `./scripts/parse-feedback.py` invocation. Apply LLM triage to classify the overall feedback type.
 
 ### Step 4a: Direct Mapping (Clear Feedback)
 
 The user knows what's wrong. Your job is to translate their specific complaint into Suno parameter adjustments.
 
 1. **Acknowledge** the specific issue
-2. **Map to parameters** — Load `references/suno-parameter-map.md` and identify which Suno inputs need to change:
+2. **Map to parameters** — Load `./references/suno-parameter-map.md` and identify which Suno inputs need to change:
    - Style prompt wording changes
    - Exclusion additions/removals
    - Slider adjustments (if available on their tier)
@@ -145,7 +145,7 @@ The user likes it. Your job is to understand what to preserve and what to evolve
 
 ### Step 4c: Guided Elicitation (Vague Feedback)
 
-The user knows something is off but can't say what. This is where the skill earns its keep. Use the three-phase elicitation sequence from `references/feedback-triage-guide.md` — it contains the full opposing pairs table, parameter mappings, and technique details.
+The user knows something is off but can't say what. This is where the skill earns its keep. Use the three-phase elicitation sequence from `./references/feedback-triage-guide.md` — it contains the full opposing pairs table, parameter mappings, and technique details.
 
 **Phase 1: Binary Narrowing** — Reduce the problem space through yes/no questions across the dimension checklist (music/production, vocals, energy, structure, lyrics, vibe). Ask one question at a time. If they narrow in 2 questions, skip to Phase 2.
 
@@ -186,7 +186,7 @@ The user wants conflicting things. But first — check if they're actually descr
 The user reports audio quality issues, artifacts, glitches, or pronunciation problems. These are typically generation-specific, not prompt-specific.
 
 1. **Acknowledge** the issue and set expectations: "Audio artifacts are usually specific to a particular generation, not the prompt itself."
-2. **Load `references/suno-parameter-map.md`** — consult the "Audio Quality & Artifacts" and "Suno Studio Resolution Paths" sections
+2. **Load `./references/suno-parameter-map.md`** — consult the "Audio Quality & Artifacts" and "Suno Studio Resolution Paths" sections
 3. **Route by issue type:**
    - **Artifacts/glitches:** Recommend regenerating 3-5 times with the same prompt first. If persistent, simplify the style prompt.
    - **Vocal quality:** Check model — v5 Pro handles vocal nuance better. Suggest Replace Section for section-specific issues.
@@ -208,13 +208,13 @@ The user reports audio quality issues, artifacts, glitches, or pronunciation pro
 
 Synthesize all gathered feedback into concrete Suno parameter adjustments.
 
-**Translate elicitation results to structured dimensions:** Convert the natural language findings from Steps 4a-4e into dimension/direction pairs for `scripts/map-adjustments.py`. Example mapping:
+**Translate elicitation results to structured dimensions:** Convert the natural language findings from Steps 4a-4e into dimension/direction pairs for `./scripts/map-adjustments.py`. Example mapping:
 - "vocals feel too polished" → `{"dimension": "vocals", "direction": "too_polished"}`
 - "not enough energy" → `{"dimension": "energy", "direction": "too_low"}`
 - "sounds too generic" → `{"dimension": "vibe", "direction": "too_generic"}`
 - "the chorus needs more impact" → `{"dimension": "structure", "direction": "chorus_weak"}`
 
-Run `scripts/map-adjustments.py` with these structured dimensions to get baseline parameter adjustment recommendations, then apply LLM judgment to refine based on the full context (band profile, user intent, creative context notes captured in Step 1).
+Run `./scripts/map-adjustments.py` with these structured dimensions to get baseline parameter adjustment recommendations, then apply LLM judgment to refine based on the full context (band profile, user intent, creative context notes captured in Step 1).
 
 **Effectiveness tracking:** When the user returns for another refinement round, compare what was tried vs. what worked. Track which metatags, style prompt changes, and slider adjustments were effective vs. ineffective for this song/genre. This learning should be offered for storage in the band profile's `generation_learnings` field if the pattern seems reusable beyond this single song.
 
@@ -322,7 +322,7 @@ After the user approves the recommendations:
 2. **Band profile update:** If the feedback revealed a systematic preference (not just a one-song tweak), suggest updating the band profile:
    - "You've mentioned wanting rawer vocals — want me to update your band profile's vocal direction so future songs start closer to where you want them?"
 
-3. **Iteration log persistence:** If the user wants to save the iteration log for future sessions, save to `{project-root}/docs/feedback-history/{band-profile-or-session}/{timestamp}.json`.
+3. **Iteration log persistence:** If the user wants to save the iteration log for future sessions, save to `{project-root}/_bmad/feedback-history/{band-profile-or-session}/{timestamp}.json`.
 
 4. **Encourage iteration:** "After you try the updated version on Suno, come back and we'll refine further. Each round gets you closer."
 
@@ -330,6 +330,6 @@ After the user approves the recommendations:
 
 ## Scripts
 
-Available scripts in `scripts/`:
-- `parse-feedback.py` — Validates and extracts structured dimensions from feedback input (headless mode). Handles both validation and dimension extraction in a single pass. Run `scripts/parse-feedback.py --help` for usage.
-- `map-adjustments.py` — Maps feedback dimension categories to Suno parameter adjustment recommendations. Includes consistency validation (add/exclude conflicts, character count checks). Run `scripts/map-adjustments.py --help` for usage.
+Available scripts in `./scripts/`:
+- `parse-feedback.py` — Validates and extracts structured dimensions from feedback input (headless mode). Handles both validation and dimension extraction in a single pass. Run `./scripts/parse-feedback.py --help` for usage.
+- `map-adjustments.py` — Maps feedback dimension categories to Suno parameter adjustment recommendations. Includes consistency validation (add/exclude conflicts, character count checks). Run `./scripts/map-adjustments.py --help` for usage.

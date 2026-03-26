@@ -196,11 +196,11 @@ def main():
     report_path = "docs/catalog-analysis-report.md"
     with open(report_path, 'w') as f:
         f.write("# Solitary Fire — Full Catalog Audio Analysis\n")
-        f.write(f"# Generated via librosa 0.11.0 batch analysis\n\n")
+        f.write("# Generated via librosa 0.11.0 batch analysis\n\n")
 
         f.write("## Summary Table\n\n")
-        f.write(f"| Track | Duration | BPM | Stability | Key | Dyn Range | Character |\n")
-        f.write(f"|-------|----------|-----|-----------|-----|-----------|----------|\n")
+        f.write("| Track | Duration | BPM | Stability | Key | Dyn Range | Character |\n")
+        f.write("|-------|----------|-----|-----------|-----|-----------|----------|\n")
         for r in all_results:
             if 'error' in r:
                 continue
@@ -217,8 +217,8 @@ def main():
             f.write("\n")
 
         f.write("\n## Section Boundaries\n\n")
-        f.write(f"| Track | Sections |\n")
-        f.write(f"|-------|----------|\n")
+        f.write("| Track | Sections |\n")
+        f.write("|-------|----------|\n")
         for r in all_results:
             if 'error' in r:
                 continue
@@ -226,8 +226,8 @@ def main():
             f.write(f"| {r['file'].replace('.mp3','')} | {' / '.join(sections)} |\n")
 
         f.write("\n## Spectral Balance\n\n")
-        f.write(f"| Track | Low (<250Hz) | Mid (250-2kHz) | High (>2kHz) |\n")
-        f.write(f"|-------|-------------|----------------|-------------|\n")
+        f.write("| Track | Low (<250Hz) | Mid (250-2kHz) | High (>2kHz) |\n")
+        f.write("|-------|-------------|----------------|-------------|\n")
         for r in all_results:
             if 'error' in r:
                 continue

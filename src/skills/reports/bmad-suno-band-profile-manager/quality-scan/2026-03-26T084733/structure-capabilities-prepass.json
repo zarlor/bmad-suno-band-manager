@@ -1,0 +1,147 @@
+{
+  "scanner": "structure-capabilities-prepass",
+  "script": "prepass-structure-capabilities.py",
+  "version": "1.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-band-profile-manager",
+  "timestamp": "2026-03-26T13:48:30.553066+00:00",
+  "status": "warning",
+  "metadata": {
+    "frontmatter": {
+      "name": "bmad-suno-band-profile-manager",
+      "description": "Manages band identity profiles for Suno music generation. Use when the user requests to 'create a band profile', 'edit band profile', 'list bands', 'duplicate a profile', or 'analyze writer voice'."
+    },
+    "sections": [
+      {
+        "level": 2,
+        "title": "Overview",
+        "line": 8
+      },
+      {
+        "level": 2,
+        "title": "Activation Mode Detection",
+        "line": 16
+      },
+      {
+        "level": 2,
+        "title": "On Activation",
+        "line": 33
+      },
+      {
+        "level": 2,
+        "title": "Workflow Operations",
+        "line": 58
+      },
+      {
+        "level": 3,
+        "title": "Create Profile",
+        "line": 60
+      },
+      {
+        "level": 3,
+        "title": "List Profiles",
+        "line": 93
+      },
+      {
+        "level": 3,
+        "title": "Load Profile",
+        "line": 99
+      },
+      {
+        "level": 3,
+        "title": "Edit Profile",
+        "line": 107
+      },
+      {
+        "level": 3,
+        "title": "Delete Profile",
+        "line": 115
+      },
+      {
+        "level": 3,
+        "title": "Duplicate Profile",
+        "line": 119
+      },
+      {
+        "level": 3,
+        "title": "Analyze Writer Voice",
+        "line": 129
+      },
+      {
+        "level": 3,
+        "title": "Health Check",
+        "line": 149
+      },
+      {
+        "level": 2,
+        "title": "Post-Operation Flow",
+        "line": 163
+      },
+      {
+        "level": 2,
+        "title": "Scripts",
+        "line": 167
+      }
+    ]
+  },
+  "prompt_details": [
+    {
+      "file": "README.md",
+      "has_config_header": false,
+      "has_progression": false
+    }
+  ],
+  "memory_paths": [],
+  "issues": [
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "frontmatter",
+      "issue": "Name \"bmad-suno-band-profile-manager\" does not follow bmad-{code}-agent-{name} or bmad-agent-{name} pattern"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "issue": "Missing ## Identity section"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "issue": "Missing ## Communication Style section"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "issue": "Missing ## Principles section"
+    },
+    {
+      "file": "README.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "issue": "No config header with language variables found"
+    },
+    {
+      "file": "README.md",
+      "line": 64,
+      "severity": "high",
+      "category": "progression",
+      "issue": "No progression condition keywords found"
+    }
+  ],
+  "summary": {
+    "total_issues": 6,
+    "by_severity": {
+      "critical": 0,
+      "high": 4,
+      "medium": 2,
+      "low": 0
+    }
+  }
+}

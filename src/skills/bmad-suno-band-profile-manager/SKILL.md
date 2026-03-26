@@ -59,16 +59,20 @@ Headless mode supports automated/scripted profile management without interactive
 
 ### Create Profile
 
-Guide the user through building a complete band profile conversationally. Load `references/profile-schema.md` for the full schema definition.
+Guide the user through building a complete band profile conversationally. Load `./references/profile-schema.md` for the full schema definition.
 
 **Discovery flow — ask conversationally, not as a form:**
 
 1. **Band name** — What's this project called?
 2. **Instrumental or vocal?** — Is this a vocal project or instrumental-only? If instrumental, set `instrumental: true` and skip vocal direction later.
 3. **Genre & mood baseline** — What does this band sound like? Use open-ended questions first.
-4. **Reference tracks** — Actively prompt: "Name 2-3 artists or songs that capture the vibe you're after — I'll break down what makes them distinctive." Store both the raw references AND your sonic decomposition (what you'd pull from those references in terms of instrumentation, production style, vocal approach, energy, era) in the profile. **Research mandate:** Always use web search (when a search tool is available) to verify an artist's or song's sonic characteristics before decomposing — even for well-known artists. Search for genre, instrumentation, vocal style, production approach, and era. Only fall back to asking the user when no search tool is available. Never fabricate sonic descriptions — they flow into style prompts that Suno interprets literally.
+4. **Reference tracks** — Actively prompt: "Name 2-3 artists or songs that capture the vibe you're after — I'll break down what makes them distinctive."
+   - Store both the raw references AND your sonic decomposition (instrumentation, production style, vocal approach, energy, era) in the profile.
+   - **Research mandate:** Always use web search (when a search tool is available) to verify an artist's or song's sonic characteristics before decomposing — even for well-known artists. Search for genre, instrumentation, vocal style, production approach, and era.
+   - Only fall back to asking the user when no search tool is available.
+   - Never fabricate sonic descriptions — they flow into style prompts that Suno interprets literally.
 5. **Language** — What language will the lyrics be in? Default to English if not specified.
-6. **Model & tier** — Which Suno model/plan do they use? Run `scripts/tier-features.py` with their tier to show what's available.
+6. **Model & tier** — Which Suno model/plan do they use? Run `./scripts/tier-features.py` with their tier to show what's available.
 7. **Vocal direction** (skip if instrumental) — Gender, tone, delivery, energy, diction. Be specific: "warm, breathy female vocal with indie folk phrasing" not just "female vocals." If they have a Suno Persona, capture both the name and the source song it was derived from.
 8. **Style prompt baseline** — Build the default style prompt from their genre/mood/vocal/reference answers. Front-load essentials in the first 200 characters. Show them the draft, iterate.
 9. **Exclusion defaults** — What should never appear? ("no autotune, no screaming"). Keep entries concise and specific; recommend max 5.
@@ -83,38 +87,38 @@ Between sections, ask: "Anything else to add, or move on?" — do not auto-advan
 
 **After discovery:**
 - Assemble the profile YAML
-- Run `scripts/validate-profile.py` to verify structure. Use `scripts/validate-profile.py --derive-filename "Band Name"` to get the correct kebab-case filename.
+- Run `./scripts/validate-profile.py` to verify structure. Use `./scripts/validate-profile.py --derive-filename "Band Name"` to get the correct kebab-case filename.
 - **Generate a Band Identity Card** — a 3-4 sentence natural language summary of who this band is: genre, sound, vocal character, creative spirit. Present this first, then the YAML.
 - Present the complete profile for review
 - On approval, save to `docs/band-profiles/{profile-name}.yaml`
 
-**Headless create:** Accept a complete or partial YAML profile. Validate with `scripts/validate-profile.py`. Save if valid, return errors if not.
+**Headless create:** Accept a complete or partial YAML profile. Validate with `./scripts/validate-profile.py`. Save if valid, return errors if not.
 
 ### List Profiles
 
-Run `scripts/list-profiles.py` to scan `docs/band-profiles/` and display all saved profiles with name, genre, model preference, language, and instrumental/vocal status.
+Run `./scripts/list-profiles.py` to scan `docs/band-profiles/` and display all saved profiles with name, genre, model preference, language, and instrumental/vocal status.
 
 If no profiles exist, suggest creating one.
 
 ### Load Profile
 
-Use `scripts/list-profiles.py --check "{profile-name}"` to verify the profile exists and get its metadata. Then read from `docs/band-profiles/{profile-name}.yaml` and display in a readable format organized by section: identity, sound, vocals, creative settings, writer voice (if present), generation history (if present).
+Use `./scripts/list-profiles.py --check "{profile-name}"` to verify the profile exists and get its metadata. Then read from `docs/band-profiles/{profile-name}.yaml` and display in a readable format organized by section: identity, sound, vocals, creative settings, writer voice (if present), generation history (if present).
 
 **Tier drift detection:** Compare the profile's stored tier against any known user tier (from agent memory or config). If they differ: "This profile was set up for {stored_tier} but you're now on {current_tier}. Want me to unlock the new tier's features?"
 
-If the profile name is ambiguous, run `scripts/list-profiles.py` and ask the user to clarify.
+If the profile name is ambiguous, run `./scripts/list-profiles.py` and ask the user to clarify.
 
 ### Edit Profile
 
-Load the profile, accept natural language changes ("make it more aggressive", "switch to v5 Pro", "add exclusions for synth pads"), and apply to relevant fields. If tier changes, run `scripts/tier-features.py` to check feature availability and adjust profile accordingly. If genre, mood, or vocal fields change, suggest reviewing style_baseline: "Your genre changed — want me to update the style prompt baseline to match?"
+Load the profile, accept natural language changes ("make it more aggressive", "switch to v5 Pro", "add exclusions for synth pads"), and apply to relevant fields. If tier changes, run `./scripts/tier-features.py` to check feature availability and adjust profile accordingly. If genre, mood, or vocal fields change, suggest reviewing style_baseline: "Your genre changed — want me to update the style prompt baseline to match?"
 
-Read both the target profile YAML and `references/profile-schema.md` in a single parallel batch when entering this operation.
+Read both the target profile YAML and `./references/profile-schema.md` in a single parallel batch when entering this operation.
 
-Re-validate with `scripts/validate-profile.py`. Use `scripts/diff-profiles.py` to generate and show a structured diff of changes. Confirm with user, then save.
+Re-validate with `./scripts/validate-profile.py`. Use `./scripts/diff-profiles.py` to generate and show a structured diff of changes. Confirm with user, then save.
 
 ### Delete Profile
 
-Confirm the profile exists (via `scripts/list-profiles.py --check`), show its summary, get explicit user confirmation ("Are you sure you want to delete [name]? This cannot be undone."), then delete `docs/band-profiles/{profile-name}.yaml`.
+Confirm the profile exists (via `./scripts/list-profiles.py --check`), show its summary, get explicit user confirmation ("Are you sure you want to delete [name]? This cannot be undone."), then delete `docs/band-profiles/{profile-name}.yaml`.
 
 ### Duplicate Profile
 
@@ -150,7 +154,7 @@ This operation extracts a writer's voice patterns from writing samples and store
 
 Assess a profile's completeness and quality beyond structural validation — is it "good enough" to produce great Suno output?
 
-1. Run `scripts/validate-profile.py` for structural validity
+1. Run `./scripts/validate-profile.py` for structural validity
 2. Assess quality dimensions:
    - **style_baseline specificity** — Is it vague ("rock music") or detailed ("warm indie rock with tremolo guitar, lo-fi tape saturation, and intimate mix")? Suggest improvements if vague.
    - **writer_voice population** — Is it empty? Suggest analyzing voice samples.
@@ -166,8 +170,8 @@ After completing any operation, offer to perform another operation or confirm th
 
 ## Scripts
 
-Available scripts in `scripts/`:
-- `validate-profile.py` — Validates band profile YAML against schema. Supports `--derive-filename "Band Name"` to get kebab-case filename. Run `scripts/validate-profile.py --help` for usage.
-- `list-profiles.py` — Scans `docs/band-profiles/` and returns profile summaries. Supports `--check "profile-name"` to verify a specific profile exists. Run `scripts/list-profiles.py --help` for usage.
-- `tier-features.py` — Returns available/unavailable Suno features for a given tier. Run `scripts/tier-features.py --help` for usage.
-- `diff-profiles.py` — Compares two profile YAML files and returns structured JSON diff. Run `scripts/diff-profiles.py --help` for usage.
+Available scripts in `./scripts/`:
+- `validate-profile.py` — Validates band profile YAML against schema. Supports `--derive-filename "Band Name"` to get kebab-case filename. Run `./scripts/validate-profile.py --help` for usage.
+- `list-profiles.py` — Scans `docs/band-profiles/` and returns profile summaries. Supports `--check "profile-name"` to verify a specific profile exists. Run `./scripts/list-profiles.py --help` for usage.
+- `tier-features.py` — Returns available/unavailable Suno features for a given tier. Run `./scripts/tier-features.py --help` for usage.
+- `diff-profiles.py` — Compares two profile YAML files and returns structured JSON diff. Run `./scripts/diff-profiles.py --help` for usage.

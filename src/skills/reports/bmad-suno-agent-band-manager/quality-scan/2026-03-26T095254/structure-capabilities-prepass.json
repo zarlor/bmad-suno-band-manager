@@ -1,0 +1,196 @@
+{
+  "scanner": "structure-capabilities-prepass",
+  "script": "prepass-structure-capabilities.py",
+  "version": "1.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-agent-band-manager",
+  "timestamp": "2026-03-26T14:53:08.944515+00:00",
+  "status": "warning",
+  "metadata": {
+    "frontmatter": {
+      "name": "bmad-suno-agent-band-manager",
+      "description": "Orchestrates Suno music creation with style prompts, lyrics, and band identity. Use when user wants to talk to Mac, requests the Band Manager, or wants to create a song for Suno."
+    },
+    "sections": [
+      {
+        "level": 2,
+        "title": "Overview",
+        "line": 8
+      },
+      {
+        "level": 2,
+        "title": "Identity",
+        "line": 16
+      },
+      {
+        "level": 2,
+        "title": "Communication Style",
+        "line": 20
+      },
+      {
+        "level": 2,
+        "title": "Principles",
+        "line": 24
+      },
+      {
+        "level": 2,
+        "title": "Research Discipline",
+        "line": 30
+      },
+      {
+        "level": 2,
+        "title": "Sidecar",
+        "line": 42
+      },
+      {
+        "level": 2,
+        "title": "On Activation",
+        "line": 48
+      },
+      {
+        "level": 2,
+        "title": "External Skills",
+        "line": 87
+      },
+      {
+        "level": 2,
+        "title": "Skill Availability",
+        "line": 100
+      }
+    ]
+  },
+  "prompt_details": [
+    {
+      "file": "README.md",
+      "has_config_header": false,
+      "has_progression": true
+    },
+    {
+      "file": "SUNO-REFERENCE.md",
+      "has_config_header": false,
+      "has_progression": true
+    },
+    {
+      "file": "USAGE.md",
+      "has_config_header": false,
+      "has_progression": true
+    },
+    {
+      "file": "browse-songbook.md",
+      "has_config_header": false,
+      "has_progression": false
+    },
+    {
+      "file": "create-song.md",
+      "has_config_header": false,
+      "has_progression": true
+    },
+    {
+      "file": "init.md",
+      "has_config_header": false,
+      "has_progression": false
+    },
+    {
+      "file": "refine-song.md",
+      "has_config_header": false,
+      "has_progression": true
+    },
+    {
+      "file": "save-memory.md",
+      "has_config_header": false,
+      "has_progression": false
+    }
+  ],
+  "memory_paths": [
+    "memory/band-manager-sidecar/",
+    "memory/band-manager-sidecar/access-boundaries.md",
+    "memory/band-manager-sidecar/index.md"
+  ],
+  "issues": [
+    {
+      "file": "README.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "issue": "No config header with language variables found"
+    },
+    {
+      "file": "SUNO-REFERENCE.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "issue": "No config header with language variables found"
+    },
+    {
+      "file": "USAGE.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "issue": "No config header with language variables found"
+    },
+    {
+      "file": "browse-songbook.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "issue": "No config header with language variables found"
+    },
+    {
+      "file": "browse-songbook.md",
+      "line": 46,
+      "severity": "high",
+      "category": "progression",
+      "issue": "No progression condition keywords found"
+    },
+    {
+      "file": "create-song.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "issue": "No config header with language variables found"
+    },
+    {
+      "file": "init.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "issue": "No config header with language variables found"
+    },
+    {
+      "file": "init.md",
+      "line": 56,
+      "severity": "high",
+      "category": "progression",
+      "issue": "No progression condition keywords found"
+    },
+    {
+      "file": "refine-song.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "issue": "No config header with language variables found"
+    },
+    {
+      "file": "save-memory.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "issue": "No config header with language variables found"
+    },
+    {
+      "file": "save-memory.md",
+      "line": 31,
+      "severity": "high",
+      "category": "progression",
+      "issue": "No progression condition keywords found"
+    }
+  ],
+  "summary": {
+    "total_issues": 11,
+    "by_severity": {
+      "critical": 0,
+      "high": 3,
+      "medium": 8,
+      "low": 0
+    }
+  }
+}

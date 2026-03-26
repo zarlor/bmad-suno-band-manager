@@ -1,0 +1,162 @@
+{
+  "scanner": "structure-capabilities-prepass",
+  "script": "prepass-structure-capabilities.py",
+  "version": "1.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-style-prompt-builder",
+  "timestamp": "2026-03-26T14:22:27.296842+00:00",
+  "status": "warning",
+  "metadata": {
+    "frontmatter": {
+      "name": "bmad-suno-style-prompt-builder",
+      "description": "Generates model-aware Suno style prompts from band profiles and user input. Use when the user requests to 'build a style prompt', 'generate style prompt', or 'create a Suno prompt'."
+    },
+    "sections": [
+      {
+        "level": 2,
+        "title": "Overview",
+        "line": 8
+      },
+      {
+        "level": 2,
+        "title": "Activation Mode Detection",
+        "line": 16
+      },
+      {
+        "level": 2,
+        "title": "On Activation",
+        "line": 41
+      },
+      {
+        "level": 2,
+        "title": "Workflow Steps",
+        "line": 52
+      },
+      {
+        "level": 3,
+        "title": "Step 1: Gather Inputs",
+        "line": 54
+      },
+      {
+        "level": 3,
+        "title": "Step 2: Build Style Prompt",
+        "line": 82
+      },
+      {
+        "level": 3,
+        "title": "Step 3: Build Exclusion Prompt",
+        "line": 130
+      },
+      {
+        "level": 3,
+        "title": "Step 4: Slider & Parameter Recommendations",
+        "line": 160
+      },
+      {
+        "level": 3,
+        "title": "Step 5: Wild Card Variant",
+        "line": 193
+      },
+      {
+        "level": 3,
+        "title": "Step 6: Validate & Present",
+        "line": 208
+      },
+      {
+        "level": 2,
+        "title": "Style Prompt ({model_name})",
+        "line": 215
+      },
+      {
+        "level": 2,
+        "title": "Exclude Styles",
+        "line": 220
+      },
+      {
+        "level": 2,
+        "title": "Parameter Recommendations",
+        "line": 225
+      },
+      {
+        "level": 2,
+        "title": "Wild Card Variant",
+        "line": 231
+      },
+      {
+        "level": 3,
+        "title": "Copy-Ready: Style Prompt",
+        "line": 239
+      },
+      {
+        "level": 3,
+        "title": "Copy-Ready: Exclude Styles",
+        "line": 242
+      },
+      {
+        "level": 2,
+        "title": "Scripts",
+        "line": 258
+      }
+    ]
+  },
+  "prompt_details": [
+    {
+      "file": "README.md",
+      "has_config_header": false,
+      "has_progression": false
+    }
+  ],
+  "memory_paths": [],
+  "issues": [
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "frontmatter",
+      "issue": "Name \"bmad-suno-style-prompt-builder\" does not follow bmad-{code}-agent-{name} or bmad-agent-{name} pattern"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "issue": "Missing ## Identity section"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "issue": "Missing ## Communication Style section"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "issue": "Missing ## Principles section"
+    },
+    {
+      "file": "README.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "issue": "No config header with language variables found"
+    },
+    {
+      "file": "README.md",
+      "line": 66,
+      "severity": "high",
+      "category": "progression",
+      "issue": "No progression condition keywords found"
+    }
+  ],
+  "summary": {
+    "total_issues": 6,
+    "by_severity": {
+      "critical": 0,
+      "high": 4,
+      "medium": 2,
+      "low": 0
+    }
+  }
+}

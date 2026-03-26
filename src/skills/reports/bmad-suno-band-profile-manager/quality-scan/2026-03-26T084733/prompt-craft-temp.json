@@ -1,0 +1,127 @@
+{
+  "scanner": "prompt-craft",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-band-profile-manager",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 8,
+      "severity": "strength",
+      "category": "overview-quality",
+      "title": "Well-crafted Overview with mission, domain context, and design rationale",
+      "detail": "The Overview establishes persona (music producer's assistant), domain framing (band profile as brand book), theory of mind (users range from musicians to beginners), and design rationale (conversation over form-filling, samples over abstract description). All load-bearing, nothing extraneous.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "progressive-disclosure",
+      "title": "Good progressive disclosure with references for schema and tier data",
+      "detail": "Profile schema (109 lines) and tier feature matrix (78 lines) are correctly placed in references/ and loaded on demand. This keeps SKILL.md focused on workflow while making detailed data available when needed.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "note",
+      "category": "progressive-disclosure",
+      "title": "All operations inline in SKILL.md — acceptable given size",
+      "detail": "SKILL.md contains all 8 operations inline rather than in separate capability prompt files. At 174 lines / ~3627 tokens, this is within the 250-line guideline for multi-capability agents with brief capability sections. Most operations are concise (5-15 lines). Only Create Profile is substantial (~30 lines) but this is the core operation requiring detailed discovery guidance.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 69,
+      "severity": "low",
+      "category": "anti-pattern",
+      "title": "Dense multi-concern instruction in reference tracks discovery step",
+      "detail": "Line 69 packs three distinct concerns into a single numbered step: (1) prompting for reference tracks, (2) sonic decomposition instructions, (3) a research mandate with fallback behavior. At ~80 words, this is the densest single instruction in the file. While all content is load-bearing, the agent may lose the research mandate buried mid-paragraph.",
+      "action": "Consider breaking into sub-bullets: one for the prompt and decomposition, one for the research mandate with its fallback. This improves scannability without adding tokens."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 75,
+      "severity": "low",
+      "category": "anti-pattern",
+      "title": "Exclusion defaults step mixes user-facing guidance with downstream system behavior",
+      "detail": "Step 9 (exclusion defaults) combines the discovery question, a technical explanation of Suno's negative prompt limitation, how the Style Prompt Builder handles it, and a scripted user message. This is load-bearing context but the user-facing message template embedded in the instruction adds visual density.",
+      "action": "Minor: separate the user-facing message into a quoted block or sub-bullet for clarity. The content itself is appropriate."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 16,
+      "severity": "strength",
+      "category": "outcome-balance",
+      "title": "Clean headless/interactive mode detection with structured JSON contracts",
+      "detail": "The Activation Mode Detection section clearly defines headless mode operations with expected JSON return shapes, then falls through to interactive mode. This supports both automated and conversational use without conflating the two paths.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 33,
+      "severity": "strength",
+      "category": "outcome-balance",
+      "title": "Operation routing table is clear and includes wrong-skill redirect",
+      "detail": "The On Activation routing table covers all operations with natural language triggers, includes an 'Unclear' fallback, and handles wrong-skill invocations ('make a song') with a helpful redirect. This is well-designed for an interactive agent.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 82,
+      "severity": "strength",
+      "category": "persona-voice",
+      "title": "Creative idea capture instruction demonstrates persona-appropriate behavior",
+      "detail": "The instruction to silently note song concepts and lyric fragments mentioned during discovery, then offer to save them, reflects the music producer's assistant persona. This is exactly the kind of judgment-enabling context that makes agents feel intelligent rather than mechanical.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 103,
+      "severity": "note",
+      "category": "outcome-balance",
+      "title": "Tier drift detection is a smart proactive check",
+      "detail": "The Load Profile operation includes a check for tier drift between the stored profile and the user's current tier. This is forward-thinking — it catches a real data staleness issue that users wouldn't think to check themselves.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 149,
+      "severity": "strength",
+      "category": "persona-voice",
+      "title": "Health Check uses coaching tone consistent with persona",
+      "detail": "The Health Check section frames quality gaps as 'friendly recommendations, not failures' and uses encouraging language. This matches the producer's assistant persona and the theory-of-mind guidance in the Overview about meeting users where they are.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 111,
+      "severity": "note",
+      "category": "intelligence-placement",
+      "title": "Good script delegation for deterministic operations",
+      "detail": "The skill correctly delegates validation, listing, tier feature lookup, filename derivation, and diff comparison to scripts, reserving the agent for conversational discovery, voice analysis, and judgment calls. This is proper intelligence placement.",
+      "action": ""
+    }
+  ],
+  "assessments": {
+    "skill_type_assessment": "domain-expert",
+    "skillmd_assessment": {
+      "overview_quality": "appropriate",
+      "progressive_disclosure": "good",
+      "persona_context": "appropriate",
+      "notes": "SKILL.md is well-crafted at 174 lines / ~3627 tokens. Overview establishes persona, domain context, and design rationale concisely. Operations are inline but appropriately brief (except Create Profile which needs its depth). Schema and tier data correctly extracted to references/. No waste patterns detected. Two dense instruction blocks could benefit from structural breakup but content is all load-bearing."
+    },
+    "prompts_scanned": 0,
+    "prompt_health": {
+      "prompts_with_config_header": 0,
+      "prompts_with_progression_conditions": 0,
+      "prompts_self_contained": 0,
+      "total_prompts": 0
+    }
+  },
+  "summary": {
+    "total_findings": 11,
+    "by_severity": {"critical": 0, "high": 0, "medium": 0, "low": 2, "note": 3, "strength": 6},
+    "assessment": "Well-crafted domain expert skill with strong Overview, appropriate progressive disclosure, and correct intelligence placement. Token usage is efficient with no waste patterns. Two low-severity structural density issues in the Create Profile discovery flow are the only actionable items.",
+    "top_improvement": "Break the reference tracks discovery step (line 69) into sub-bullets to ensure the research mandate is not overlooked during execution."
+  }
+}

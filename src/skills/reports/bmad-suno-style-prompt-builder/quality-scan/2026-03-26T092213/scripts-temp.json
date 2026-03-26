@@ -1,0 +1,42 @@
+{
+  "scanner": "scripts",
+  "script": "scan-scripts.py",
+  "version": "2.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-style-prompt-builder",
+  "timestamp": "2026-03-26T14:22:25.576919+00:00",
+  "status": "pass",
+  "findings": [],
+  "assessments": {
+    "lint_summary": {
+      "tools_used": [],
+      "files_linted": 1,
+      "lint_issues": 0
+    },
+    "script_summary": {
+      "total_scripts": 1,
+      "by_type": {
+        "python": 1,
+        "shell": 0,
+        "node": 0,
+        "other": 0
+      },
+      "scripts": {
+        "python": [
+          "validate-prompt.py"
+        ]
+      },
+      "missing_tests": []
+    }
+  },
+  "summary": {
+    "total_findings": 0,
+    "by_severity": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 0
+    },
+    "by_category": {},
+    "assessment": ""
+  }
+}

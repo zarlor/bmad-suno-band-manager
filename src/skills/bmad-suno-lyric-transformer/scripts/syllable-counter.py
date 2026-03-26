@@ -139,7 +139,6 @@ def estimate_duration(total_lines: int, avg_syllables: float, sections: list = N
 
     # Add time for instrumental sections
     # These appear as section tags but contribute no lyric lines
-    instrumental_seconds = 0
     INSTRUMENTAL_TAGS = {
         "intro": (5, 15),
         "outro": (8, 20),
@@ -236,7 +235,7 @@ def analyze_lyrics(text: str) -> dict:
         if not section["lines"]:
             continue
 
-        counts = [l["syllables"] for l in section["lines"]]
+        counts = [line["syllables"] for line in section["lines"]]
         avg = sum(counts) / len(counts)
         min_c = min(counts)
         max_c = max(counts)
@@ -265,7 +264,7 @@ def analyze_lyrics(text: str) -> dict:
             })
 
     # Overall metrics
-    all_counts = [l["syllables"] for l in line_data]
+    all_counts = [entry["syllables"] for entry in line_data]
     overall_avg = sum(all_counts) / len(all_counts) if all_counts else 0
 
     # Duration estimation (accounts for instrumental sections)

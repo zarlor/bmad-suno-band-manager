@@ -1,0 +1,157 @@
+{
+  "scanner": "structure-capabilities-prepass",
+  "script": "prepass-structure-capabilities.py",
+  "version": "1.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-lyric-transformer",
+  "timestamp": "2026-03-26T14:32:07.600869+00:00",
+  "status": "warning",
+  "metadata": {
+    "frontmatter": {
+      "name": "bmad-suno-lyric-transformer",
+      "description": "Transforms poems and text into Suno-ready structured lyrics. Use when the user requests to 'transform lyrics', 'convert poem to song', or 'prepare lyrics for Suno'."
+    },
+    "sections": [
+      {
+        "level": 2,
+        "title": "Overview",
+        "line": 8
+      },
+      {
+        "level": 2,
+        "title": "Activation Mode Detection",
+        "line": 16
+      },
+      {
+        "level": 2,
+        "title": "On Activation",
+        "line": 50
+      },
+      {
+        "level": 2,
+        "title": "Workflow Steps",
+        "line": 62
+      },
+      {
+        "level": 3,
+        "title": "Step 1: Gather Input",
+        "line": 64
+      },
+      {
+        "level": 3,
+        "title": "Refinement Mode",
+        "line": 96
+      },
+      {
+        "level": 3,
+        "title": "Step 2: Select Transformations",
+        "line": 120
+      },
+      {
+        "level": 3,
+        "title": "Step 3: Transform",
+        "line": 144
+      },
+      {
+        "level": 3,
+        "title": "Step 4: Quality Check",
+        "line": 240
+      },
+      {
+        "level": 3,
+        "title": "Step 5: Present & Refine",
+        "line": 256
+      },
+      {
+        "level": 2,
+        "title": "Transformed Lyrics",
+        "line": 263
+      },
+      {
+        "level": 2,
+        "title": "Transformation Summary",
+        "line": 267
+      },
+      {
+        "level": 2,
+        "title": "Changes Made",
+        "line": 274
+      },
+      {
+        "level": 2,
+        "title": "Cliche Report (if CD was applied)",
+        "line": 277
+      },
+      {
+        "level": 3,
+        "title": "Step 6: Handoff Guidance",
+        "line": 292
+      },
+      {
+        "level": 2,
+        "title": "Scripts",
+        "line": 301
+      }
+    ]
+  },
+  "prompt_details": [
+    {
+      "file": "README.md",
+      "has_config_header": false,
+      "has_progression": false
+    }
+  ],
+  "memory_paths": [],
+  "issues": [
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "frontmatter",
+      "issue": "Name \"bmad-suno-lyric-transformer\" does not follow bmad-{code}-agent-{name} or bmad-agent-{name} pattern"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "issue": "Missing ## Identity section"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "issue": "Missing ## Communication Style section"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "issue": "Missing ## Principles section"
+    },
+    {
+      "file": "README.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "issue": "No config header with language variables found"
+    },
+    {
+      "file": "README.md",
+      "line": 67,
+      "severity": "high",
+      "category": "progression",
+      "issue": "No progression condition keywords found"
+    }
+  ],
+  "summary": {
+    "total_issues": 6,
+    "by_severity": {
+      "critical": 0,
+      "high": 4,
+      "medium": 2,
+      "low": 0
+    }
+  }
+}

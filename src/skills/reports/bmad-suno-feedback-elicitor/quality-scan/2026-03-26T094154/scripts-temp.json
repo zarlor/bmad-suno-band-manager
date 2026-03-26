@@ -1,0 +1,415 @@
+{
+  "scanner": "scripts",
+  "script": "scan-scripts.py",
+  "version": "2.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-feedback-elicitor",
+  "timestamp": "2026-03-26T14:42:07.950775+00:00",
+  "status": "warning",
+  "findings": [
+    {
+      "file": "scripts/analyze-audio.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "dependencies",
+      "title": "No PEP 723 inline dependency block (# /// script)",
+      "detail": "",
+      "action": "Add PEP 723 block with requires-python and dependencies"
+    },
+    {
+      "file": "scripts/analyze-audio.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "agentic-design",
+      "title": "No argparse found \u2014 script lacks --help self-documentation",
+      "detail": "",
+      "action": "Add argparse with description and argument help text"
+    },
+    {
+      "file": "scripts/analyze-audio.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "agentic-design",
+      "title": "No json.dumps found \u2014 output may not be structured JSON",
+      "detail": "",
+      "action": "Use json.dumps for structured output parseable by workflows"
+    },
+    {
+      "file": "scripts/analyze-audio.py",
+      "line": 1,
+      "severity": "low",
+      "category": "agentic-design",
+      "title": "No sys.exit() calls \u2014 may not return meaningful exit codes",
+      "detail": "",
+      "action": "Return 0=success, 1=fail, 2=error via sys.exit()"
+    },
+    {
+      "file": "scripts/analyze-audio.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "tests",
+      "title": "No unit test found for analyze-audio.py",
+      "detail": "",
+      "action": "Create scripts/tests/test-analyze-audio.py with test cases"
+    },
+    {
+      "file": "scripts/audio-deep-analysis.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "dependencies",
+      "title": "No PEP 723 inline dependency block (# /// script)",
+      "detail": "",
+      "action": "Add PEP 723 block with requires-python and dependencies"
+    },
+    {
+      "file": "scripts/audio-deep-analysis.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "agentic-design",
+      "title": "No argparse found \u2014 script lacks --help self-documentation",
+      "detail": "",
+      "action": "Add argparse with description and argument help text"
+    },
+    {
+      "file": "scripts/audio-deep-analysis.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "agentic-design",
+      "title": "No json.dumps found \u2014 output may not be structured JSON",
+      "detail": "",
+      "action": "Use json.dumps for structured output parseable by workflows"
+    },
+    {
+      "file": "scripts/audio-deep-analysis.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "tests",
+      "title": "No unit test found for audio-deep-analysis.py",
+      "detail": "",
+      "action": "Create scripts/tests/test-audio-deep-analysis.py with test cases"
+    },
+    {
+      "file": "scripts/batch-full-analysis.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "dependencies",
+      "title": "No PEP 723 inline dependency block (# /// script)",
+      "detail": "",
+      "action": "Add PEP 723 block with requires-python and dependencies"
+    },
+    {
+      "file": "scripts/batch-full-analysis.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "agentic-design",
+      "title": "No argparse found \u2014 script lacks --help self-documentation",
+      "detail": "",
+      "action": "Add argparse with description and argument help text"
+    },
+    {
+      "file": "scripts/batch-full-analysis.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "agentic-design",
+      "title": "No json.dumps found \u2014 output may not be structured JSON",
+      "detail": "",
+      "action": "Use json.dumps for structured output parseable by workflows"
+    },
+    {
+      "file": "scripts/batch-full-analysis.py",
+      "line": 1,
+      "severity": "low",
+      "category": "agentic-design",
+      "title": "No sys.exit() calls \u2014 may not return meaningful exit codes",
+      "detail": "",
+      "action": "Return 0=success, 1=fail, 2=error via sys.exit()"
+    },
+    {
+      "file": "scripts/batch-full-analysis.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "tests",
+      "title": "No unit test found for batch-full-analysis.py",
+      "detail": "",
+      "action": "Create scripts/tests/test-batch-full-analysis.py with test cases"
+    },
+    {
+      "file": "scripts/chord-progression.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "dependencies",
+      "title": "No PEP 723 inline dependency block (# /// script)",
+      "detail": "",
+      "action": "Add PEP 723 block with requires-python and dependencies"
+    },
+    {
+      "file": "scripts/chord-progression.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "agentic-design",
+      "title": "No argparse found \u2014 script lacks --help self-documentation",
+      "detail": "",
+      "action": "Add argparse with description and argument help text"
+    },
+    {
+      "file": "scripts/chord-progression.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "agentic-design",
+      "title": "No json.dumps found \u2014 output may not be structured JSON",
+      "detail": "",
+      "action": "Use json.dumps for structured output parseable by workflows"
+    },
+    {
+      "file": "scripts/chord-progression.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "tests",
+      "title": "No unit test found for chord-progression.py",
+      "detail": "",
+      "action": "Create scripts/tests/test-chord-progression.py with test cases"
+    },
+    {
+      "file": "scripts/playlist-sequencing-data.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "dependencies",
+      "title": "No PEP 723 inline dependency block (# /// script)",
+      "detail": "",
+      "action": "Add PEP 723 block with requires-python and dependencies"
+    },
+    {
+      "file": "scripts/playlist-sequencing-data.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "agentic-design",
+      "title": "No argparse found \u2014 script lacks --help self-documentation",
+      "detail": "",
+      "action": "Add argparse with description and argument help text"
+    },
+    {
+      "file": "scripts/playlist-sequencing-data.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "agentic-design",
+      "title": "No json.dumps found \u2014 output may not be structured JSON",
+      "detail": "",
+      "action": "Use json.dumps for structured output parseable by workflows"
+    },
+    {
+      "file": "scripts/playlist-sequencing-data.py",
+      "line": 1,
+      "severity": "low",
+      "category": "agentic-design",
+      "title": "No sys.exit() calls \u2014 may not return meaningful exit codes",
+      "detail": "",
+      "action": "Return 0=success, 1=fail, 2=error via sys.exit()"
+    },
+    {
+      "file": "scripts/playlist-sequencing-data.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "tests",
+      "title": "No unit test found for playlist-sequencing-data.py",
+      "detail": "",
+      "action": "Create scripts/tests/test-playlist-sequencing-data.py with test cases"
+    },
+    {
+      "file": "scripts/tempo-detail.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "dependencies",
+      "title": "No PEP 723 inline dependency block (# /// script)",
+      "detail": "",
+      "action": "Add PEP 723 block with requires-python and dependencies"
+    },
+    {
+      "file": "scripts/tempo-detail.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "agentic-design",
+      "title": "No argparse found \u2014 script lacks --help self-documentation",
+      "detail": "",
+      "action": "Add argparse with description and argument help text"
+    },
+    {
+      "file": "scripts/tempo-detail.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "agentic-design",
+      "title": "No json.dumps found \u2014 output may not be structured JSON",
+      "detail": "",
+      "action": "Use json.dumps for structured output parseable by workflows"
+    },
+    {
+      "file": "scripts/tempo-detail.py",
+      "line": 1,
+      "severity": "medium",
+      "category": "tests",
+      "title": "No unit test found for tempo-detail.py",
+      "detail": "",
+      "action": "Create scripts/tests/test-tempo-detail.py with test cases"
+    },
+    {
+      "file": "scripts/audio-deep-analysis.py",
+      "line": 95,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F541] f-string without any placeholders",
+      "detail": "",
+      "action": "Remove extraneous `f` prefix"
+    },
+    {
+      "file": "scripts/batch-full-analysis.py",
+      "line": 199,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F541] f-string without any placeholders",
+      "detail": "",
+      "action": "Remove extraneous `f` prefix"
+    },
+    {
+      "file": "scripts/batch-full-analysis.py",
+      "line": 202,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F541] f-string without any placeholders",
+      "detail": "",
+      "action": "Remove extraneous `f` prefix"
+    },
+    {
+      "file": "scripts/batch-full-analysis.py",
+      "line": 203,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F541] f-string without any placeholders",
+      "detail": "",
+      "action": "Remove extraneous `f` prefix"
+    },
+    {
+      "file": "scripts/batch-full-analysis.py",
+      "line": 220,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F541] f-string without any placeholders",
+      "detail": "",
+      "action": "Remove extraneous `f` prefix"
+    },
+    {
+      "file": "scripts/batch-full-analysis.py",
+      "line": 221,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F541] f-string without any placeholders",
+      "detail": "",
+      "action": "Remove extraneous `f` prefix"
+    },
+    {
+      "file": "scripts/batch-full-analysis.py",
+      "line": 229,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F541] f-string without any placeholders",
+      "detail": "",
+      "action": "Remove extraneous `f` prefix"
+    },
+    {
+      "file": "scripts/batch-full-analysis.py",
+      "line": 230,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F541] f-string without any placeholders",
+      "detail": "",
+      "action": "Remove extraneous `f` prefix"
+    },
+    {
+      "file": "scripts/playlist-sequencing-data.py",
+      "line": 229,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F541] f-string without any placeholders",
+      "detail": "",
+      "action": "Remove extraneous `f` prefix"
+    },
+    {
+      "file": "scripts/playlist-sequencing-data.py",
+      "line": 230,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F541] f-string without any placeholders",
+      "detail": "",
+      "action": "Remove extraneous `f` prefix"
+    },
+    {
+      "file": "scripts/tempo-detail.py",
+      "line": 56,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F541] f-string without any placeholders",
+      "detail": "",
+      "action": "Remove extraneous `f` prefix"
+    },
+    {
+      "file": "scripts/tempo-detail.py",
+      "line": 69,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F541] f-string without any placeholders",
+      "detail": "",
+      "action": "Remove extraneous `f` prefix"
+    }
+  ],
+  "assessments": {
+    "lint_summary": {
+      "tools_used": [
+        "ruff"
+      ],
+      "files_linted": 8,
+      "lint_issues": 12
+    },
+    "script_summary": {
+      "total_scripts": 8,
+      "by_type": {
+        "python": 8,
+        "shell": 0,
+        "node": 0,
+        "other": 0
+      },
+      "scripts": {
+        "python": [
+          "analyze-audio.py",
+          "audio-deep-analysis.py",
+          "batch-full-analysis.py",
+          "chord-progression.py",
+          "map-adjustments.py",
+          "parse-feedback.py",
+          "playlist-sequencing-data.py",
+          "tempo-detail.py"
+        ]
+      },
+      "missing_tests": [
+        "analyze-audio.py",
+        "audio-deep-analysis.py",
+        "batch-full-analysis.py",
+        "chord-progression.py",
+        "playlist-sequencing-data.py",
+        "tempo-detail.py"
+      ]
+    }
+  },
+  "summary": {
+    "total_findings": 39,
+    "by_severity": {
+      "critical": 0,
+      "high": 12,
+      "medium": 24,
+      "low": 3
+    },
+    "by_category": {
+      "dependencies": 6,
+      "agentic-design": 15,
+      "tests": 6,
+      "lint": 12
+    },
+    "assessment": ""
+  }
+}

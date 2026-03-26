@@ -22,7 +22,7 @@ This skill generates Suno-ready style prompts optimized for the user's chosen mo
    - If `--headless:from-profile` → generate prompt package using only profile baseline
    - If `--headless:custom` → generate from provided parameters without profile
    - If `--headless:refine` → accept an existing style prompt + structured adjustments (add/remove/reorder) from the Feedback Elicitor, apply the deltas rather than building from scratch
-   - If `--headless:migrate` → accept an existing style prompt + original model + target model, reformat the prompt's musical intent using the target model's strategy from `references/model-prompt-strategies.md`
+   - If `--headless:migrate` → accept an existing style prompt + original model + target model, reformat the prompt's musical intent using the target model's strategy from `./references/model-prompt-strategies.md`
    - If just `--headless` with a profile name → hybrid mode (profile baseline + any overrides provided)
    - Output complete prompt package as structured text, no interaction
 
@@ -81,7 +81,7 @@ Collect what you need conversationally. Not everything is required — adapt to 
 
 ### Step 2: Build Style Prompt
 
-Load `references/model-prompt-strategies.md` for model-specific rules.
+Load `./references/model-prompt-strategies.md` for model-specific rules.
 
 **Key limitation:** The style prompt sets ONE overall sonic mood — it cannot describe a tempo journey ("halftime to double-time" gets averaged or ignored). Set the baseline feel in the style prompt and let metatags in the lyrics handle section-level changes (energy, vocal style, etc.).
 
@@ -92,7 +92,7 @@ Load `references/model-prompt-strategies.md` for model-specific rules.
 
 **Construction process:**
 
-1. **Determine model** and load the appropriate strategy from `references/model-prompt-strategies.md`
+1. **Determine model** and load the appropriate strategy from `./references/model-prompt-strategies.md`
 2. **Start with genre and mood** — these always go first regardless of model
 3. **Layer in vocal direction** — from profile's `vocal` section or user input
 4. **Add production/mix descriptors** — instrument choices, texture, stereo field, energy arc
@@ -207,7 +207,7 @@ Generate an experimental alternative that pushes creative boundaries — the use
 
 ### Step 6: Validate & Present
 
-1. **Run validation** — execute `scripts/validate-prompt.py --model "{model_name}"` on all generated prompts to verify model-specific character limits and structure
+1. **Run validation** — execute `./scripts/validate-prompt.py --model "{model_name}"` on all generated prompts to verify model-specific character limits and structure
 
 2. **Present the complete prompt package:**
 
@@ -257,5 +257,5 @@ Generate an experimental alternative that pushes creative boundaries — the use
 
 ## Scripts
 
-Available scripts in `scripts/`:
-- `validate-prompt.py` — Validates style prompt character count (model-specific: v4 Pro=200, v4.5+/v5=1,000), critical zone, and structure. Supports `--model` flag. Run `scripts/validate-prompt.py --help` for usage.
+Available scripts in `./scripts/`:
+- `validate-prompt.py` — Validates style prompt character count (model-specific: v4 Pro=200, v4.5+/v5=1,000), critical zone, and structure. Supports `--model` flag. Run `./scripts/validate-prompt.py --help` for usage.

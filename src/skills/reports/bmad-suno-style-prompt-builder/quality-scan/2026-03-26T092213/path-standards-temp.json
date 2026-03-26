@@ -1,0 +1,110 @@
+{
+  "scanner": "path-standards",
+  "script": "scan-path-standards.py",
+  "version": "2.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-style-prompt-builder",
+  "timestamp": "2026-03-26T14:22:23.721792+00:00",
+  "files_scanned": [
+    "README.md",
+    "SKILL.md",
+    "bmad-manifest.json",
+    "references/model-prompt-strategies.md"
+  ],
+  "status": "fail",
+  "findings": [
+    {
+      "file": "README.md",
+      "line": 0,
+      "severity": "high",
+      "category": "structure",
+      "title": "Prompt file at skill root: README.md",
+      "detail": "All progressive disclosure content must be in ./references/ \u2014 only SKILL.md belongs at root",
+      "action": "Move README.md to references/README.md"
+    },
+    {
+      "file": "README.md",
+      "line": 65,
+      "severity": "high",
+      "category": "relative-prefix",
+      "title": "Parent directory reference (../) found \u2014 fragile, breaks with reorganization",
+      "detail": "This skill is part of the [BMad Suno Band Manager](../bmad-suno-agent-band-manager/README.md) module. For the full guide",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 25,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "- If `--headless:migrate` \u2192 accept an existing style prompt + original model + target model, reformat the prompt's music",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 84,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Load `references/model-prompt-strategies.md` for model-specific rules.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 95,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "1. **Determine model** and load the appropriate strategy from `references/model-prompt-strategies.md`",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 210,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "1. **Run validation** \u2014 execute `scripts/validate-prompt.py --model \"{model_name}\"` on all generated prompts to verify m",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 260,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Available scripts in `scripts/`:",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 261,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "- `validate-prompt.py` \u2014 Validates style prompt character count (model-specific: v4 Pro=200, v4.5+/v5=1,000), critical z",
+      "action": ""
+    }
+  ],
+  "assessments": {},
+  "summary": {
+    "total_findings": 8,
+    "by_severity": {
+      "critical": 0,
+      "high": 8,
+      "medium": 0,
+      "low": 0
+    },
+    "by_category": {
+      "project_root_not_bmad": 0,
+      "bare_bmad": 0,
+      "double_prefix": 0,
+      "absolute_path": 0,
+      "relative_prefix": 1,
+      "bare_internal_path": 6,
+      "memory_path": 0,
+      "frontmatter": 0,
+      "structure": 1
+    },
+    "assessment": "Path standards scan complete"
+  }
+}

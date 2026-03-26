@@ -1,0 +1,65 @@
+{
+  "scanner": "scripts",
+  "script": "scan-scripts.py",
+  "version": "2.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-agent-band-manager",
+  "timestamp": "2026-03-26T14:53:07.293997+00:00",
+  "status": "pass",
+  "findings": [
+    {
+      "file": "scripts/check-memory-health.py",
+      "line": 1,
+      "severity": "low",
+      "category": "agentic-design",
+      "title": "No sys.exit() calls \u2014 may not return meaningful exit codes",
+      "detail": "",
+      "action": "Return 0=success, 1=fail, 2=error via sys.exit()"
+    },
+    {
+      "file": "scripts/pre-activate.py",
+      "line": 1,
+      "severity": "low",
+      "category": "agentic-design",
+      "title": "No sys.exit() calls \u2014 may not return meaningful exit codes",
+      "detail": "",
+      "action": "Return 0=success, 1=fail, 2=error via sys.exit()"
+    }
+  ],
+  "assessments": {
+    "lint_summary": {
+      "tools_used": [],
+      "files_linted": 3,
+      "lint_issues": 0
+    },
+    "script_summary": {
+      "total_scripts": 3,
+      "by_type": {
+        "python": 3,
+        "shell": 0,
+        "node": 0,
+        "other": 0
+      },
+      "scripts": {
+        "python": [
+          "check-memory-health.py",
+          "pre-activate.py",
+          "validate-path.py"
+        ]
+      },
+      "missing_tests": []
+    }
+  },
+  "summary": {
+    "total_findings": 2,
+    "by_severity": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 2
+    },
+    "by_category": {
+      "agentic-design": 2
+    },
+    "assessment": ""
+  }
+}

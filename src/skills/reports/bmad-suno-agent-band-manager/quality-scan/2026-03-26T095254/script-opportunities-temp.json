@@ -1,0 +1,128 @@
+{
+  "scanner": "script-opportunities",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-agent-band-manager",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 72,
+      "severity": "high",
+      "category": "extraction",
+      "title": "LLM dynamically generates capability menu from bmad-manifest.json on every activation",
+      "detail": "Determinism confidence: certain. Estimated token savings: 300-500 per activation (reading JSON, iterating capabilities, formatting numbered menu). Implementation complexity: trivial. Language: python. Could be prepass: yes. Feeds scanner: none. Reusable across skills: yes — any agent with a bmad-manifest.json. Help pattern savings: 50+ tokens by referencing --help instead of inlining menu generation instructions in SKILL.md. The pre-activate.py script already has render_menu() — but SKILL.md still instructs the LLM to 'Generate from actual manifest data — DO NOT hardcode menu items' rather than calling the script.",
+      "action": "Update SKILL.md On Activation to call pre-activate.py --scaffold (which already renders the menu and builds the routing table) and use its JSON output directly, instead of instructing the LLM to read bmad-manifest.json and generate the menu itself. The script already exists — the prompt just does not use it for menu rendering."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 83,
+      "severity": "medium",
+      "category": "extraction",
+      "title": "LLM performs menu-code-to-capability routing lookup on every user selection",
+      "detail": "Determinism confidence: certain. Estimated token savings: 100-200 per menu selection (re-reading manifest, matching code to prompt/skill-name). Implementation complexity: trivial. Language: python. Could be prepass: yes. Feeds scanner: none. Reusable across skills: yes. Help pattern savings: 30+ tokens. The pre-activate.py script already builds a routing_table — but SKILL.md tells the LLM to 'consult bmad-manifest.json' to determine whether a capability has a prompt or skill-name field.",
+      "action": "Have the LLM use the routing_table output from pre-activate.py (already implemented) rather than re-reading bmad-manifest.json. Update the SKILL.md instruction from 'consult bmad-manifest.json' to 'use the routing table from pre-activate.py output'."
+    },
+    {
+      "file": "browse-songbook.md",
+      "line": 13,
+      "severity": "high",
+      "category": "preprocessing",
+      "title": "LLM scans multiple directories and formats a songbook inventory on every browse",
+      "detail": "Determinism confidence: high. Estimated token savings: 500-1500 per invocation depending on songbook size (scanning docs/songbook/, docs/feedback-history/, chronology.md, listing files, extracting metadata, grouping by band profile). Implementation complexity: moderate. Language: python. Could be prepass: yes. Feeds scanner: none. Reusable across skills: no — specific to band manager. Help pattern savings: N/A. The LLM reads potentially many files just to build an inventory listing. A script could scan these directories, extract frontmatter/metadata from each file, group by band profile, and present a compact JSON inventory that the LLM uses for conversational presentation.",
+      "action": "Create scripts/scan-songbook.py that takes project-root as input, scans docs/songbook/ and docs/feedback-history/ for saved songs/feedback, extracts metadata (title, date, band profile, model, transformations) from each file, reads chronology.md for session timeline, groups by band profile, and outputs a compact JSON inventory. The LLM then uses this structured data for conversational browsing rather than reading raw files."
+    },
+    {
+      "file": "create-song.md",
+      "line": 94,
+      "severity": "medium",
+      "category": "counting",
+      "title": "LLM estimates source text word count for long-text detection",
+      "detail": "Determinism confidence: certain. Estimated token savings: 100-150 per create-song invocation with source text (LLM counts/estimates words to decide if text exceeds ~400 words). Implementation complexity: trivial. Language: python. Could be prepass: yes. Feeds scanner: none. Reusable across skills: yes — lyric transformer also benefits. Help pattern savings: minimal.",
+      "action": "Create a simple scripts/text-metrics.py that accepts text input (stdin or file), outputs word count, character count, estimated line count, and a flag for whether it exceeds the 400-word threshold. The LLM calls this before deciding whether to warn the user about long text."
+    },
+    {
+      "file": "create-song.md",
+      "line": 161,
+      "severity": "medium",
+      "category": "counting",
+      "title": "LLM counts style prompt characters and checks against model-specific limits",
+      "detail": "Determinism confidence: certain. Estimated token savings: 100-200 per package presentation (counting characters in the style prompt, comparing to 200 or 1000 limit, calculating overage). Implementation complexity: trivial. Language: either. Could be prepass: no — this is post-processing validation. Feeds scanner: none. Reusable across skills: yes — style prompt builder needs this too. Help pattern savings: minimal. The prompt says 'character_count/limit characters' and warns about exceeding limits — this is pure arithmetic.",
+      "action": "Create scripts/check-prompt-limits.py that accepts a style prompt string and model name, returns character count, applicable limit (200 for v4 Pro, 1000 for others), whether it exceeds the limit, and the overage amount. Can also check lyrics against the 3000-character Suno limit."
+    },
+    {
+      "file": "save-memory.md",
+      "line": 13,
+      "severity": "medium",
+      "category": "preprocessing",
+      "title": "LLM reads current memory files to determine what needs updating",
+      "detail": "Determinism confidence: moderate. Estimated token savings: 200-400 per save operation (reading index.md, patterns.md, chronology.md to assess current state before deciding what to update). Implementation complexity: moderate. Language: python. Could be prepass: yes. Feeds scanner: none. Reusable across skills: no. Help pattern savings: N/A. A pre-pass script could read all memory files and produce a compact summary (file sizes, last-modified dates, section headers, key-value pairs from index.md) so the LLM knows what exists without reading full file contents.",
+      "action": "Extend scripts/check-memory-health.py to include a --summary mode that extracts section headers and key metadata (tier, default mode, active profile, current session state) from index.md, plus section headers and entry counts from patterns.md and chronology.md. This gives the LLM a compact inventory of what memory contains without reading full files."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 57,
+      "severity": "low",
+      "category": "structure",
+      "title": "LLM checks if sidecar directory exists on every activation",
+      "detail": "Determinism confidence: certain. Estimated token savings: 50-80 per activation (checking directory existence, deciding whether to run pre-activate.py). Implementation complexity: trivial. Language: python. Could be prepass: yes. Feeds scanner: none. Reusable across skills: yes. Help pattern savings: minimal. The pre-activate.py script already handles this via check_first_run() and --scaffold flag — this is already scripted but the SKILL.md On Activation instructions still describe the check as an LLM decision point rather than delegating fully to the script.",
+      "action": "Simplify SKILL.md On Activation step 2 to always run pre-activate.py --scaffold (which is idempotent) and use its first_run field to decide whether to load init.md. Remove the LLM-side directory existence check."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 102,
+      "severity": "low",
+      "category": "validation",
+      "title": "LLM verifies external skill availability on activation",
+      "detail": "Determinism confidence: high. Estimated token savings: 50-100 per activation (checking if 4 external skills are loadable). Implementation complexity: moderate. Language: python. Could be prepass: yes. Feeds scanner: none. Reusable across skills: yes — any orchestrating agent. Help pattern savings: N/A. Skill availability is a runtime check that could be performed by a script returning a JSON list of available/unavailable skills.",
+      "action": "Create scripts/check-skill-availability.py that takes a list of skill names (from bmad-manifest.json entries with skill-name), checks if each is registered/loadable, and returns a JSON status map. The LLM only needs to handle the degraded-path messaging for unavailable skills."
+    },
+    {
+      "file": "init.md",
+      "line": 37,
+      "severity": "low",
+      "category": "validation",
+      "title": "LLM creates access-boundaries.md with static template content during first-run",
+      "detail": "Determinism confidence: certain. Estimated token savings: 50-80 per first-run (generating static boilerplate). Implementation complexity: trivial. Language: python. Could be prepass: yes. Feeds scanner: none. Reusable across skills: no. Help pattern savings: N/A. The pre-activate.py script already handles this — it creates access-boundaries.md with the static template. The init.md prompt redundantly describes the file creation, which wastes prompt tokens on every init load even though the script handles it.",
+      "action": "Remove the 'Access Boundaries' and 'Initial Structure' sections from init.md since pre-activate.py --scaffold already creates these files. Init.md should focus solely on the conversational setup questions, which is the LLM's actual job."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 59,
+      "severity": "medium",
+      "category": "validation",
+      "title": "LLM enforces access boundary checks on every file operation by reading access-boundaries.md",
+      "detail": "Determinism confidence: certain. Estimated token savings: 150-300 across a session (reading access-boundaries.md, mentally checking each file path against read/write/deny lists). Implementation complexity: trivial. Language: python. Could be prepass: no — called per operation. Feeds scanner: none. Reusable across skills: yes. Help pattern savings: 30+ tokens. The validate-path.py script already exists and does exactly this, but SKILL.md instructs the LLM to 'enforce read/write/deny zones for all file operations' and memory-system.md says 'Before any file operation, verify the path is within allowed boundaries' — suggesting the LLM is expected to do this checking itself rather than calling the script.",
+      "action": "Update SKILL.md and memory-system.md to instruct the LLM to call scripts/validate-path.py before any file read/write operation, rather than mentally enforcing access boundaries. The script already exists and returns a clear allowed/denied JSON response."
+    },
+    {
+      "file": "create-song.md",
+      "line": 56,
+      "severity": "low",
+      "category": "extraction",
+      "title": "LLM reads band profile YAML directly when it knows the profile name",
+      "detail": "Determinism confidence: moderate. Estimated token savings: 50-150 per profile load (reading YAML, parsing fields). Implementation complexity: moderate. Language: python. Could be prepass: yes. Feeds scanner: none. Reusable across skills: yes — multiple skills load profiles. Help pattern savings: N/A. The prompt says 'read directly from docs/band-profiles/{name}.yaml if you know the name' — a script could parse the YAML and return a compact JSON summary of the profile fields relevant to the current operation.",
+      "action": "Consider creating scripts/load-profile-summary.py that reads a band profile YAML and returns a compact JSON with the fields most skills need (genre, mood, model, vocal direction, exclusions, style baseline, writer voice summary). Lower priority since the band-profile-manager skill handles most profile operations."
+    }
+  ],
+  "assessments": {
+    "existing_scripts": [
+      "scripts/pre-activate.py — first-run check, sidecar scaffolding, menu rendering, routing table",
+      "scripts/check-memory-health.py — memory file size monitoring and pruning recommendations",
+      "scripts/validate-path.py — access boundary enforcement for file operations"
+    ]
+  },
+  "summary": {
+    "total_findings": 11,
+    "by_severity": {
+      "high": 2,
+      "medium": 4,
+      "low": 5
+    },
+    "by_category": {
+      "extraction": 3,
+      "preprocessing": 2,
+      "counting": 2,
+      "validation": 3,
+      "structure": 1
+    },
+    "assessment": "Estimated total token savings: 1700-3600 per session across all findings. The highest-value opportunity is the songbook scanner (browse-songbook.md), which could save 500-1500 tokens per browse by pre-extracting a structured inventory. Three existing scripts (pre-activate.py, validate-path.py, check-memory-health.py) already cover significant ground but are under-utilized — SKILL.md and memory-system.md still instruct the LLM to perform operations these scripts handle. Two findings (menu rendering, routing table) require zero new code — just updating prompts to use existing script output. Four findings could become pre-pass scripts feeding LLM operations."
+  }
+}

@@ -2,7 +2,7 @@
 
 > **Last validated:** March 2026 (Suno Free, Pro, Premier plans). Suno updates pricing, features, and tier boundaries frequently — use web search to verify against current Suno pricing page when uncertain.
 
-**Note:** The `scripts/tier-features.py` script is the authoritative source for this data. This reference file is provided for human readability. When updating, update the script first.
+**Note:** The `./scripts/tier-features.py` script is the authoritative source for this data. This reference file is provided for human readability. When updating, update the script first.
 
 ## Plan Comparison
 

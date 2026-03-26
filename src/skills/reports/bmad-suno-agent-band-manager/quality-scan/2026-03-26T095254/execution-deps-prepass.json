@@ -1,0 +1,27 @@
+{
+  "scanner": "execution-efficiency-prepass",
+  "script": "prepass-execution-deps.py",
+  "version": "1.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-agent-band-manager",
+  "timestamp": "2026-03-26T14:53:11.736295+00:00",
+  "status": "pass",
+  "dependency_graph": {
+    "stages": [],
+    "hard_dependencies": {},
+    "soft_dependencies": {},
+    "cycles": [],
+    "transitive_redundancies": [],
+    "parallel_groups": []
+  },
+  "sequential_patterns": [],
+  "issues": [],
+  "summary": {
+    "total_issues": 0,
+    "by_severity": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 0
+    }
+  }
+}

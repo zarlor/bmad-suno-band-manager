@@ -1,0 +1,287 @@
+{
+  "scanner": "enhancement-opportunities",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-band-profile-manager",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "severity": "high-opportunity",
+      "category": "experience-gap",
+      "title": "Context compaction during long Create Profile discovery could lose accumulated creative details",
+      "detail": "The Create Profile flow involves 12 conversational discovery steps, plus the user may volunteer song concepts, lyric fragments, and production ideas along the way. In a long conversation with a verbose user, context compaction could silently drop reference track decompositions, captured creative ideas, or nuanced vocal direction details. The skill has no mechanism to checkpoint partial state. A user who spent 20 minutes describing their sound could lose half of it to compaction without either party realizing.",
+      "action": "Add a progressive assembly instruction: after every 3-4 discovery steps, assemble the profile YAML so far into a fenced block in the conversation. This creates compaction-resistant anchors — the structured YAML survives compaction better than scattered conversational fragments. Mention this in the Create Profile flow between steps 4-5 and 8-9."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "high-opportunity",
+      "category": "facilitative-pattern",
+      "title": "No capture-don't-interrupt mechanism for out-of-scope creative input during discovery",
+      "detail": "The skill instructs to 'silently note' song concepts and lyric fragments mentioned during discovery, then surface them at the end. But there is no structured capture mechanism — how does the agent track these? In practice, creative users in flow state will share genre tangents, production experiments, half-formed ideas about other bands, comparisons to specific album tracks. Without explicit capture instructions, these get lost or the agent interrupts to redirect. The skill says to capture but does not say how.",
+      "action": "Add a 'Creative Scratch Pad' instruction: maintain a running list of non-profile items the user mentions during discovery (song ideas, lyric fragments, production experiments, questions for later). Surface this at the end of the session. Make the capture mechanism explicit — e.g., 'When the user mentions something outside the current discovery step, append it to your internal scratch pad and continue the current question without redirecting.'"
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "high-opportunity",
+      "category": "edge-case",
+      "title": "Reference track web search fallback creates a silent quality gap",
+      "detail": "Step 4 of Create Profile has a 'research mandate' to web search artist/song characteristics before decomposing them. The fallback is 'ask the user when no search tool is available.' But the skill does not tell the user that the decomposition is based on their description rather than verified data. A first-timer might assume the agent independently verified that 'Beach House meets Nine Inch Nails' means dreamy shoegaze with industrial undertones, when really the agent is guessing. This matters because the sonic decomposition flows into style prompts that Suno interprets literally.",
+      "action": "Add a transparency instruction for the no-search fallback: 'When web search is unavailable, tell the user: I cannot verify sonic characteristics right now, so I will work from your descriptions and my training data. Double-check the reference breakdown I provide and correct anything that does not match your intent.' This prevents style prompt drift from unverified assumptions."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "high-opportunity",
+      "category": "facilitative-pattern",
+      "title": "No parallel review lenses before finalizing a new profile",
+      "detail": "After the 12-step discovery, the profile is assembled, validated, and presented for review. But the user sees it through one lens — their own. A brand-new profile is the most consequential artifact this skill produces, and subtle issues (vague style baseline, contradictory exclusions and genre, missing vocal specificity) are easy to miss when you have been building it for 20 minutes. The Health Check exists as a separate operation but is never suggested during creation.",
+      "action": "Before presenting the final profile for approval, run an inline mini-health-check: assess style_baseline specificity, vocal direction depth, and exclusion/genre consistency. Present 1-3 quick recommendations alongside the profile: 'Your profile is ready. I noticed the style baseline could be more specific — want me to tighten it before we save?' This catches quality issues at creation time rather than requiring a separate Health Check invocation later."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "medium-opportunity",
+      "category": "journey-friction",
+      "title": "Expert user forced through 12-step conversational discovery even when they already know their sound",
+      "detail": "A musician who has been producing for years and knows exactly what they want — 'dark synthwave, male baritone, v5 Pro, experimental creativity, 70 weirdness' — is forced through a step-by-step conversational interview. The headless mode exists but requires YAML formatting knowledge. There is no middle ground for the expert interactive user who wants to say 'here is everything, build it' in natural language.",
+      "action": "Add a 'fast-track create' detection at the start of the Create Profile flow: 'If the user's initial message contains enough detail to populate most required fields (genre, mood, vocal direction, model/tier), skip the step-by-step interview. Assemble what you can from their input, ask only about genuinely missing required fields, and go straight to review.' This respects expert users' time while still ensuring completeness."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "medium-opportunity",
+      "category": "edge-case",
+      "title": "Edit operation with natural language like 'make it more aggressive' has no guardrails against cascading unintended changes",
+      "detail": "The Edit operation accepts natural language changes and applies them to fields. 'Make it more aggressive' could touch genre, mood, vocal energy, vocal delivery, style_baseline, exclusion_defaults, and creativity_default all at once. The diff tool shows what changed, but a user who meant 'just the vocal delivery' might not catch that the agent also rewrote their carefully crafted style baseline. The broader the natural language instruction, the higher the risk of unwanted side effects.",
+      "action": "Add a scope clarification step for broad natural language edits: 'When a user's edit request could plausibly affect 3+ fields, ask which dimensions they want changed before applying: Do you want the aggression across the whole sound, or specifically in the vocals / the production / the style prompt?' For narrow requests, apply directly."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "medium-opportunity",
+      "category": "assumption-risk",
+      "title": "Skill assumes band profiles map 1:1 to musical projects, but users may want context-dependent profiles",
+      "detail": "The schema and workflow assume each profile is a standalone band identity. But real musicians often want variations: 'midnight-echoes for live acoustic sets' vs 'midnight-echoes for full production' vs 'midnight-echoes for singles vs albums.' The Duplicate operation exists for versioning, but it creates fully independent profiles with no relationship tracking. A user with midnight-echoes-v1 through midnight-echoes-v5 has no way to see the evolution or understand which is current.",
+      "action": "Consider adding an optional 'parent' or 'lineage' field to the profile schema, and have list-profiles.py group related profiles by lineage. When duplicating, auto-populate the lineage field. This turns isolated copies into a visible evolution chain. Low-effort schema addition with meaningful organizational value for prolific users."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "medium-opportunity",
+      "category": "experience-gap",
+      "title": "Success amnesia after profile creation — user has a YAML file but no clear next step",
+      "detail": "After creating or editing a profile, the post-operation flow asks 'Anything else you'd like to do with your profiles?' This keeps the user in profile-management land. But the real next step for most users is to USE the profile — build a style prompt, write lyrics, generate a song. The skill mentions that Style Prompt Builder and Lyric Transformer consume profiles, but never bridges the user to those workflows after a successful create/edit.",
+      "action": "After saving a new or significantly edited profile, add a contextual suggestion: 'Your profile is saved. Ready to put it to work? You can invoke the Style Prompt Builder to create your first style prompt from this profile, or the Lyric Transformer to write lyrics in your voice.' This transforms the end of one workflow into the start of the next."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "medium-opportunity",
+      "category": "facilitative-pattern",
+      "title": "No soft-gate elicitation — discovery steps use 'Anything else to add, or move on?' but not at natural creative boundaries",
+      "detail": "The skill uses a soft gate ('Anything else to add, or move on?') between sections, which is good. But the gate is applied uniformly. Some steps are natural creative expansion points (reference tracks, vocal direction, exclusions) where users often have more to say if gently prompted, while others (model/tier, language) are factual and rarely need elaboration. A uniform gate is better than none, but tailored gates draw out richer input at creative junctions.",
+      "action": "At the three richest creative junctions (reference tracks, vocal direction, style baseline review), replace the generic gate with a more evocative prompt. For reference tracks: 'Any other artists or songs that capture even a piece of what you are going for — even if they seem contradictory?' For vocal direction: 'Is there a specific vocal moment in a song that nails what you hear in your head?' These prompts draw out specificity that generic gates miss."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "medium-opportunity",
+      "category": "autonomous-potential",
+      "title": "Headless Analyze Writer Voice is not supported but could be",
+      "detail": "The headless mode covers CRUD operations comprehensively, but writer voice analysis — one of the most valuable capabilities — has no headless path. An automator or pipeline that wants to batch-analyze voice samples across multiple profiles must invoke the skill interactively. Yet the analysis is algorithmic: provide samples, extract patterns, store in profile. This is a natural fit for headless execution.",
+      "action": "Add a --headless:analyze-voice <profile-name> mode that accepts file paths or inline text samples as input, runs the analysis, and stores results in the specified profile. Return JSON with the extracted voice dimensions and sample quotes. This enables batch voice analysis across profiles and lets other skills invoke voice analysis programmatically."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "medium-opportunity",
+      "category": "edge-case",
+      "title": "Confused user who invokes this skill wanting to 'make music' gets redirected but no warm handoff",
+      "detail": "The operation detection table handles 'wrong skill' invocations by explaining this skill manages profiles and suggesting the Band Manager agent or Style Prompt Builder. But a confused first-timer who excitedly said 'let us make some music!' gets a corrective explanation instead of excitement-matching guidance. The redirect is informational but not emotionally attuned — it deflates rather than redirects the energy.",
+      "action": "Reframe the wrong-skill handling to match the user's energy: 'Love the energy! To make music with Suno, we start by defining your band's sound — think of it as creating the DNA for your musical project. Want to set that up now? It takes about 5 minutes and then you will be ready to generate.' This converts a dead-end redirect into an on-ramp."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "medium-opportunity",
+      "category": "delight-opportunity",
+      "title": "Band Identity Card is generated but never updated or leveraged after initial creation",
+      "detail": "The Create Profile flow generates a 'Band Identity Card' — a 3-4 sentence natural language summary — but it only appears once, at creation. After edits, the card is never regenerated. After loading, the profile is displayed as structured sections, not as the evocative identity card. The card is the most human-readable, emotionally resonant representation of the profile, and it is essentially single-use.",
+      "action": "Regenerate the Band Identity Card whenever the profile is loaded or significantly edited. Store it as a field in the profile YAML (e.g., identity_card:) so it persists. Display it as the header when loading a profile. This gives users an immediate, visceral reminder of who their band is, not just a data dump."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "low-opportunity",
+      "category": "delight-opportunity",
+      "title": "No profile comparison view for users choosing between profiles or evaluating evolution",
+      "detail": "The diff-profiles.py script compares two profiles structurally (used during edits), but there is no user-facing 'compare two profiles side by side' operation. A user with midnight-echoes-v1 and midnight-echoes-v2 cannot easily see how their sound evolved, or choose between two profiles for a session. The diff tool exists but is only invoked during edit confirmation.",
+      "action": "Add a 'Compare' operation to the operation detection table that lets users compare any two profiles side-by-side using diff-profiles.py. Present the diff in a human-readable format highlighting sonic differences: 'v2 is heavier on the electronic textures, shifted from restrained to building energy, and added weirdness at 65.' This leverages an existing script for a new user-facing capability."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "low-opportunity",
+      "category": "journey-friction",
+      "title": "Delete operation has no undo or soft-delete, and the confirmation is a single yes/no gate",
+      "detail": "Delete permanently removes a YAML file with a single confirmation. For a profile that took 20 minutes to create through guided discovery, this is a high-stakes irreversible action behind a thin gate. There is no archive, no trash, no 'deleted profiles' folder, and no way to recover.",
+      "action": "Consider moving deleted profiles to a docs/band-profiles/.archive/ directory instead of permanent deletion. The confirmation message could say: 'This will archive the profile. You can recover it later if needed.' For headless delete, the same archive behavior would apply. This is a small file-system change that prevents grief."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "low-opportunity",
+      "category": "assumption-risk",
+      "title": "Skill assumes user knows their Suno tier and model preference during profile creation",
+      "detail": "Steps 6 asks about model and tier, running tier-features.py to show options. But a first-timer may not know their tier (they signed up last week and are not sure which plan they chose) or may not understand the model differences. The tier-features script shows what is available, but the user must already know their tier to invoke it correctly.",
+      "action": "Add a detection helper: 'Not sure which tier you are on? Check your Suno account settings at suno.com/account, or tell me what you can see in the Suno interface — I can figure out your tier from the features available to you.' Provide a quick diagnostic: 'Can you see the Weirdness slider? Do you have a Studio tab?' Two questions identify the tier without requiring the user to know the plan name."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "low-opportunity",
+      "category": "edge-case",
+      "title": "Validation script dependency means profile operations fail opaquely if Python or scripts are missing",
+      "detail": "Every write operation depends on validate-profile.py, and list/load depend on list-profiles.py. If the scripts directory is missing, Python is not installed, or the scripts have import errors, the skill has no fallback. The hostile-environment user (running in a minimal container, broken Python install, or a context where bash execution is restricted) hits a wall.",
+      "action": "Add a graceful degradation instruction: 'If a script fails to execute, perform basic validation inline (check required fields are present and non-empty, check tier is valid, check style_baseline length) and warn the user: Full schema validation was unavailable — I performed basic checks but recommend running validate-profile.py when possible.' This keeps the workflow moving when the environment is imperfect."
+    }
+  ],
+  "assessments": {
+    "skill_understanding": {
+      "purpose": "Manages persistent band identity profiles — the sonic DNA of musical projects — that serve as the foundation for downstream Suno music generation skills (Style Prompt Builder, Lyric Transformer, Feedback Elicitor). Handles full CRUD lifecycle plus writer voice analysis and profile health assessment.",
+      "primary_user": "Musicians and music producers using Suno AI for music creation, ranging from beginners who 'know what they like but cannot name it' to experienced producers with precise sonic vocabulary. Also serves automated pipelines and orchestrating agents via headless mode.",
+      "key_assumptions": [
+        "Users can articulate or discover their sonic preferences through conversation",
+        "One profile maps to one musical project identity",
+        "Python scripts and bash execution are available in the runtime environment",
+        "Users know their Suno tier and model preference",
+        "Profile creation happens in a single session without interruption",
+        "Web search availability for reference track verification",
+        "Users will invoke Health Check as a separate operation rather than expecting quality assurance at creation time"
+      ]
+    },
+    "user_journeys": [
+      {
+        "archetype": "first-timer",
+        "summary": "A new Suno user excited to make music invokes this skill. If they say 'make music' they get redirected (potentially deflating). If they correctly ask to create a profile, they enter a thorough 12-step guided discovery that is well-structured but long. They likely do not know their tier, may not understand model differences, and may not have reference tracks ready. The conversational approach is genuinely good for this user — it helps them discover preferences they could not articulate in a form. They exit with a profile and a Band Identity Card but may not know what to do next.",
+        "friction_points": [
+          "Wrong-skill redirect is informational rather than energy-matching",
+          "Tier/model questions may stump them",
+          "No clear bridge to 'now use your profile' after creation",
+          "12-step flow is thorough but potentially long for someone just exploring"
+        ],
+        "bright_spots": [
+          "Conversational discovery genuinely helps beginners articulate preferences",
+          "Reference track decomposition teaches them sonic vocabulary",
+          "Exclusion defaults explanation about positive vs negative prompts is educational",
+          "Unclear intent handling presents all operations clearly"
+        ]
+      },
+      {
+        "archetype": "expert",
+        "summary": "An experienced producer who knows exactly what they want. They know the genre terms, the vocal descriptors, the model/tier, everything. The 12-step interview is painfully slow for them. Headless mode exists but requires YAML formatting. They want to dump everything in one message and get a profile. The edit operation's natural language support is strong for this user. Health Check is useful for sanity-checking before a session.",
+        "friction_points": [
+          "No fast-track path for users who provide comprehensive input upfront",
+          "Step-by-step gates slow down someone who already has all answers",
+          "Headless requires YAML knowledge — no natural-language fast-track"
+        ],
+        "bright_spots": [
+          "Edit operation accepts natural language changes — expert-friendly",
+          "Headless mode is comprehensive for scripting and automation",
+          "Health Check provides objective quality assessment",
+          "Schema is rich and domain-aware (known_working_patterns, generation_learnings)"
+        ]
+      },
+      {
+        "archetype": "confused",
+        "summary": "User invoked this skill by accident or thought it makes songs. The operation detection table handles this with a redirect to Band Manager or Style Prompt Builder. The redirect is correct but cold. If they meant to edit a profile but said 'change my sound,' intent detection should catch it, but ambiguous phrasing could route to the wrong operation.",
+        "friction_points": [
+          "Wrong-skill redirect is helpful but not emotionally warm",
+          "Ambiguous phrasing between Edit and Create could misroute",
+          "No 'did you mean...?' confirmation for ambiguous intents"
+        ],
+        "bright_spots": [
+          "Explicit 'Wrong skill' handling exists — many skills lack this entirely",
+          "Unclear intent shows all available operations rather than guessing"
+        ]
+      },
+      {
+        "archetype": "edge-case",
+        "summary": "User with a hybrid vocal/instrumental project (some songs have vocals, some do not). The instrumental flag is a boolean — the profile is either vocal or instrumental, not both. A user who wants to create a 'mostly instrumental with occasional spoken word' project must choose one mode and work around the other. Also: users with non-Latin-script band names, users who want multiple languages per profile, users whose reference tracks are obscure enough that web search returns nothing useful.",
+        "friction_points": [
+          "Instrumental is binary — no hybrid vocal/instrumental support",
+          "Single language field assumes monolingual lyrics",
+          "Reference track decomposition depends on web search finding useful results",
+          "Band name kebab-case derivation may struggle with non-Latin scripts"
+        ],
+        "bright_spots": [
+          "Instrumental flag at least exists and properly skips vocal requirements",
+          "Language field is present and flows to downstream skills",
+          "Fallback for web search unavailability is documented"
+        ]
+      },
+      {
+        "archetype": "hostile-environment",
+        "summary": "Agent running in a context where Python is unavailable, scripts fail, web search is disabled, or bmad-init config is missing. The skill has a config fallback (greet generically, default to English), but script failures have no fallback. Every write operation requires validate-profile.py. Every list/load requires list-profiles.py. A broken Python environment effectively bricks the skill for all operations except reading files directly.",
+        "friction_points": [
+          "Script failures have no inline fallback — validation is all-or-nothing",
+          "No degraded-mode operation when Python is unavailable",
+          "Web search absence silently degrades reference track quality"
+        ],
+        "bright_spots": [
+          "Config fallback is explicit and reasonable",
+          "File-based storage means profiles are human-readable even if the skill is unavailable"
+        ]
+      },
+      {
+        "archetype": "automator",
+        "summary": "A CI pipeline, orchestrating agent, or cron job that needs to create, validate, or modify profiles programmatically. Headless mode is impressively comprehensive — create, validate, load, edit, delete, duplicate, and list are all supported with structured JSON responses. The output contracts are well-defined. The main gap is that writer voice analysis and health check have no headless paths, and there is no batch operation support.",
+        "friction_points": [
+          "Writer voice analysis has no headless mode",
+          "Health check has no headless mode",
+          "No batch operations (e.g., validate all profiles, health-check all profiles)",
+          "Headless error responses are not explicitly defined"
+        ],
+        "bright_spots": [
+          "Headless CRUD coverage is comprehensive and well-designed",
+          "JSON output contracts are explicit for each headless subcommand",
+          "Flag detection supports both --headless and -H"
+        ]
+      }
+    ],
+    "autonomous_assessment": {
+      "potential": "easily-adaptable",
+      "hitl_points": 14,
+      "auto_resolvable": 10,
+      "needs_input": 4,
+      "suggested_output_contract": "JSON object with status, profile_path, validation results, and optionally the profile content. Already well-defined for most headless subcommands.",
+      "required_inputs": [
+        "Profile YAML or field overrides (for create/edit)",
+        "Profile name (for load/edit/delete/duplicate)",
+        "Writing samples as text or file paths (for voice analysis)",
+        "Target profile name (for voice analysis storage)"
+      ],
+      "notes": "This skill is already substantially headless-capable — the CRUD headless modes are comprehensive and well-designed with explicit JSON output contracts. The remaining gaps are headless writer voice analysis and headless health check. Both are straightforward to add since the analysis logic is algorithmic rather than conversational. The interactive Create flow's 12-step discovery is fundamentally interactive by design and correctly remains so, but a fast-track detection for rich initial input would bridge the gap for expert interactive users."
+    },
+    "top_insights": [
+      {
+        "title": "Profile creation is a high-stakes single-session artifact with no compaction protection",
+        "detail": "A 12-step conversational discovery that accumulates nuanced creative preferences, reference track decompositions, and captured side-ideas is exactly the kind of long interaction where context compaction silently destroys value. The profile is assembled at the end from conversational fragments, not progressively checkpointed.",
+        "action": "Add progressive YAML assembly checkpoints every 3-4 steps during Create Profile discovery. The structured YAML survives compaction far better than scattered conversational details."
+      },
+      {
+        "title": "The Band Identity Card is the most emotionally resonant artifact this skill produces, and it is single-use",
+        "detail": "The identity card captures the soul of a band in 3-4 sentences — far more evocative than reading YAML fields. But it is generated once at creation and never seen again. Loading a profile shows structured sections. Editing does not regenerate it. The most human-readable representation of the user's creative vision is effectively discarded after its first appearance.",
+        "action": "Store the identity card in the profile, regenerate it on significant edits, and display it as the header whenever a profile is loaded. Make it the face of the profile, not a one-time ceremony."
+      },
+      {
+        "title": "Expert users have no fast-track interactive path between 'step-by-step interview' and 'write raw YAML'",
+        "detail": "The skill correctly serves beginners with guided discovery and automators with headless YAML mode. But the expert interactive user — who knows their sound and wants to describe it in natural language without step-by-step gates — falls through the gap. They are forced to either slow down or learn YAML.",
+        "action": "Add fast-track detection at the start of Create Profile: if the user's initial message is information-rich, extract what you can, ask only about genuinely missing fields, and skip to review."
+      }
+    ]
+  },
+  "summary": {
+    "total_findings": 16,
+    "by_severity": {
+      "high-opportunity": 4,
+      "medium-opportunity": 8,
+      "low-opportunity": 4
+    },
+    "by_category": {
+      "edge_case": 4,
+      "experience_gap": 2,
+      "delight_opportunity": 2,
+      "assumption_risk": 2,
+      "journey_friction": 2,
+      "autonomous_potential": 1,
+      "facilitative_pattern": 3
+    },
+    "assessment": "This is an impressively well-designed skill — the headless mode coverage, operation routing, and domain knowledge are substantially above average. The biggest creative opportunities cluster around three themes: (1) protecting the long Create Profile conversation from compaction and making it resilient to session length, (2) bridging the gap between 'guided beginner' and 'structured automator' with a fast-track path for expert interactive users, and (3) making the Band Identity Card a persistent, living artifact rather than a single-use creation ceremony. The boldest practical idea: store progressive YAML checkpoints during discovery and regenerate the identity card on every load — together these transform the profile from a data file into a living creative document that survives context compaction and greets the user with their band's soul every time they return."
+  }
+}

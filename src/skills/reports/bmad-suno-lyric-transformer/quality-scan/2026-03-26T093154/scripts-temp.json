@@ -1,0 +1,144 @@
+{
+  "scanner": "scripts",
+  "script": "scan-scripts.py",
+  "version": "2.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-lyric-transformer",
+  "timestamp": "2026-03-26T14:32:06.672566+00:00",
+  "status": "warning",
+  "findings": [
+    {
+      "file": "scripts/analyze-input.py",
+      "line": 155,
+      "severity": "high",
+      "category": "lint",
+      "title": "[E741] Ambiguous variable name: `l`",
+      "detail": "",
+      "action": "See https://docs.astral.sh/ruff/rules/E741"
+    },
+    {
+      "file": "scripts/analyze-input.py",
+      "line": 156,
+      "severity": "high",
+      "category": "lint",
+      "title": "[E741] Ambiguous variable name: `l`",
+      "detail": "",
+      "action": "See https://docs.astral.sh/ruff/rules/E741"
+    },
+    {
+      "file": "scripts/syllable-counter.py",
+      "line": 142,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F841] Local variable `instrumental_seconds` is assigned to but never used",
+      "detail": "",
+      "action": "Remove assignment to unused variable `instrumental_seconds`"
+    },
+    {
+      "file": "scripts/syllable-counter.py",
+      "line": 239,
+      "severity": "high",
+      "category": "lint",
+      "title": "[E741] Ambiguous variable name: `l`",
+      "detail": "",
+      "action": "See https://docs.astral.sh/ruff/rules/E741"
+    },
+    {
+      "file": "scripts/syllable-counter.py",
+      "line": 268,
+      "severity": "high",
+      "category": "lint",
+      "title": "[E741] Ambiguous variable name: `l`",
+      "detail": "",
+      "action": "See https://docs.astral.sh/ruff/rules/E741"
+    },
+    {
+      "file": "scripts/validate-lyrics.py",
+      "line": 81,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F841] Local variable `orphaned_descriptors` is assigned to but never used",
+      "detail": "",
+      "action": "Remove assignment to unused variable `orphaned_descriptors`"
+    },
+    {
+      "file": "scripts/validate-lyrics.py",
+      "line": 161,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F841] Local variable `tag_lines` is assigned to but never used",
+      "detail": "",
+      "action": "Remove assignment to unused variable `tag_lines`"
+    },
+    {
+      "file": "scripts/validate-lyrics.py",
+      "line": 203,
+      "severity": "high",
+      "category": "lint",
+      "title": "[E741] Ambiguous variable name: `l`",
+      "detail": "",
+      "action": "See https://docs.astral.sh/ruff/rules/E741"
+    },
+    {
+      "file": "scripts/validate-lyrics.py",
+      "line": 266,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F541] f-string without any placeholders",
+      "detail": "",
+      "action": "Remove extraneous `f` prefix"
+    },
+    {
+      "file": "scripts/validate-lyrics.py",
+      "line": 324,
+      "severity": "high",
+      "category": "lint",
+      "title": "[E741] Ambiguous variable name: `l`",
+      "detail": "",
+      "action": "See https://docs.astral.sh/ruff/rules/E741"
+    }
+  ],
+  "assessments": {
+    "lint_summary": {
+      "tools_used": [
+        "ruff"
+      ],
+      "files_linted": 8,
+      "lint_issues": 10
+    },
+    "script_summary": {
+      "total_scripts": 8,
+      "by_type": {
+        "python": 8,
+        "shell": 0,
+        "node": 0,
+        "other": 0
+      },
+      "scripts": {
+        "python": [
+          "analyze-input.py",
+          "assemble-summary.py",
+          "cliche-detector.py",
+          "lyrics-diff.py",
+          "section-length-checker.py",
+          "syllable-counter.py",
+          "validate-lyrics.py",
+          "validate-options.py"
+        ]
+      },
+      "missing_tests": []
+    }
+  },
+  "summary": {
+    "total_findings": 10,
+    "by_severity": {
+      "critical": 0,
+      "high": 10,
+      "medium": 0,
+      "low": 0
+    },
+    "by_category": {
+      "lint": 10
+    },
+    "assessment": ""
+  }
+}

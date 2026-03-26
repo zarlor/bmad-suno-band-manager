@@ -576,10 +576,10 @@ Mac orchestrates four specialized skills. You can use them directly through Mac'
 
 | Menu Code | Skill | Standalone Use Case |
 |-----------|-------|-------------------|
-| **SP** | [Style Prompt Builder](src/skills/bmad-suno-style-prompt-builder/README.md) | You already have lyrics and just need the sound description |
-| **TL** | [Lyric Transformer](src/skills/bmad-suno-lyric-transformer/README.md) | You have text to convert and don't need a style prompt |
-| **FE** | [Feedback Elicitor](src/skills/bmad-suno-feedback-elicitor/README.md) | You want structured feedback handling without Mac's full orchestration |
-| **MB** | [Band Profile Manager](src/skills/bmad-suno-band-profile-manager/README.md) | You want to create, edit, list, duplicate, or delete profiles directly |
+| **SP** | [Style Prompt Builder](src/skills/bmad-suno-style-prompt-builder/references/README.md) | You already have lyrics and just need the sound description |
+| **TL** | [Lyric Transformer](src/skills/bmad-suno-lyric-transformer/references/README.md) | You have text to convert and don't need a style prompt |
+| **FE** | [Feedback Elicitor](src/skills/bmad-suno-feedback-elicitor/references/README.md) | You want structured feedback handling without Mac's full orchestration |
+| **MB** | [Band Profile Manager](src/skills/bmad-suno-band-profile-manager/references/README.md) | You want to create, edit, list, duplicate, or delete profiles directly |
 
 ### Lyric Transformer Options
 

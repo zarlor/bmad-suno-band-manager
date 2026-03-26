@@ -1,0 +1,195 @@
+{
+  "scanner": "structure",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-agent-band-manager",
+  "findings": [
+    {
+      "file": "README.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "title": "No config header with language variables found",
+      "detail": "README.md lacks a config header with language variables.",
+      "action": "Add a config header block with required language variables if this prompt needs localization support."
+    },
+    {
+      "file": "SUNO-REFERENCE.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "title": "No config header with language variables found",
+      "detail": "SUNO-REFERENCE.md lacks a config header with language variables.",
+      "action": "Add a config header block with required language variables if this prompt needs localization support."
+    },
+    {
+      "file": "USAGE.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "title": "No config header with language variables found",
+      "detail": "USAGE.md lacks a config header with language variables.",
+      "action": "Add a config header block with required language variables if this prompt needs localization support."
+    },
+    {
+      "file": "browse-songbook.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "title": "No config header with language variables found",
+      "detail": "browse-songbook.md lacks a config header with language variables.",
+      "action": "Add a config header block with required language variables if this prompt needs localization support."
+    },
+    {
+      "file": "browse-songbook.md",
+      "line": 46,
+      "severity": "high",
+      "category": "progression",
+      "title": "No progression condition keywords found",
+      "detail": "browse-songbook.md has no progression condition keywords, making it unclear when the prompt completes or hands control back.",
+      "action": "Add explicit progression/completion conditions (e.g., 'when complete', 'proceed when', 'if user confirms') so the agent knows when this capability is done."
+    },
+    {
+      "file": "create-song.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "title": "No config header with language variables found",
+      "detail": "create-song.md lacks a config header with language variables.",
+      "action": "Add a config header block with required language variables if this prompt needs localization support."
+    },
+    {
+      "file": "init.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "title": "No config header with language variables found",
+      "detail": "init.md lacks a config header with language variables.",
+      "action": "Add a config header block with required language variables if this prompt needs localization support."
+    },
+    {
+      "file": "init.md",
+      "line": 56,
+      "severity": "high",
+      "category": "progression",
+      "title": "No progression condition keywords found",
+      "detail": "init.md has no progression condition keywords. After first-run setup completes, it is unclear how control returns to the main activation flow.",
+      "action": "Add explicit progression/completion conditions indicating that after setup is stored, control returns to the main activation sequence (greeting + menu)."
+    },
+    {
+      "file": "refine-song.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "title": "No config header with language variables found",
+      "detail": "refine-song.md lacks a config header with language variables.",
+      "action": "Add a config header block with required language variables if this prompt needs localization support."
+    },
+    {
+      "file": "save-memory.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "title": "No config header with language variables found",
+      "detail": "save-memory.md lacks a config header with language variables.",
+      "action": "Add a config header block with required language variables if this prompt needs localization support."
+    },
+    {
+      "file": "save-memory.md",
+      "line": 31,
+      "severity": "high",
+      "category": "progression",
+      "title": "No progression condition keywords found",
+      "detail": "save-memory.md has no progression condition keywords. After memory is saved, it is unclear how control returns to Mac.",
+      "action": "Add explicit progression/completion conditions (e.g., 'when save is complete, return to main menu') so the agent knows this capability is done."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 3,
+      "severity": "low",
+      "category": "frontmatter",
+      "title": "Description trigger clause lacks quoted specific phrases",
+      "detail": "The description trigger clause says 'Use when user wants to talk to Mac, requests the Band Manager, or wants to create a song for Suno' but does not use quoted specific phrases. The triggers are reasonably specific (referencing 'Mac' and 'Band Manager' by name) so this is low severity, but quoting key phrases would improve precision.",
+      "action": "Consider quoting key trigger phrases: Use when user says 'talk to Mac', 'Band Manager', or 'create a song for Suno'."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 16,
+      "severity": "low",
+      "category": "identity",
+      "title": "Identity is effective and actionable",
+      "detail": "Identity provides a clear, actionable persona: 'Mac is a warm, music-savvy band manager inspired by the spirit of New Orleans.' This is specific, primes behavior well, and connects directly to the agent's domain and capabilities. No issues found.",
+      "action": "No action required."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 20,
+      "severity": "low",
+      "category": "communication-style",
+      "title": "Communication style is strong but could benefit from more discrete examples",
+      "detail": "The communication style section uses inline examples within prose ('let's lay down the foundation,' 'time to mix this down') which is effective but could be clearer as a discrete bulleted list of do/don't examples. The adaptive guidance (match technical level) is excellent.",
+      "action": "Consider restructuring as 3-5 discrete example pairs (situation -> response style) for faster scanning, though current prose format is functional."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 24,
+      "severity": "low",
+      "category": "principles",
+      "title": "Principles are domain-specific and guiding",
+      "detail": "All three principles are actionable and domain-specific: 'Always output everything', 'Meet them where they are', 'The magic is iteration'. These create clear decision frameworks and avoid generic platitudes. No issues found.",
+      "action": "No action required."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 44,
+      "severity": "medium",
+      "category": "memory-setup",
+      "title": "Memory path uses {project-root} variable but sidecar section references different loading mechanism",
+      "detail": "The Sidecar section (line 44) references 'memory/band-manager-sidecar/' via a {project-root} prefix, while On Activation (line 56-59) uses the full '{project-root}/_bmad/_memory/band-manager-sidecar/' path consistently. The Sidecar section's path reads '{project-root}/_bmad/_memory/band-manager-sidecar/' which is consistent. However, line 46 references 'references/memory-system.md' using a relative path while other references use {project-root} prefixed paths — this inconsistency could cause loading failures depending on working directory.",
+      "action": "Ensure all file path references use the same convention — either all relative to the skill directory or all using {project-root} prefix."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 48,
+      "severity": "low",
+      "category": "activation-sequence",
+      "title": "Activation sequence is logically ordered",
+      "detail": "The activation sequence follows correct logical order: (1) load config via bmad-init, (2) check first-run and scaffold if needed, (3) load essentials in parallel (access boundaries, memory index, manifest), (4) greet user, (5) present menu. Config loads before config vars are used; access boundaries load before file operations.",
+      "action": "No action required."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 8,
+      "severity": "low",
+      "category": "consistency",
+      "title": "Identity, communication style, and capabilities are well-aligned",
+      "detail": "The 'warm, music-savvy band manager' identity is consistent with the conversational, encouraging communication style and the music production metaphors. The three interaction modes (Demo/Studio/Jam) align with the 'meet them where they are' principle. External skill orchestration aligns with the 'thinks like a producer' identity element. No logical consistency issues found.",
+      "action": "No action required."
+    }
+  ],
+  "assessments": {
+    "sections_found": ["Overview", "Identity", "Communication Style", "Principles", "Research Discipline", "Sidecar", "On Activation", "External Skills", "Skill Availability"],
+    "capabilities_count": 7,
+    "has_memory": true,
+    "has_headless": false
+  },
+  "summary": {
+    "total_findings": 18,
+    "by_severity": {
+      "critical": 0,
+      "high": 3,
+      "medium": 9,
+      "low": 6
+    },
+    "by_category": {
+      "config-header": 8,
+      "progression": 3,
+      "frontmatter": 1,
+      "identity": 1,
+      "communication-style": 1,
+      "principles": 1,
+      "memory-setup": 1,
+      "activation-sequence": 1,
+      "consistency": 1
+    },
+    "assessment": "Structurally solid agent with complete required sections, well-defined identity, strong principles, and a logically ordered activation sequence. The 3 high-severity issues are all missing progression conditions in prompt files (browse-songbook, init, save-memory), and 8 medium-severity issues are missing config headers across all prompt files. No critical structural defects."
+  }
+}

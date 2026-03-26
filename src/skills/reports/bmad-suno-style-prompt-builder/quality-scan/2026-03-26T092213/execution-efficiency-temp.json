@@ -1,0 +1,37 @@
+{
+  "scanner": "execution-efficiency",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-style-prompt-builder",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 62,
+      "severity": "low",
+      "category": "parallelization",
+      "title": "Band profile read and model-prompt-strategies read could overlap",
+      "detail": "Step 1 reads the band profile from docs/band-profiles/{name}.yaml, and Step 2 reads references/model-prompt-strategies.md. These are currently sequential across steps. However, model selection often depends on the profile's model_preference field (line 65), creating a soft dependency. The savings would be minimal (one file read latency, ~1-2 seconds) and only applies when the user provides the model upfront.",
+      "action": "Consider loading model-prompt-strategies.md eagerly in Step 1 alongside the band profile read when the model is already known. When model depends on profile, the current sequential order is correct."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 100,
+      "severity": "low",
+      "category": "batching",
+      "title": "Reference track web search and model strategy load could be batched",
+      "detail": "In Step 2, the skill loads model-prompt-strategies.md (line 84) and may perform web searches for reference track decomposition (line 100). These are independent operations when both are needed. Batching saves one round-trip (~2-3 seconds). Only applies when the user provides reference tracks.",
+      "action": "When reference tracks are provided in Step 1, batch the web search for artist/song decomposition with the model-prompt-strategies.md read in a single tool-call message at the start of Step 2."
+    }
+  ],
+  "summary": {
+    "total_findings": 2,
+    "by_severity": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 2
+    },
+    "by_category": {
+      "parallelization": 1,
+      "batching": 1
+    }
+  }
+}

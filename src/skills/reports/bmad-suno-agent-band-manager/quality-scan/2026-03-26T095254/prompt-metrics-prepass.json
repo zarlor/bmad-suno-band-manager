@@ -1,0 +1,1039 @@
+{
+  "scanner": "prompt-craft-prepass",
+  "script": "prepass-prompt-metrics.py",
+  "version": "1.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-agent-band-manager",
+  "timestamp": "2026-03-26T14:53:10.281023+00:00",
+  "status": "info",
+  "skill_md_summary": {
+    "line_count": 107,
+    "token_estimate": 2425,
+    "overview_lines": 7,
+    "table_count": 0,
+    "table_lines": 0,
+    "fenced_block_count": 1,
+    "fenced_block_lines": 4,
+    "section_count": 9
+  },
+  "prompt_health": {
+    "total_prompts": 8,
+    "prompts_with_config_header": 0,
+    "prompts_with_progression": 5
+  },
+  "aggregate": {
+    "total_files_scanned": 9,
+    "total_token_estimate": 23724,
+    "total_waste_patterns": 0,
+    "total_back_references": 0,
+    "total_suggestive_loading": 0,
+    "total_wall_of_text": 2
+  },
+  "resource_sizes": {},
+  "files": [
+    {
+      "file": "SKILL.md",
+      "line_count": 107,
+      "token_estimate": 2425,
+      "sections": [
+        {
+          "level": 2,
+          "title": "Overview",
+          "line": 8
+        },
+        {
+          "level": 2,
+          "title": "Identity",
+          "line": 16
+        },
+        {
+          "level": 2,
+          "title": "Communication Style",
+          "line": 20
+        },
+        {
+          "level": 2,
+          "title": "Principles",
+          "line": 24
+        },
+        {
+          "level": 2,
+          "title": "Research Discipline",
+          "line": 30
+        },
+        {
+          "level": 2,
+          "title": "Sidecar",
+          "line": 42
+        },
+        {
+          "level": 2,
+          "title": "On Activation",
+          "line": 48
+        },
+        {
+          "level": 2,
+          "title": "External Skills",
+          "line": 87
+        },
+        {
+          "level": 2,
+          "title": "Skill Availability",
+          "line": 100
+        }
+      ],
+      "table_count": 0,
+      "table_lines": 0,
+      "fenced_block_count": 1,
+      "fenced_block_lines": 4,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": true,
+      "has_progression": false,
+      "wall_of_text": [],
+      "overview_lines": 7,
+      "is_skill_md": true
+    },
+    {
+      "file": "README.md",
+      "line_count": 150,
+      "token_estimate": 1809,
+      "sections": [
+        {
+          "level": 2,
+          "title": "What It Does",
+          "line": 5
+        },
+        {
+          "level": 2,
+          "title": "Key Features",
+          "line": 17
+        },
+        {
+          "level": 2,
+          "title": "Architecture",
+          "line": 28
+        },
+        {
+          "level": 2,
+          "title": "Prerequisites",
+          "line": 58
+        },
+        {
+          "level": 2,
+          "title": "Installation",
+          "line": 64
+        },
+        {
+          "level": 2,
+          "title": "Updating",
+          "line": 86
+        },
+        {
+          "level": 2,
+          "title": "Quick Start",
+          "line": 100
+        },
+        {
+          "level": 2,
+          "title": "Suno Model Compatibility",
+          "line": 108
+        },
+        {
+          "level": 2,
+          "title": "File Structure",
+          "line": 118
+        },
+        {
+          "level": 2,
+          "title": "License",
+          "line": 143
+        },
+        {
+          "level": 2,
+          "title": "Credits",
+          "line": 147
+        }
+      ],
+      "table_count": 2,
+      "table_lines": 13,
+      "fenced_block_count": 5,
+      "fenced_block_lines": 39,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": false,
+      "has_progression": true,
+      "wall_of_text": [
+        {
+          "start_line": 33,
+          "length": 16
+        },
+        {
+          "start_line": 121,
+          "length": 20
+        }
+      ],
+      "is_skill_md": false,
+      "prompt_frontmatter": {
+        "has_frontmatter": false,
+        "fields": {},
+        "missing_fields": [
+          "name",
+          "description",
+          "menu-code"
+        ]
+      }
+    },
+    {
+      "file": "SUNO-REFERENCE.md",
+      "line_count": 234,
+      "token_estimate": 4675,
+      "sections": [
+        {
+          "level": 2,
+          "title": "Model Comparison",
+          "line": 7
+        },
+        {
+          "level": 2,
+          "title": "Plan Comparison",
+          "line": 24
+        },
+        {
+          "level": 2,
+          "title": "Package Field Mapping",
+          "line": 53
+        },
+        {
+          "level": 2,
+          "title": "Style Prompt Best Practices",
+          "line": 74
+        },
+        {
+          "level": 3,
+          "title": "Exclude Styles (Pro/Premier)",
+          "line": 99
+        },
+        {
+          "level": 2,
+          "title": "Metatag Reference",
+          "line": 114
+        },
+        {
+          "level": 3,
+          "title": "Section Tags",
+          "line": 116
+        },
+        {
+          "level": 3,
+          "title": "Descriptor Tags",
+          "line": 139
+        },
+        {
+          "level": 3,
+          "title": "Key Rules",
+          "line": 143
+        },
+        {
+          "level": 3,
+          "title": "Formatting as Suno Controls",
+          "line": 153
+        },
+        {
+          "level": 2,
+          "title": "Troubleshooting Suno Issues",
+          "line": 165
+        },
+        {
+          "level": 3,
+          "title": "Prompt and Formatting Issues",
+          "line": 169
+        },
+        {
+          "level": 3,
+          "title": "Audio Quality Issues",
+          "line": 185
+        },
+        {
+          "level": 3,
+          "title": "Creative Issues",
+          "line": 195
+        },
+        {
+          "level": 2,
+          "title": "Covers, Remixes, and Inspo",
+          "line": 207
+        },
+        {
+          "level": 3,
+          "title": "Cover Feature",
+          "line": 209
+        },
+        {
+          "level": 3,
+          "title": "Remix Umbrella \u2014 Four Workflows",
+          "line": 216
+        },
+        {
+          "level": 3,
+          "title": "v4.5+ Pro Additional Tools",
+          "line": 222
+        },
+        {
+          "level": 3,
+          "title": "Cover vs Remix vs Inspo Decision Matrix",
+          "line": 227
+        }
+      ],
+      "table_count": 8,
+      "table_lines": 91,
+      "fenced_block_count": 0,
+      "fenced_block_lines": 0,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": false,
+      "has_progression": true,
+      "wall_of_text": [],
+      "is_skill_md": false,
+      "prompt_frontmatter": {
+        "has_frontmatter": false,
+        "fields": {},
+        "missing_fields": [
+          "name",
+          "description",
+          "menu-code"
+        ]
+      }
+    },
+    {
+      "file": "USAGE.md",
+      "line_count": 808,
+      "token_estimate": 9294,
+      "sections": [
+        {
+          "level": 2,
+          "title": "Table of Contents",
+          "line": 7
+        },
+        {
+          "level": 2,
+          "title": "1. Getting Started",
+          "line": 21
+        },
+        {
+          "level": 3,
+          "title": "First-Run Experience",
+          "line": 23
+        },
+        {
+          "level": 3,
+          "title": "The 4 Setup Questions",
+          "line": 31
+        },
+        {
+          "level": 3,
+          "title": "What Gets Created",
+          "line": 44
+        },
+        {
+          "level": 2,
+          "title": "2. Interaction Modes",
+          "line": 62
+        },
+        {
+          "level": 3,
+          "title": "Demo Mode",
+          "line": 66
+        },
+        {
+          "level": 3,
+          "title": "Studio Mode",
+          "line": 84
+        },
+        {
+          "level": 3,
+          "title": "Jam Mode",
+          "line": 105
+        },
+        {
+          "level": 3,
+          "title": "Auto-Detect",
+          "line": 124
+        },
+        {
+          "level": 3,
+          "title": "Switching Modes Mid-Session",
+          "line": 134
+        },
+        {
+          "level": 3,
+          "title": "Changing Preferences",
+          "line": 142
+        },
+        {
+          "level": 2,
+          "title": "3. Creating Songs (the Main Workflow)",
+          "line": 156
+        },
+        {
+          "level": 3,
+          "title": "Step 1: Providing Song Direction",
+          "line": 160
+        },
+        {
+          "level": 3,
+          "title": "Step 2: Providing Source Text",
+          "line": 186
+        },
+        {
+          "level": 3,
+          "title": "Instrumental-Only Songs",
+          "line": 198
+        },
+        {
+          "level": 3,
+          "title": "Non-English Lyrics",
+          "line": 206
+        },
+        {
+          "level": 3,
+          "title": "Long Text Handling",
+          "line": 214
+        },
+        {
+          "level": 3,
+          "title": "The Output Package",
+          "line": 224
+        },
+        {
+          "level": 2,
+          "title": "Your Suno Package",
+          "line": 231
+        },
+        {
+          "level": 3,
+          "title": "Lyrics",
+          "line": 233
+        },
+        {
+          "level": 3,
+          "title": "Style Prompt (v4.5-all)",
+          "line": 280
+        },
+        {
+          "level": 3,
+          "title": "Exclude Styles",
+          "line": 287
+        },
+        {
+          "level": 3,
+          "title": "Settings",
+          "line": 290
+        },
+        {
+          "level": 3,
+          "title": "Song Title",
+          "line": 295
+        },
+        {
+          "level": 3,
+          "title": "Wild Card Variant -- The Unexpected Take",
+          "line": 298
+        },
+        {
+          "level": 3,
+          "title": "Tips for Using the Output in Suno",
+          "line": 308
+        },
+        {
+          "level": 2,
+          "title": "4. Band Profiles",
+          "line": 326
+        },
+        {
+          "level": 3,
+          "title": "What a Band Profile Is",
+          "line": 328
+        },
+        {
+          "level": 3,
+          "title": "Why You Would Want One",
+          "line": 332
+        },
+        {
+          "level": 3,
+          "title": "Creating Your First Profile",
+          "line": 342
+        },
+        {
+          "level": 3,
+          "title": "Writer Voice Analysis",
+          "line": 370
+        },
+        {
+          "level": 3,
+          "title": "Loading and Switching Profiles",
+          "line": 386
+        },
+        {
+          "level": 3,
+          "title": "Editing Profiles",
+          "line": 396
+        },
+        {
+          "level": 3,
+          "title": "Duplicating Profiles",
+          "line": 408
+        },
+        {
+          "level": 3,
+          "title": "Health Check",
+          "line": 417
+        },
+        {
+          "level": 2,
+          "title": "5. Refining Songs (the Feedback Loop)",
+          "line": 436
+        },
+        {
+          "level": 3,
+          "title": "How to Start a Refinement",
+          "line": 440
+        },
+        {
+          "level": 3,
+          "title": "The Five Feedback Types",
+          "line": 451
+        },
+        {
+          "level": 3,
+          "title": "How Mac Handles Vague Feedback",
+          "line": 465
+        },
+        {
+          "level": 3,
+          "title": "What the Adjustment Recommendations Look Like",
+          "line": 503
+        },
+        {
+          "level": 2,
+          "title": "Feedback Summary",
+          "line": 508
+        },
+        {
+          "level": 2,
+          "title": "Before/After Preview",
+          "line": 512
+        },
+        {
+          "level": 2,
+          "title": "Style Prompt Adjustments",
+          "line": 518
+        },
+        {
+          "level": 2,
+          "title": "Exclusion Prompt Adjustments",
+          "line": 526
+        },
+        {
+          "level": 2,
+          "title": "Strategy Note",
+          "line": 529
+        },
+        {
+          "level": 3,
+          "title": "Profile Update Suggestions",
+          "line": 534
+        },
+        {
+          "level": 3,
+          "title": "The Iteration Loop",
+          "line": 543
+        },
+        {
+          "level": 2,
+          "title": "6. Direct Skill Access",
+          "line": 555
+        },
+        {
+          "level": 3,
+          "title": "When to Use Skills Directly vs. Through Mac",
+          "line": 566
+        },
+        {
+          "level": 3,
+          "title": "Skill Quick Reference",
+          "line": 575
+        },
+        {
+          "level": 3,
+          "title": "Lyric Transformer Options",
+          "line": 584
+        },
+        {
+          "level": 3,
+          "title": "Audio Analysis with External Tools",
+          "line": 599
+        },
+        {
+          "level": 3,
+          "title": "Improving Your Suno Prompting with A/B Testing",
+          "line": 608
+        },
+        {
+          "level": 3,
+          "title": "Playlist Sequencing",
+          "line": 620
+        },
+        {
+          "level": 2,
+          "title": "7. Songbook & Memory",
+          "line": 634
+        },
+        {
+          "level": 3,
+          "title": "Browse Songbook (menu code: SB)",
+          "line": 636
+        },
+        {
+          "level": 3,
+          "title": "How Mac Remembers Your Preferences",
+          "line": 655
+        },
+        {
+          "level": 3,
+          "title": "How Session Memory Works",
+          "line": 664
+        },
+        {
+          "level": 3,
+          "title": "Saving and Resuming Sessions",
+          "line": 674
+        },
+        {
+          "level": 2,
+          "title": "8. Headless/Automation",
+          "line": 684
+        },
+        {
+          "level": 3,
+          "title": "Headless Create-Song",
+          "line": 690
+        },
+        {
+          "level": 3,
+          "title": "Headless Modes for Each Skill",
+          "line": 709
+        },
+        {
+          "level": 3,
+          "title": "Headless Error Contract",
+          "line": 738
+        },
+        {
+          "level": 3,
+          "title": "Batch Processing Concept",
+          "line": 750
+        },
+        {
+          "level": 2,
+          "title": "9. Troubleshooting",
+          "line": 756
+        },
+        {
+          "level": 3,
+          "title": "Common Issues and Solutions",
+          "line": 758
+        },
+        {
+          "level": 3,
+          "title": "What to Do When Skills Are Unavailable",
+          "line": 771
+        },
+        {
+          "level": 3,
+          "title": "Suno-Specific Issues",
+          "line": 782
+        },
+        {
+          "level": 3,
+          "title": "Getting Unstuck",
+          "line": 786
+        },
+        {
+          "level": 2,
+          "title": "Quick Reference: Menu Codes",
+          "line": 796
+        }
+      ],
+      "table_count": 9,
+      "table_lines": 67,
+      "fenced_block_count": 26,
+      "fenced_block_lines": 166,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": false,
+      "has_progression": true,
+      "wall_of_text": [],
+      "is_skill_md": false,
+      "prompt_frontmatter": {
+        "has_frontmatter": false,
+        "fields": {},
+        "missing_fields": [
+          "name",
+          "description",
+          "menu-code"
+        ]
+      }
+    },
+    {
+      "file": "browse-songbook.md",
+      "line_count": 46,
+      "token_estimate": 370,
+      "sections": [
+        {
+          "level": 2,
+          "title": "Step 1: Scan Available Content",
+          "line": 11
+        },
+        {
+          "level": 2,
+          "title": "Step 2: Present Overview",
+          "line": 20
+        },
+        {
+          "level": 2,
+          "title": "Your Songbook",
+          "line": 25
+        },
+        {
+          "level": 3,
+          "title": "{Band Profile Name}",
+          "line": 27
+        },
+        {
+          "level": 3,
+          "title": "Unaffiliated",
+          "line": 31
+        },
+        {
+          "level": 2,
+          "title": "Step 3: Interact",
+          "line": 35
+        },
+        {
+          "level": 2,
+          "title": "Output",
+          "line": 43
+        }
+      ],
+      "table_count": 0,
+      "table_lines": 0,
+      "fenced_block_count": 1,
+      "fenced_block_lines": 8,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": false,
+      "has_progression": false,
+      "wall_of_text": [],
+      "is_skill_md": false,
+      "prompt_frontmatter": {
+        "has_frontmatter": true,
+        "fields": {
+          "name": "browse-songbook",
+          "description": "Browse past songs, successful prompts, and creative history.",
+          "menu-code": "SB"
+        },
+        "missing_fields": []
+      }
+    },
+    {
+      "file": "create-song.md",
+      "line_count": 218,
+      "token_estimate": 3123,
+      "sections": [
+        {
+          "level": 2,
+          "title": "Headless Mode",
+          "line": 11
+        },
+        {
+          "level": 2,
+          "title": "Interactive Mode",
+          "line": 31
+        },
+        {
+          "level": 2,
+          "title": "Step 1: Set the Mode",
+          "line": 33
+        },
+        {
+          "level": 2,
+          "title": "Step 2: Gather Direction",
+          "line": 48
+        },
+        {
+          "level": 2,
+          "title": "Step 3: Run Lyric Transformer (skip if instrumental)",
+          "line": 105
+        },
+        {
+          "level": 2,
+          "title": "Step 4: Run Style Prompt Builder",
+          "line": 129
+        },
+        {
+          "level": 2,
+          "title": "Step 5: Present the Complete Package",
+          "line": 138
+        },
+        {
+          "level": 2,
+          "title": "Your Suno Package",
+          "line": 143
+        },
+        {
+          "level": 3,
+          "title": "Persona",
+          "line": 146
+        },
+        {
+          "level": 3,
+          "title": "Inspo",
+          "line": 151
+        },
+        {
+          "level": 3,
+          "title": "Lyrics",
+          "line": 155
+        },
+        {
+          "level": 3,
+          "title": "Style Prompt ({model_name})",
+          "line": 160
+        },
+        {
+          "level": 3,
+          "title": "Exclude Styles",
+          "line": 167
+        },
+        {
+          "level": 3,
+          "title": "Settings",
+          "line": 174
+        },
+        {
+          "level": 3,
+          "title": "Song Title",
+          "line": 188
+        },
+        {
+          "level": 3,
+          "title": "Wild Card Variant \u2014 The Unexpected Take",
+          "line": 191
+        },
+        {
+          "level": 2,
+          "title": "Step 6: Quick Refinement (Optional)",
+          "line": 210
+        }
+      ],
+      "table_count": 1,
+      "table_lines": 6,
+      "fenced_block_count": 2,
+      "fenced_block_lines": 61,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": false,
+      "has_progression": true,
+      "wall_of_text": [],
+      "is_skill_md": false,
+      "prompt_frontmatter": {
+        "has_frontmatter": true,
+        "fields": {
+          "name": "create-song",
+          "description": "Orchestrated song creation \u2014 gathers direction, runs Lyric Transformer + Style Prompt Builder, presents complete Suno-ready package.",
+          "menu-code": "CS"
+        },
+        "missing_fields": []
+      }
+    },
+    {
+      "file": "init.md",
+      "line_count": 56,
+      "token_estimate": 524,
+      "sections": [
+        {
+          "level": 2,
+          "title": "Memory Location",
+          "line": 10
+        },
+        {
+          "level": 2,
+          "title": "Setup Questions",
+          "line": 14
+        },
+        {
+          "level": 2,
+          "title": "Initial Structure",
+          "line": 28
+        },
+        {
+          "level": 2,
+          "title": "Access Boundaries",
+          "line": 35
+        },
+        {
+          "level": 2,
+          "title": "Read Access",
+          "line": 42
+        },
+        {
+          "level": 2,
+          "title": "Write Access",
+          "line": 46
+        },
+        {
+          "level": 2,
+          "title": "Deny Zones",
+          "line": 49
+        },
+        {
+          "level": 2,
+          "title": "Ready",
+          "line": 53
+        }
+      ],
+      "table_count": 0,
+      "table_lines": 0,
+      "fenced_block_count": 1,
+      "fenced_block_lines": 11,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": false,
+      "has_progression": false,
+      "wall_of_text": [],
+      "is_skill_md": false,
+      "prompt_frontmatter": {
+        "has_frontmatter": true,
+        "fields": {
+          "name": "init",
+          "description": "First-run setup \u2014 captures user preferences, creates sidecar memory structure, and establishes access boundaries."
+        },
+        "missing_fields": [
+          "menu-code"
+        ]
+      }
+    },
+    {
+      "file": "refine-song.md",
+      "line_count": 104,
+      "token_estimate": 1245,
+      "sections": [
+        {
+          "level": 2,
+          "title": "Step 1: Gather Context",
+          "line": 11
+        },
+        {
+          "level": 2,
+          "title": "Step 2: Run Feedback Elicitor",
+          "line": 33
+        },
+        {
+          "level": 2,
+          "title": "Step 3: Route Adjustments",
+          "line": 47
+        },
+        {
+          "level": 2,
+          "title": "Step 4: Present Updated Package",
+          "line": 73
+        },
+        {
+          "level": 2,
+          "title": "Updated Suno Package",
+          "line": 80
+        },
+        {
+          "level": 3,
+          "title": "What Changed",
+          "line": 82
+        },
+        {
+          "level": 2,
+          "title": "Step 5: Profile Update Check",
+          "line": 92
+        },
+        {
+          "level": 2,
+          "title": "Loop",
+          "line": 101
+        }
+      ],
+      "table_count": 0,
+      "table_lines": 0,
+      "fenced_block_count": 1,
+      "fenced_block_lines": 6,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": false,
+      "has_progression": true,
+      "wall_of_text": [],
+      "is_skill_md": false,
+      "prompt_frontmatter": {
+        "has_frontmatter": true,
+        "fields": {
+          "name": "refine-song",
+          "description": "Post-generation refinement \u2014 runs Feedback Elicitor and routes adjustments back through Style Prompt Builder and/or Lyric Transformer.",
+          "menu-code": "RS"
+        },
+        "missing_fields": []
+      }
+    },
+    {
+      "file": "save-memory.md",
+      "line_count": 31,
+      "token_estimate": 259,
+      "sections": [
+        {
+          "level": 2,
+          "title": "Process",
+          "line": 11
+        },
+        {
+          "level": 2,
+          "title": "Output",
+          "line": 28
+        }
+      ],
+      "table_count": 0,
+      "table_lines": 0,
+      "fenced_block_count": 0,
+      "fenced_block_lines": 0,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": false,
+      "has_progression": false,
+      "wall_of_text": [],
+      "is_skill_md": false,
+      "prompt_frontmatter": {
+        "has_frontmatter": true,
+        "fields": {
+          "name": "save-memory",
+          "description": "Explicitly save current session context to memory",
+          "menu-code": "SM"
+        },
+        "missing_fields": []
+      }
+    }
+  ]
+}

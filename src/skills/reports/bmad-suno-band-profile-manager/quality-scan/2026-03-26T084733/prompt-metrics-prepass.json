@@ -1,0 +1,190 @@
+{
+  "scanner": "prompt-craft-prepass",
+  "script": "prepass-prompt-metrics.py",
+  "version": "1.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-band-profile-manager",
+  "timestamp": "2026-03-26T13:48:32.419367+00:00",
+  "status": "info",
+  "skill_md_summary": {
+    "line_count": 174,
+    "token_estimate": 3627,
+    "overview_lines": 7,
+    "table_count": 1,
+    "table_lines": 12,
+    "fenced_block_count": 0,
+    "fenced_block_lines": 0,
+    "section_count": 14
+  },
+  "prompt_health": {
+    "total_prompts": 1,
+    "prompts_with_config_header": 0,
+    "prompts_with_progression": 0
+  },
+  "aggregate": {
+    "total_files_scanned": 2,
+    "total_token_estimate": 4466,
+    "total_waste_patterns": 0,
+    "total_back_references": 0,
+    "total_suggestive_loading": 0,
+    "total_wall_of_text": 0
+  },
+  "resource_sizes": {},
+  "files": [
+    {
+      "file": "SKILL.md",
+      "line_count": 174,
+      "token_estimate": 3627,
+      "sections": [
+        {
+          "level": 2,
+          "title": "Overview",
+          "line": 8
+        },
+        {
+          "level": 2,
+          "title": "Activation Mode Detection",
+          "line": 16
+        },
+        {
+          "level": 2,
+          "title": "On Activation",
+          "line": 33
+        },
+        {
+          "level": 2,
+          "title": "Workflow Operations",
+          "line": 58
+        },
+        {
+          "level": 3,
+          "title": "Create Profile",
+          "line": 60
+        },
+        {
+          "level": 3,
+          "title": "List Profiles",
+          "line": 93
+        },
+        {
+          "level": 3,
+          "title": "Load Profile",
+          "line": 99
+        },
+        {
+          "level": 3,
+          "title": "Edit Profile",
+          "line": 107
+        },
+        {
+          "level": 3,
+          "title": "Delete Profile",
+          "line": 115
+        },
+        {
+          "level": 3,
+          "title": "Duplicate Profile",
+          "line": 119
+        },
+        {
+          "level": 3,
+          "title": "Analyze Writer Voice",
+          "line": 129
+        },
+        {
+          "level": 3,
+          "title": "Health Check",
+          "line": 149
+        },
+        {
+          "level": 2,
+          "title": "Post-Operation Flow",
+          "line": 163
+        },
+        {
+          "level": 2,
+          "title": "Scripts",
+          "line": 167
+        }
+      ],
+      "table_count": 1,
+      "table_lines": 12,
+      "fenced_block_count": 0,
+      "fenced_block_lines": 0,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": true,
+      "has_progression": true,
+      "wall_of_text": [],
+      "overview_lines": 7,
+      "is_skill_md": true
+    },
+    {
+      "file": "README.md",
+      "line_count": 64,
+      "token_estimate": 839,
+      "sections": [
+        {
+          "level": 2,
+          "title": "When to Use Directly vs. Through Mac",
+          "line": 5
+        },
+        {
+          "level": 2,
+          "title": "Operations",
+          "line": 9
+        },
+        {
+          "level": 3,
+          "title": "Interactive Mode (default)",
+          "line": 11
+        },
+        {
+          "level": 3,
+          "title": "Headless Mode (`--headless` or `-H`)",
+          "line": 24
+        },
+        {
+          "level": 2,
+          "title": "Scripts",
+          "line": 34
+        },
+        {
+          "level": 2,
+          "title": "Example Invocation",
+          "line": 43
+        },
+        {
+          "level": 2,
+          "title": "Profiles Storage",
+          "line": 57
+        },
+        {
+          "level": 2,
+          "title": "Part of the BMad Suno Band Manager Module",
+          "line": 61
+        }
+      ],
+      "table_count": 2,
+      "table_lines": 16,
+      "fenced_block_count": 1,
+      "fenced_block_lines": 9,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": false,
+      "has_progression": false,
+      "wall_of_text": [],
+      "is_skill_md": false,
+      "prompt_frontmatter": {
+        "has_frontmatter": false,
+        "fields": {},
+        "missing_fields": [
+          "name",
+          "description",
+          "menu-code"
+        ]
+      }
+    }
+  ]
+}

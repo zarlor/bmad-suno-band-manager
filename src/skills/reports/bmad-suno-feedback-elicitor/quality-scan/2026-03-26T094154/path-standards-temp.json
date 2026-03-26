@@ -1,0 +1,166 @@
+{
+  "scanner": "path-standards",
+  "script": "scan-path-standards.py",
+  "version": "2.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-feedback-elicitor",
+  "timestamp": "2026-03-26T14:42:06.029009+00:00",
+  "files_scanned": [
+    "README.md",
+    "SKILL.md",
+    "bmad-manifest.json",
+    "references/feedback-triage-guide.md",
+    "references/gemini-audio-analysis.md",
+    "references/suno-parameter-map.md"
+  ],
+  "status": "fail",
+  "findings": [
+    {
+      "file": "README.md",
+      "line": 0,
+      "severity": "high",
+      "category": "structure",
+      "title": "Prompt file at skill root: README.md",
+      "detail": "All progressive disclosure content must be in ./references/ \u2014 only SKILL.md belongs at root",
+      "action": "Move README.md to references/README.md"
+    },
+    {
+      "file": "README.md",
+      "line": 65,
+      "severity": "high",
+      "category": "relative-prefix",
+      "title": "Parent directory reference (../) found \u2014 fragile, breaks with reorganization",
+      "detail": "This skill is part of the [BMad Suno Band Manager](../bmad-suno-agent-band-manager/README.md) module. For the full guide",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 90,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "- **Band profile** \u2014 Are they working with a saved profile? If yes, read from `{project-root}/docs/band-profiles/{profil",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 325,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "3. **Iteration log persistence:** If the user wants to save the iteration log for future sessions, save to `{project-roo",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 100,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "**Headless mode:** Accept all context fields as structured input. Run `scripts/parse-feedback.py` to validate input stru",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 104,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Classify the feedback into one of five types. Load `references/feedback-triage-guide.md` for detailed classification rul",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 125,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "2. **Map to parameters** \u2014 Load `references/suno-parameter-map.md` and identify which Suno inputs need to change:",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 148,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "The user knows something is off but can't say what. This is where the skill earns its keep. Use the three-phase elicitat",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 189,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "2. **Load `references/suno-parameter-map.md`** \u2014 consult the \"Audio Quality & Artifacts\" and \"Suno Studio Resolution Pat",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 211,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "**Translate elicitation results to structured dimensions:** Convert the natural language findings from Steps 4a-4e into ",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 217,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Run `scripts/map-adjustments.py` with these structured dimensions to get baseline parameter adjustment recommendations, ",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 333,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Available scripts in `scripts/`:",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 334,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "- `parse-feedback.py` \u2014 Validates and extracts structured dimensions from feedback input (headless mode). Handles both v",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 335,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "- `map-adjustments.py` \u2014 Maps feedback dimension categories to Suno parameter adjustment recommendations. Includes consi",
+      "action": ""
+    }
+  ],
+  "assessments": {},
+  "summary": {
+    "total_findings": 14,
+    "by_severity": {
+      "critical": 2,
+      "high": 12,
+      "medium": 0,
+      "low": 0
+    },
+    "by_category": {
+      "project_root_not_bmad": 2,
+      "bare_bmad": 0,
+      "double_prefix": 0,
+      "absolute_path": 0,
+      "relative_prefix": 1,
+      "bare_internal_path": 10,
+      "memory_path": 0,
+      "frontmatter": 0,
+      "structure": 1
+    },
+    "assessment": "Path standards scan complete"
+  }
+}

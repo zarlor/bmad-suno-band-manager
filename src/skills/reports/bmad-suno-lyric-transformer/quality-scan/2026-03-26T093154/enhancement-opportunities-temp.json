@@ -1,0 +1,342 @@
+{
+  "scanner": "enhancement-opportunities",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-lyric-transformer",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 68,
+      "severity": "high-opportunity",
+      "category": "experience-gap",
+      "title": "No graceful path when user's text is in a language with no Latin script and syllable counting is meaningless",
+      "detail": "The skill warns about non-English input and offers to skip script-based analysis, but the user must make that call. For languages like Mandarin, Japanese, or Arabic, syllable counting, rhyme detection, and cliche detection are all fundamentally inapplicable — not just 'English-optimized.' A confused user who says 'yes, run the scripts anyway' gets misleading data presented as authoritative. The skill should detect script type and auto-skip inapplicable analyses rather than putting the burden on the user.",
+      "action": "Add script-type detection in analyze-input.py (Latin vs CJK vs Arabic vs Cyrillic). For non-Latin scripts, auto-skip syllable-counter.py and cliche-detector.py entirely, log the skip reason, and rely on LLM judgment. Present the skip to the user as a positive: 'I'm using my own judgment for rhythm and freshness analysis since your text is in [language] — the scripts are English-tuned and would give misleading results.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 96,
+      "severity": "high-opportunity",
+      "category": "facilitative-pattern",
+      "title": "Refinement Mode lacks a feedback loop confirmation — user never sees what changed before it ships",
+      "detail": "When invoked via --headless:refine with an adjustment spec from the Feedback Elicitor, the skill processes adjustments and returns updated lyrics — but there is no diff or change summary in the headless output contract. The user (or calling agent) gets back transformed_lyrics and a transformation_summary, but no structured accounting of which adjustments were applied, which were partially applied, or which conflicted. This is especially risky for section-restructure adjustments that cascade into other sections.",
+      "action": "Extend the Headless Output Contract with an 'adjustments_applied' array that maps each input adjustment to its outcome: {type, status: 'applied|partial|skipped', detail: 'what changed'}. For interactive refinement, show a targeted diff of only the changed sections before finalizing."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 148,
+      "severity": "high-opportunity",
+      "category": "edge-case",
+      "title": "Compaction survival block is emitted once but never refreshed after transformations mutate state",
+      "detail": "The compaction survival block is emitted before Step 3 transformations begin, capturing the initial state (source_hash, transforms, profile, voice_constraints, emotional_core, character_budget). But as transformations proceed — especially if the user iterates through Step 5 refinement loops — the state diverges from what was captured. If compaction fires mid-refinement, the agent loses the current draft state and reverts to the initial snapshot. For a skill where users may iterate 3-5 times on cliche alternatives or rhythmic tweaks, this is a real risk.",
+      "action": "Re-emit an updated compaction survival block after each refinement loop in Step 5, and after any transformation that changes section structure (ST, CE, CC, FR). Include a hash of the current draft lyrics so post-compaction recovery can detect drift. Consider also storing the current draft in a temp file that survives compaction."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 72,
+      "severity": "medium-opportunity",
+      "category": "edge-case",
+      "title": "Band profile file not found produces no defined recovery path",
+      "detail": "Step 1 says to read from {project-root}/docs/band-profiles/{profile-name}.yaml if the user wants a saved profile. But if the file doesn't exist (typo, wrong profile name, project not initialized), there's no guidance on what happens. The user might not know their exact profile name. A first-timer who heard 'use your profile' from another skill would hit a dead end.",
+      "action": "When the profile file is not found: (1) list available profiles in the band-profiles directory, (2) offer fuzzy matching on the name they provided, (3) offer to proceed without a profile. Add a 'list profiles' micro-capability that can be invoked independently."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 124,
+      "severity": "medium-opportunity",
+      "category": "delight-opportunity",
+      "title": "Transformation menu could suggest combinations based on the input analysis results",
+      "detail": "Step 2 presents the transformation menu with static default recommendations (ST + CC + RA + CD). But the input analysis from Step 1 already knows whether the text has existing structure, rhyme patterns, repeated phrases, and character count. A poem that already rhymes beautifully doesn't need RE. A poem with a clear repeated refrain should get CE instead of CC. The menu could be personalized based on what the analysis actually found, turning a generic menu into a smart recommendation.",
+      "action": "After Step 1 analysis, dynamically adjust the default recommendation: if existing metatags detected, default to RA + CD (as partially noted for pre-structured input); if strong repeated phrases found, swap CC for CE; if rhyme density is low, add RE to defaults; if character count is already near 2700, skip CC (adding a chorus would blow the budget). Present as: 'Based on your text, I recommend [X] — here's why: [1-sentence rationale per option].'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 259,
+      "severity": "medium-opportunity",
+      "category": "experience-gap",
+      "title": "Presentation format in Step 5 doesn't help the user actually use the output — no copy-ready block",
+      "detail": "The transformed lyrics are presented in a markdown code block with a full summary, changes made section, and cliche report. But the user's next action is to paste these lyrics into Suno's lyrics field. They have to mentally separate the lyrics from the surrounding summary, manually copy just the lyrics portion, and hope they don't accidentally include the summary text. Every extra step between 'approve' and 'paste into Suno' is friction that degrades the experience.",
+      "action": "After the full presentation with summary, add a clearly labeled 'Copy-Ready Lyrics' section that contains ONLY the raw lyrics with metatags — no markdown formatting, no summary, no commentary. In headless mode this is already handled by the JSON contract, but interactive mode should offer a clean paste-ready block. Consider also offering a 'save to clipboard' script or file output."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 282,
+      "severity": "medium-opportunity",
+      "category": "facilitative-pattern",
+      "title": "Refinement loop in Step 5 lacks soft-gate elicitation — user may not know what to ask for",
+      "detail": "The refinement offer says 'Want to adjust anything?' but doesn't guide the user toward what might need adjusting. A first-timer who sees the transformed lyrics might think 'something feels off' but not know how to articulate it. The skill has rich analysis data (syllable patterns, cliche report, section lengths) that could surface specific refinement suggestions proactively.",
+      "action": "After presenting the transformation, offer 2-3 specific refinement suggestions based on the quality check data: 'The bridge has higher syllable density than the verses — want me to thin it out for contrast? The chorus hook is 4 words — want to try a shorter 2-word version? I kept one cliche in verse 2 because it fit the voice — want alternatives?' This turns a blank 'anything else?' into a guided soft gate."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 296,
+      "severity": "medium-opportunity",
+      "category": "delight-opportunity",
+      "title": "Handoff guidance misses the opportunity to generate a matching style prompt snippet",
+      "detail": "Step 6 reminds the user that lyrics go in the lyrics field and suggests the Style Prompt Builder for the style prompt. But the Lyric Transformer already knows the genre, mood, energy arc, vocal delivery cues, and instrument suggestions from the transformation process. It could generate a starter style prompt snippet that captures these decisions, saving the user from having to re-explain everything to the Style Prompt Builder.",
+      "action": "At handoff, offer: 'Based on the transformation, here's a starter style prompt that matches these lyrics: [genre], [mood descriptors], [instrument palette], [vocal character]. You can use this directly or refine it with the Style Prompt Builder.' This bridges the gap between skills and reduces context loss."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 68,
+      "severity": "medium-opportunity",
+      "category": "edge-case",
+      "title": "User who provides a file path to source text has no validation or error handling defined",
+      "detail": "Step 1 says 'Accept pasted text or a file path' for source text, but there's no guidance on what happens when the file path is invalid, the file is empty, the file is binary, or the file is enormous (10,000-line novel). The analyze-input.py script presumably handles files, but the SKILL.md doesn't address file-specific edge cases. A user who drags a .docx file path would get cryptic script errors.",
+      "action": "Add file input validation before passing to scripts: check file exists, is readable, is text (not binary), and is under a reasonable size (e.g., 50KB / ~3000 lines — since the Suno limit is 3000 chars, anything much larger than that needs trimming guidance). For unsupported formats, suggest: 'I can read plain text and markdown files. For Word docs, paste the text directly.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 10,
+      "severity": "medium-opportunity",
+      "category": "assumption-risk",
+      "title": "Skill assumes users understand what Suno is and how its lyrics field works",
+      "detail": "The entire skill is built around Suno-specific concepts (metatags, 3000-char limit, style prompt vs lyrics field, vocal engine behaviors) but never explains what Suno is or how its workflow operates. A user who was told 'use the Lyric Transformer to turn your poem into a song' might not know they need a Suno account, that there are two input fields, or what happens after the lyrics are pasted. The skill's domain context paragraph is written for the LLM, not surfaced to the user.",
+      "action": "Add a brief 'New to Suno?' detection in the greeting phase. If the user seems unfamiliar (first interaction, no band profile, asks basic questions), offer a 30-second orientation: 'Suno turns text into music. You'll paste these lyrics into the lyrics field, set a style prompt for the sound, and hit create. I handle the lyrics — the Style Prompt Builder handles the sound.' Keep it optional so experts aren't slowed down."
+    },
+    {
+      "file": "references/metatag-reference.md",
+      "line": null,
+      "severity": "medium-opportunity",
+      "category": "autonomous-potential",
+      "title": "Metatag reference is comprehensive but has no programmatic index for headless validation",
+      "detail": "The metatag-reference.md is a rich human-readable document with tables of tags, but validate-lyrics.py needs to know which tags are valid. If the validation script maintains its own hardcoded tag list, it will drift from the reference document. A headless pipeline that generates lyrics with a new tag from the reference could have that tag flagged as invalid by the validator.",
+      "action": "Consider extracting a metatag-registry.json from metatag-reference.md that both the reference doc and validate-lyrics.py consume as a single source of truth. This also enables other skills (Style Prompt Builder, Feedback Elicitor) to validate metatag usage without parsing markdown."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 299,
+      "severity": "low-opportunity",
+      "category": "delight-opportunity",
+      "title": "Songbook save could capture the transformation journey, not just the final artifact",
+      "detail": "The songbook save in Step 6 captures frontmatter with source hash, transformations applied, date, and notes. But it doesn't preserve the original source text, the analysis results, the cliche alternatives that were considered, or the refinement history. When a user returns to a saved song months later, they see the final lyrics but lose the creative decisions that shaped them. This is especially valuable for writers who want to revisit and revise.",
+      "action": "Extend the songbook format to optionally include a 'transformation-log' section: original source text (or hash + first 200 chars), analysis highlights (hook candidates, emotional arc), key decisions made (which cliche alternatives were chosen, which sections were restructured), and refinement iterations. Keep it collapsed/optional so it doesn't clutter the primary lyrics view."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 52,
+      "severity": "low-opportunity",
+      "category": "journey-friction",
+      "title": "bmad-init fallback is defined but the degraded experience is not characterized",
+      "detail": "When bmad-init is unavailable, the skill falls back to generic greeting and English defaults. But the user doesn't know WHY the greeting is generic or that features are missing. They might wonder why the agent didn't use their name or their preferred language. The fallback is functional but not transparent.",
+      "action": "When falling back, briefly note: 'I wasn't able to load your preferences, so I'll use defaults. You can tell me your name and preferred language if you'd like.' This turns a silent degradation into a transparent one."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 162,
+      "severity": "low-opportunity",
+      "category": "delight-opportunity",
+      "title": "Vocal delivery cue suggestions could be demonstrated with audio-imagination, not just described",
+      "detail": "Step 3b offers vocal delivery cues like 'A whispered verse into a belted chorus can create powerful dynamics' — but this is abstract. A first-timer doesn't viscerally understand what [Whispered] into [Belted] sounds like. The skill could paint a more vivid picture by referencing well-known songs that use similar dynamics, connecting the abstract tag to a felt experience.",
+      "action": "When suggesting vocal delivery cues, offer a reference: 'Think Pixies quiet-loud-quiet, or Billie Eilish whisper-to-drop. A [Whispered] verse into a [Belted] chorus creates that same tension-release.' Tailor the reference to the user's genre if a band profile or song direction is available."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 240,
+      "severity": "low-opportunity",
+      "category": "edge-case",
+      "title": "Character budget warning at 2700 chars doesn't account for metatag overhead",
+      "detail": "The skill checks total character count against 3000 and warns at 2700, but metatags like [Verse 1], [Chorus], [Vocal Style: harmonized], [Mood: dark, haunting] all consume character budget. A song with 2500 chars of actual lyrics plus 400 chars of metatags is at 2900 — dangerously close. The character budget calculation should distinguish between lyric content and metatag overhead.",
+      "action": "In validate-lyrics.py and the character budget display, break out: 'Lyrics: 2500 chars / Metatags: 400 chars / Total: 2900/3000 (97%).' This helps users understand where their budget is going and whether trimming metatags (fewer descriptors) or lyrics (shorter verses) is the better path."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "autonomous-potential",
+      "title": "Headless mode is exceptionally well-designed with three distinct sub-modes and a clear output contract",
+      "detail": "The --headless:analyze, --headless:transform, and --headless:refine sub-modes cover the three primary use cases for programmatic invocation. The output contract is structured JSON with all the fields a downstream consumer needs. The refinement mode accepts a typed adjustment spec from the Feedback Elicitor, creating a clean inter-skill protocol. This is one of the best headless implementations seen in a HITL skill.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "experience-gap",
+      "title": "Word Fidelity Mode respects writer attachment to their original language",
+      "detail": "The WF transformation option is a thoughtful design choice that acknowledges writers have varying levels of attachment to their words. Rather than forcing an all-or-nothing choice between 'keep everything' and 'rewrite everything,' WF constrains the skill to structural changes only. The mutual exclusion with FR is correctly enforced. This shows genuine understanding of the songwriter's psychology.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "facilitative-pattern",
+      "title": "Capture-don't-interrupt pattern is explicitly built into Step 1 for creative context",
+      "detail": "The 'Capture creative context' instruction in Step 1 tells the agent to capture ambient emotional context ('this is about my grandmother') before running analysis. This is textbook capture-don't-interrupt: let the user share in their creative flow, then use that context to inform downstream decisions. Well done.",
+      "action": ""
+    },
+    {
+      "file": "references/section-jobs.md",
+      "line": null,
+      "severity": "strength",
+      "category": "delight-opportunity",
+      "title": "Section job framework with very-short-poem strategies is a standout creative reference",
+      "detail": "The section-jobs.md reference goes beyond a generic section definition table. The 'Very Short Poem' handling with double delivery, chorus extraction, and thesis isolation strategies shows deep craft knowledge. The 'Song Duration — Let the Words Decide' philosophy prevents the common mistake of padding short poems. The structural metaphor section connecting musical form to lyrical meaning is genuinely innovative.",
+      "action": ""
+    },
+    {
+      "file": "references/metatag-reference.md",
+      "line": null,
+      "severity": "strength",
+      "category": "edge-case",
+      "title": "Metatag reference includes production-tested findings and confirmed failures, not just documentation",
+      "detail": "The metatag reference doesn't just list tags — it includes battle-tested production notes: BPM tags confirmed ineffective via librosa analysis, scream bleed-through prevention strategies, the harmonized vocal style sweet spot discovery, and the parenthetical backing vocal technique. This grounding in actual Suno behavior rather than theoretical documentation is extremely valuable.",
+      "action": ""
+    }
+  ],
+  "assessments": {
+    "skill_understanding": {
+      "purpose": "Transform poems, raw text, and rough lyrics into Suno-ready structured song lyrics with metatags, section architecture, and rhythmic consistency — while preserving writer voice and intent",
+      "primary_user": "Songwriters and poets who want to convert existing text into songs via Suno AI, ranging from first-timers pasting a poem to experienced producers with band profiles and specific transformation needs",
+      "key_assumptions": [
+        "Users have source text to transform (not creating from scratch)",
+        "Users have access to Suno and understand its two-field input model (lyrics + style prompt)",
+        "The scripts directory contains working Python scripts that produce reliable analysis",
+        "Band profiles exist in a predictable file location when referenced",
+        "English is the primary language for script-based analysis (syllables, cliches, rhymes)",
+        "Users complete the transformation in a single session or can re-invoke with saved songbook output"
+      ]
+    },
+    "user_journeys": [
+      {
+        "archetype": "first-timer",
+        "summary": "A poet who heard they can turn poems into songs with AI. They paste their poem and are guided through transformation options. The experience is rich but potentially overwhelming — seven transformation codes, mutual exclusions, and Suno-specific terminology. The greeting is warm, the capture-creative-context step draws out their intent, and the impact preview in Step 3c is genuinely helpful. But they may not understand why they need metatags, what the character budget means, or what to do with the output after approving it.",
+        "friction_points": [
+          "Transformation menu presents 8 options with codes — intimidating for someone who just wants 'make my poem a song'",
+          "No explanation of what Suno is or how the lyrics field works until Step 6 handoff",
+          "Technical terms (metatags, descriptor tags, syllable normalization) are not contextualized for non-musicians",
+          "If bmad-init fails silently, user doesn't know features are degraded"
+        ],
+        "bright_spots": [
+          "Creative context capture lets them share emotional intent naturally",
+          "Impact preview shows structural changes visually before applying",
+          "Default recommendations (ST + CC + RA + CD) are sensible — user can just say 'yes'",
+          "Word Fidelity Mode gives anxious writers a safety net"
+        ]
+      },
+      {
+        "archetype": "expert",
+        "summary": "An experienced Suno user with a band profile who knows exactly which transformations they want. They can specify options upfront, reference their profile, and skip the discovery phase. The skill accommodates this well — the menu is concise, mutual exclusions are validated by script, and the headless mode lets them bypass all interaction. The refinement loop in Step 5 lets them iterate quickly. The expert's main frustration would be waiting through analysis presentation they don't need.",
+        "friction_points": [
+          "Cannot skip the analysis presentation in Step 1 — expert already knows their text",
+          "No 'fast mode' that accepts all inputs in the first message and jumps to output",
+          "Refinement requires re-stating context that the skill should remember from the initial pass"
+        ],
+        "bright_spots": [
+          "Headless mode with sub-modes is excellent for power users",
+          "Band profile integration preserves voice constraints automatically",
+          "Script-based validation catches issues the expert might miss",
+          "Songbook save preserves work for future reference"
+        ]
+      },
+      {
+        "archetype": "confused",
+        "summary": "A user who was told 'use the Lyric Transformer' but actually wants to write a song from scratch, or wants an instrumental track, or wants to edit an existing Suno generation. The intent check in Step 1 catches the 'no source text' case and redirects to Band Manager or Style Prompt Builder. The instrumental redirect is also handled. But a user who has Suno-generated lyrics they want to improve (not raw text) falls into a gray area — the skill is designed for raw-to-structured, not structured-to-better.",
+        "friction_points": [
+          "User with existing Suno output wanting refinement is technically covered by pre-structured input detection but the experience is awkward — they're treated as a new transformation rather than a revision",
+          "Redirect to other skills assumes the user knows what those skills are",
+          "No 'I'm lost, what can you actually do?' help command"
+        ],
+        "bright_spots": [
+          "Intent check catches the most common mismatch (no source text) early",
+          "Instrumental-only redirect is thoughtful and offers an alternative (descriptor metatags for instrumental guidance)"
+        ]
+      },
+      {
+        "archetype": "edge-case",
+        "summary": "A user with technically valid but unexpected input: a 5000-word short story, song lyrics in Mandarin, a poem with existing but incorrect metatags, or text that is 90% stage directions and 10% actual lyrics. The skill handles some of these (non-English warning, pre-structured detection) but others would produce confusing results. The 3000-char budget check would flag the short story, but only after running full analysis — wasting time and tokens.",
+        "friction_points": [
+          "Very long input (well over 3000 chars) isn't flagged until after analysis — should warn upfront",
+          "Mixed content (stage directions + lyrics) would confuse the analyzer",
+          "Existing but malformed metatags (typos like [Vrese]) are not explicitly handled",
+          "Non-Latin script languages get unreliable script output with no auto-skip"
+        ],
+        "bright_spots": [
+          "Pre-structured input detection adapts defaults intelligently",
+          "Character budget tracking prevents silent Suno truncation",
+          "Non-English warning is honest about script limitations"
+        ]
+      },
+      {
+        "archetype": "hostile-environment",
+        "summary": "Scripts fail to execute (Python not available, permissions issue), band profile directory doesn't exist, bmad-init is unavailable, or context compaction fires mid-transformation. The skill handles bmad-init failure gracefully. But script failures have no defined fallback — if syllable-counter.py crashes, does the skill skip RA? If validate-lyrics.py is unavailable, does it skip quality checks? The compaction survival block exists but isn't refreshed during iteration.",
+        "friction_points": [
+          "No defined fallback when any of the 8 scripts fail — the skill depends on them for multiple steps",
+          "Compaction survival block is write-once, goes stale during refinement loops",
+          "No offline mode — web search mandate for Suno claims fails without connectivity",
+          "If band profile YAML is malformed, no error handling is specified"
+        ],
+        "bright_spots": [
+          "bmad-init fallback is clean and non-blocking",
+          "Compaction survival block exists at all — many skills don't consider this",
+          "Research mandate acknowledges uncertainty when search is unavailable"
+        ]
+      },
+      {
+        "archetype": "automator",
+        "summary": "A CI pipeline or another skill (like the Feedback Elicitor) invoking the Lyric Transformer headlessly. The headless mode is exceptionally well-designed with three sub-modes covering analysis, transformation, and refinement. The output contract is structured JSON. The adjustment spec format for refinement is typed and clear. The main gap is error reporting — if a headless invocation fails (bad input, script error, conflicting options), the error format isn't specified in the contract.",
+        "friction_points": [
+          "No error schema in the headless output contract — what does failure look like?",
+          "Refinement mode adjustments_applied outcomes aren't reported back",
+          "No way to pass communication_language or document_output_language as headless parameters (relies on bmad-init)"
+        ],
+        "bright_spots": [
+          "Three headless sub-modes cover all programmatic use cases",
+          "Adjustment spec from Feedback Elicitor is a clean inter-skill protocol",
+          "validate-options.py prevents invalid transformation combinations programmatically",
+          "Output contract includes original_hash for change tracking"
+        ]
+      }
+    ],
+    "autonomous_assessment": {
+      "potential": "headless-ready",
+      "hitl_points": 5,
+      "auto_resolvable": 4,
+      "needs_input": 1,
+      "suggested_output_contract": "Already defined: JSON with transformed_lyrics, transformation_summary, cliche_report, validation_result, and original_hash",
+      "required_inputs": [
+        "source text (required)",
+        "transformation options (defaults available: ST+CC+RA+CD)",
+        "band profile name (optional)",
+        "song direction/genre (optional, improves cliche alternatives)",
+        "language (optional, defaults to English)"
+      ],
+      "notes": "This skill is already headless-ready with a well-designed output contract and three sub-modes. The only HITL point that truly requires human input is transformation option selection when the user wants non-default options. All other interaction points (greeting, analysis presentation, impact preview, refinement offers) can be auto-resolved with reasonable defaults. The refinement mode's adjustment spec creates a clean programmatic interface for iterative improvement. The main enhancement would be adding error reporting to the headless contract."
+    },
+    "top_insights": [
+      {
+        "title": "The skill's greatest untapped opportunity is bridging the gap between Lyric Transformer output and Style Prompt Builder input",
+        "detail": "By the time the Lyric Transformer finishes, it knows everything needed to generate a starter style prompt: genre, mood, energy arc, vocal delivery choices, instrument suggestions from metatags, and tempo characteristics from line density decisions. Currently the user has to re-explain all of this to the Style Prompt Builder. A starter style prompt snippet at handoff would save significant user effort and reduce context loss between skills.",
+        "action": "Generate a 'starter style prompt' at Step 6 handoff that captures the musical decisions embedded in the transformed lyrics. This could be a simple text snippet or a structured object that the Style Prompt Builder can ingest directly."
+      },
+      {
+        "title": "Compaction survival is designed but fragile under iteration",
+        "detail": "The compaction survival block is a smart defensive measure, but it's emitted once and never updated. In a skill designed for iterative refinement (Step 5 explicitly loops), a stale compaction block could cause the agent to lose 3-4 rounds of refinement work. This is the highest-risk technical gap for real-world usage where conversations run long.",
+        "action": "Re-emit the compaction survival block after every state-changing operation (refinement loop, transformation change, section restructure). Include a draft hash so post-compaction recovery can detect whether the block is current."
+      },
+      {
+        "title": "Script failure resilience is the single biggest hostile-environment gap",
+        "detail": "The skill depends on 8 Python scripts across its workflow. If any script fails (Python version mismatch, missing dependency, permission error), there is no defined fallback behavior. The LLM can perform most of these analyses (syllable counting, cliche detection, structure analysis) at lower precision but acceptable quality. Defining graceful degradation from script-based to LLM-based analysis would make the skill dramatically more robust.",
+        "action": "For each script invocation, add a fallback clause: 'If [script] fails, perform the equivalent analysis using LLM judgment and note in the output that script-based validation was unavailable. Flag reduced precision in the transformation summary.'"
+      }
+    ]
+  },
+  "summary": {
+    "total_findings": 20,
+    "by_severity": {
+      "high-opportunity": 3,
+      "medium-opportunity": 8,
+      "low-opportunity": 4,
+      "strength": 5
+    },
+    "by_category": {
+      "edge_case": 4,
+      "experience_gap": 3,
+      "delight_opportunity": 4,
+      "assumption_risk": 1,
+      "journey_friction": 1,
+      "autonomous_potential": 1,
+      "facilitative_pattern": 2
+    },
+    "assessment": "This is an exceptionally well-crafted skill with production-tested Suno knowledge, a best-in-class headless mode, and thoughtful creative design choices like Word Fidelity Mode and capture-don't-interrupt. The boldest practical idea: generate a starter style prompt at handoff that captures the musical decisions embedded in the transformed lyrics, bridging the gap between this skill and the Style Prompt Builder. The most important resilience improvement: define graceful degradation to LLM-based analysis when any of the 8 scripts fail, and refresh the compaction survival block during iterative refinement."
+  }
+}

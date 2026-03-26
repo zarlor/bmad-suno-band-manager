@@ -92,7 +92,7 @@ def analyze_energy(y, sr):
         print(f"{format_time(start_time):<15} {pct:>5}%  {bar}")
 
     # Detect significant energy shifts
-    print(f"\n--- Energy Shifts (>20% change) ---")
+    print("\n--- Energy Shifts (>20% change) ---")
     found = False
     for i in range(1, len(energies)):
         diff = energies[i] - energies[i-1]

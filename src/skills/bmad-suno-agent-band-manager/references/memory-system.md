@@ -108,4 +108,4 @@ Regularly (every few sessions or when files grow large):
 
 ## First Run
 
-If sidecar doesn't exist, load `init.md` to create the structure.
+If sidecar doesn't exist, load `./references/init.md` to create the structure.

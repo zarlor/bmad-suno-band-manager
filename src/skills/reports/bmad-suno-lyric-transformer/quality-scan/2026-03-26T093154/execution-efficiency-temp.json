@@ -1,0 +1,85 @@
+{
+  "scanner": "execution-efficiency",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-lyric-transformer",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 84,
+      "severity": "strength",
+      "category": "parallelization",
+      "title": "Step 1 input analysis uses explicit parallel batching",
+      "detail": "analyze-input.py, syllable-counter.py, and reference file loading are all explicitly grouped as a single parallel batch. This avoids sequential tool calls for independent operations.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 242,
+      "severity": "strength",
+      "category": "parallelization",
+      "title": "Step 4 quality check scripts run as a parallel batch",
+      "detail": "validate-lyrics.py, syllable-counter.py --estimate-duration, and section-length-checker.py are explicitly batched in parallel. This is the correct pattern for independent validation steps.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 251,
+      "severity": "strength",
+      "category": "resource-optimization",
+      "title": "Syllable counter results reused when RA was already applied",
+      "detail": "Step 4 item 5 explicitly avoids re-running syllable-counter.py if RA was applied in Step 3d and no further changes were made. This prevents redundant script execution.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 87,
+      "severity": "strength",
+      "category": "resource-optimization",
+      "title": "Reference files strategically pre-loaded in Step 1 for Step 3 use",
+      "detail": "section-jobs.md and metatag-reference.md are loaded during Step 1 analysis rather than waiting until Step 3 transformation. This avoids mid-transform loading delays and keeps them available across all transformation sub-steps.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 135,
+      "severity": "low",
+      "category": "missing-batch",
+      "title": "Transformation option validation could batch with user confirmation",
+      "detail": "validate-options.py is called separately to check mutual exclusions after the user selects options. In headless mode, this validation could be batched with the Step 1 analysis scripts if the options are known upfront, saving one sequential tool call round-trip.",
+      "action": "In headless mode, when transformation options are provided in the input, batch validate-options.py with the Step 1 analysis scripts rather than running it separately in Step 2."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 282,
+      "severity": "low",
+      "category": "missing-batch",
+      "title": "lyrics-diff.py in Step 5 could run in parallel with presentation assembly",
+      "detail": "scripts/lyrics-diff.py generates the before/after comparison and scripts/assemble-summary.py assembles the transformation summary. These are independent of each other and could be batched in one tool call, but Step 5 does not explicitly instruct parallel execution.",
+      "action": "Add an explicit instruction to run lyrics-diff.py and assemble-summary.py in a single parallel batch before presenting results to the user."
+    }
+  ],
+  "assessments": {
+    "execution_profile": {
+      "parallelization": "strong — two explicit parallel batches (Step 1 analysis, Step 4 validation) cover the main independent operations",
+      "sequential_justification": "Step 3 transformations are genuinely dependent (each builds on the prior), so sequential execution is correct",
+      "subagent_usage": "not applicable — single-source skill processes one text input, no multi-source analysis requiring delegation",
+      "memory_loading": "appropriate — no sidecar memory; band profile loaded on demand; references pre-loaded strategically",
+      "resource_loading": "good — references loaded once in Step 1 and reused across Step 3 sub-steps; syllable results reused when applicable"
+    }
+  },
+  "summary": {
+    "total_findings": 6,
+    "by_severity": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 2,
+      "strength": 4
+    },
+    "by_category": {
+      "parallelization": 2,
+      "resource-optimization": 2,
+      "missing-batch": 2
+    },
+    "assessment": "Execution efficiency is strong. The skill explicitly parallelizes its two main independent operation groups (input analysis and quality validation) and reuses script results when possible. The sequential transformation pipeline in Step 3 is correctly ordered due to genuine dependencies. Two minor batching opportunities exist in headless mode and presentation assembly."
+  }
+}

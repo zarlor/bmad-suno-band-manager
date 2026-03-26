@@ -1,0 +1,180 @@
+{
+  "scanner": "path-standards",
+  "script": "scan-path-standards.py",
+  "version": "2.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-agent-band-manager",
+  "timestamp": "2026-03-26T14:53:05.897842+00:00",
+  "files_scanned": [
+    "README.md",
+    "SKILL.md",
+    "SUNO-REFERENCE.md",
+    "USAGE.md",
+    "bmad-manifest.json",
+    "browse-songbook.md",
+    "create-song.md",
+    "init.md",
+    "references/memory-system.md",
+    "refine-song.md",
+    "save-memory.md"
+  ],
+  "status": "fail",
+  "findings": [
+    {
+      "file": "USAGE.md",
+      "line": 0,
+      "severity": "high",
+      "category": "structure",
+      "title": "Prompt file at skill root: USAGE.md",
+      "detail": "All progressive disclosure content must be in ./references/ \u2014 only SKILL.md belongs at root",
+      "action": "Move USAGE.md to references/USAGE.md"
+    },
+    {
+      "file": "browse-songbook.md",
+      "line": 0,
+      "severity": "high",
+      "category": "structure",
+      "title": "Prompt file at skill root: browse-songbook.md",
+      "detail": "All progressive disclosure content must be in ./references/ \u2014 only SKILL.md belongs at root",
+      "action": "Move browse-songbook.md to references/browse-songbook.md"
+    },
+    {
+      "file": "save-memory.md",
+      "line": 0,
+      "severity": "high",
+      "category": "structure",
+      "title": "Prompt file at skill root: save-memory.md",
+      "detail": "All progressive disclosure content must be in ./references/ \u2014 only SKILL.md belongs at root",
+      "action": "Move save-memory.md to references/save-memory.md"
+    },
+    {
+      "file": "SUNO-REFERENCE.md",
+      "line": 0,
+      "severity": "high",
+      "category": "structure",
+      "title": "Prompt file at skill root: SUNO-REFERENCE.md",
+      "detail": "All progressive disclosure content must be in ./references/ \u2014 only SKILL.md belongs at root",
+      "action": "Move SUNO-REFERENCE.md to references/SUNO-REFERENCE.md"
+    },
+    {
+      "file": "create-song.md",
+      "line": 0,
+      "severity": "high",
+      "category": "structure",
+      "title": "Prompt file at skill root: create-song.md",
+      "detail": "All progressive disclosure content must be in ./references/ \u2014 only SKILL.md belongs at root",
+      "action": "Move create-song.md to references/create-song.md"
+    },
+    {
+      "file": "README.md",
+      "line": 0,
+      "severity": "high",
+      "category": "structure",
+      "title": "Prompt file at skill root: README.md",
+      "detail": "All progressive disclosure content must be in ./references/ \u2014 only SKILL.md belongs at root",
+      "action": "Move README.md to references/README.md"
+    },
+    {
+      "file": "refine-song.md",
+      "line": 0,
+      "severity": "high",
+      "category": "structure",
+      "title": "Prompt file at skill root: refine-song.md",
+      "detail": "All progressive disclosure content must be in ./references/ \u2014 only SKILL.md belongs at root",
+      "action": "Move refine-song.md to references/refine-song.md"
+    },
+    {
+      "file": "init.md",
+      "line": 0,
+      "severity": "high",
+      "category": "structure",
+      "title": "Prompt file at skill root: init.md",
+      "detail": "All progressive disclosure content must be in ./references/ \u2014 only SKILL.md belongs at root",
+      "action": "Move init.md to references/init.md"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 46,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Load `references/memory-system.md` for memory discipline and structure.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 56,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "- **Check first-run** \u2014 If `{project-root}/_bmad/_memory/band-manager-sidecar/` folder does not exist, run `scripts/pre-",
+      "action": ""
+    },
+    {
+      "file": "USAGE.md",
+      "line": 28,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "2. If it does not exist, Mac runs `scripts/pre-activate.py` to scaffold the directory.",
+      "action": ""
+    },
+    {
+      "file": "USAGE.md",
+      "line": 643,
+      "severity": "high",
+      "category": "bare-bmad",
+      "title": "Bare _bmad reference without {project-root} prefix",
+      "detail": "- `_bmad/_memory/band-manager-sidecar/chronology.md` -- Session timeline",
+      "action": ""
+    },
+    {
+      "file": "browse-songbook.md",
+      "line": 14,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "- `{project-root}/docs/songbook/` \u2014 Saved lyrics from Lyric Transformer",
+      "action": ""
+    },
+    {
+      "file": "browse-songbook.md",
+      "line": 15,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "- `{project-root}/docs/feedback-history/` \u2014 Iteration logs from Feedback Elicitor",
+      "action": ""
+    },
+    {
+      "file": "create-song.md",
+      "line": 56,
+      "severity": "critical",
+      "category": "project-root-not-bmad",
+      "title": "{project-root} used for non-_bmad path \u2014 only valid use is {project-root}/_bmad/...",
+      "detail": "- **Band profile** \u2014 Ask if they want to use a saved profile. If yes, invoke `bmad-suno-band-profile-manager` to load it",
+      "action": ""
+    }
+  ],
+  "assessments": {},
+  "summary": {
+    "total_findings": 15,
+    "by_severity": {
+      "critical": 3,
+      "high": 12,
+      "medium": 0,
+      "low": 0
+    },
+    "by_category": {
+      "project_root_not_bmad": 3,
+      "bare_bmad": 1,
+      "double_prefix": 0,
+      "absolute_path": 0,
+      "relative_prefix": 0,
+      "bare_internal_path": 3,
+      "memory_path": 0,
+      "frontmatter": 0,
+      "structure": 8
+    },
+    "assessment": "Path standards scan complete"
+  }
+}

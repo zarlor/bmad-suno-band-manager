@@ -23,7 +23,7 @@ This skill transforms poems, raw text, and rough lyrics into Suno-ready structur
    - If `--headless:transform` → full transformation with default options
    - If `--headless:refine` → accept adjustment spec from Feedback Elicitor, apply targeted changes (see Refinement Mode)
    - If just `--headless` with text → analyze + transform with balanced defaults
-   - Validate transformation options via `scripts/validate-options.py` before proceeding
+   - Validate transformation options via `./scripts/validate-options.py` before proceeding
    - Output structured JSON per Headless Output Contract, no interaction
 
 2. **Interactive mode** (default): Proceed to On Activation below
@@ -82,9 +82,9 @@ Collect the raw material and understand what the user wants.
 **Input analysis (always run):**
 
 Run these in a single parallel batch:
-- `scripts/analyze-input.py` on the raw text — extracts existing metatags, repeated phrases, rhyme pairs, line/word/character counts, and structure estimation
-- `scripts/syllable-counter.py` on the raw text — line-by-line syllable counts and rhythm analysis
-- Load `references/section-jobs.md` and `references/metatag-reference.md` (pre-load for Step 3)
+- `./scripts/analyze-input.py` on the raw text — extracts existing metatags, repeated phrases, rhyme pairs, line/word/character counts, and structure estimation
+- `./scripts/syllable-counter.py` on the raw text — line-by-line syllable counts and rhythm analysis
+- Load `./references/section-jobs.md` and `./references/metatag-reference.md` (pre-load for Step 3)
 
 **Non-English input:** If the source text is not in English (detected by analyze-input.py or user-specified), warn that syllable counting, cliche detection, and rhyme analysis are English-optimized. Offer to skip script-based analysis for those dimensions and rely on LLM judgment instead. Structure tagging and chorus creation work across languages.
 
@@ -132,7 +132,7 @@ Present available transformations. The user can pick multiple. Default recommend
 | **CD** | Cliche Detection* | Flag overused phrases and suggest alternatives |
 | **WF** | Word Fidelity Mode | Strict constraint: use the writer's exact words, only add structure |
 
-**Mutual exclusions** — validate via `scripts/validate-options.py`:
+**Mutual exclusions** — validate via `./scripts/validate-options.py`:
 - **FR** (Full Rewrite) and **WF** (Word Fidelity) are mutually exclusive
 - **CE** (Chorus Extraction) is skipped if **FR** is selected
 - **CC** (Chorus Creation) is skipped if **CE** finds strong existing chorus material (user can override)
@@ -143,7 +143,7 @@ Present available transformations. The user can pick multiple. Default recommend
 
 ### Step 3: Transform
 
-Apply selected transformations in this order. Use the pre-loaded `references/section-jobs.md` for section role definitions and `references/metatag-reference.md` for tag syntax (including vocal delivery cues).
+Apply selected transformations in this order. Use the pre-loaded `./references/section-jobs.md` for section role definitions and `./references/metatag-reference.md` for tag syntax (including vocal delivery cues).
 
 **Compaction survival block:** Before beginning transformations, emit a compact state summary that survives context compaction:
 ```
@@ -199,7 +199,7 @@ Stanza 3 (lines 13-18)      Verse 2 (lines 7-12)
 "Your poem would go from X lines/Y chars to A lines/B chars with the chorus repeated. Still within Suno's 3,000-char budget."
 
 **3d. Rhythmic Adjustment (RA):**
-- Run `scripts/syllable-counter.py` on the current draft
+- Run `./scripts/syllable-counter.py` on the current draft
 - Within each section, normalize syllable counts to a target range (not identical, but consistent enough for stable vocal phrasing)
 - Adjust by: trimming filler words, breaking long lines, combining short fragments, substituting words with different syllable counts
 - If word fidelity mode: only break/combine lines, never substitute words
@@ -230,7 +230,7 @@ Stanza 3 (lines 13-18)      Verse 2 (lines 7-12)
 - This is the most creative transformation — explain your choices
 
 **3g. Cliche Detection (CD):**
-- Run `scripts/cliche-detector.py` on the current draft
+- Run `./scripts/cliche-detector.py` on the current draft
 - For each flagged phrase, suggest 2-3 **genre-aware** alternatives that preserve the meaning but use fresher language. If song direction or band profile specifies a genre/mood, tailor alternatives to fit (earthy alternatives for country, visceral for rock, ethereal for indie folk)
 - Present flagged phrases to the user: "I found N cliches. Here are alternatives tailored to your [genre] vibe — pick the ones you like, or keep the originals if they're intentional."
 - If word fidelity mode: flag but don't auto-replace, only suggest
@@ -241,9 +241,9 @@ Stanza 3 (lines 13-18)      Verse 2 (lines 7-12)
 
 Run validation on the transformed lyrics. Run these scripts in parallel (single batch):
 
-1. `scripts/validate-lyrics.py` — metatag formatting, blank lines, style cue contamination, section count, song length, **character count vs. 3,000-char limit**, punctuation density
-2. `scripts/syllable-counter.py --estimate-duration` — syllable balance and duration estimate. **Note:** The script's duration estimate is a rough heuristic based on line count, syllable density, and instrumental section tags. Actual Suno output varies significantly — present the estimate with appropriate caveats and never state it as a hard limit. If the user questions the estimate, use web search to verify current Suno generation length behavior for their model/tier.
-3. `scripts/section-length-checker.py` — section content lengths vs. expected ranges from the section-jobs framework. Does not count descriptor metatag lines as content. Supports `--genre prog` flag for relaxed section length constraints in progressive/metal genres.
+1. `./scripts/validate-lyrics.py` — metatag formatting, blank lines, style cue contamination, section count, song length, **character count vs. 3,000-char limit**, punctuation density
+2. `./scripts/syllable-counter.py --estimate-duration` — syllable balance and duration estimate. **Note:** The script's duration estimate is a rough heuristic based on line count, syllable density, and instrumental section tags. Actual Suno output varies significantly — present the estimate with appropriate caveats and never state it as a hard limit. If the user questions the estimate, use web search to verify current Suno generation length behavior for their model/tier.
+3. `./scripts/section-length-checker.py` — section content lengths vs. expected ranges from the section-jobs framework. Does not count descriptor metatag lines as content. Supports `--genre prog` flag for relaxed section length constraints in progressive/metal genres.
 
 After scripts complete:
 
@@ -279,7 +279,7 @@ Present the transformed lyrics with context.
 - Kept: {list of cliches user chose to keep, if interactive}
 ```
 
-**Before/after diff:** Use `scripts/lyrics-diff.py` to generate a structured comparison between original and transformed text. Present as an annotated diff showing which transformation code caused each change, so users can say "undo the RA changes in verse 2 but keep the CD replacements."
+**Before/after diff:** Use `./scripts/lyrics-diff.py` to generate a structured comparison between original and transformed text. Present as an annotated diff showing which transformation code caused each change, so users can say "undo the RA changes in verse 2 but keep the CD replacements."
 
 **Offer refinement:**
 - "Want to adjust anything? I can tweak specific sections, change the chorus, adjust rhythmic targets, or try different cliche alternatives."
@@ -300,12 +300,12 @@ After the user approves:
 
 ## Scripts
 
-Available scripts in `scripts/`:
-- `validate-lyrics.py` — Validates lyrics structure, metatags, formatting, character count (3,000-char Suno limit), and punctuation density. Run `scripts/validate-lyrics.py --help` for usage.
-- `cliche-detector.py` — Detects cliche phrases in lyrics with categorized alternatives. Run `scripts/cliche-detector.py --help` for usage.
-- `syllable-counter.py` — Counts syllables per line, analyzes rhythmic consistency, and estimates song duration. Run `scripts/syllable-counter.py --help` for usage.
-- `validate-options.py` — Validates transformation option selections against mutual exclusion rules. Run `scripts/validate-options.py --help` for usage.
-- `section-length-checker.py` — Checks section content lengths against expected ranges from the section-jobs framework. Run `scripts/section-length-checker.py --help` for usage.
-- `analyze-input.py` — Pre-analyzes raw input text for existing structure, repeated phrases, rhyme pairs, and character count. Run `scripts/analyze-input.py --help` for usage.
-- `lyrics-diff.py` — Produces structured diff between original and transformed lyrics. Run `scripts/lyrics-diff.py --help` for usage.
-- `assemble-summary.py` — Assembles the Transformation Summary block from script outputs. Run `scripts/assemble-summary.py --help` for usage.
+Available scripts in `./scripts/`:
+- `validate-lyrics.py` — Validates lyrics structure, metatags, formatting, character count (3,000-char Suno limit), and punctuation density. Run `./scripts/validate-lyrics.py --help` for usage.
+- `cliche-detector.py` — Detects cliche phrases in lyrics with categorized alternatives. Run `./scripts/cliche-detector.py --help` for usage.
+- `syllable-counter.py` — Counts syllables per line, analyzes rhythmic consistency, and estimates song duration. Run `./scripts/syllable-counter.py --help` for usage.
+- `validate-options.py` — Validates transformation option selections against mutual exclusion rules. Run `./scripts/validate-options.py --help` for usage.
+- `section-length-checker.py` — Checks section content lengths against expected ranges from the section-jobs framework. Run `./scripts/section-length-checker.py --help` for usage.
+- `analyze-input.py` — Pre-analyzes raw input text for existing structure, repeated phrases, rhyme pairs, and character count. Run `./scripts/analyze-input.py --help` for usage.
+- `lyrics-diff.py` — Produces structured diff between original and transformed lyrics. Run `./scripts/lyrics-diff.py --help` for usage.
+- `assemble-summary.py` — Assembles the Transformation Summary block from script outputs. Run `./scripts/assemble-summary.py --help` for usage.

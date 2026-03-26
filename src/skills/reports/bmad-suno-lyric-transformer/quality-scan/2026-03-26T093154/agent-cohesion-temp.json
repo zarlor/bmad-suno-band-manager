@@ -1,0 +1,167 @@
+{
+  "scanner": "agent-cohesion",
+  "agent_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-lyric-transformer",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Exceptionally well-designed transformation menu with clear granularity",
+      "detail": "The seven transformation options (ST, CE, CC, RA, RE, FR, CD) plus WF mode are at exactly the right level of abstraction. Each has a distinct, non-overlapping purpose. The mutual exclusion rules (FR vs WF, CE skipped with FR) show careful design thinking. Users can compose transformations to match their level of creative attachment to the source material. This is the core differentiator of the skill and it is executed very well.",
+      "action": "No action needed. This is a model for capability granularity."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Deep domain expertise woven throughout with production-tested knowledge",
+      "detail": "The skill goes far beyond basic lyrics formatting. Production-tested findings like scream bleed-through prevention, exclamation point bark triggers, ALL CAPS as loudness ceiling, parentheses as backing vocals, line density as primary tempo control, and BPM tags being confirmed ineffective — these represent hard-won knowledge that would take a user dozens of iterations to discover. The metatag-reference.md is practically a standalone Suno production bible. This elevates the skill from a formatter to a genuine expert collaborator.",
+      "action": "No action needed. Continue capturing production learnings in the references."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Complete user journey from raw text to Suno-ready output with handoff guidance",
+      "detail": "The six-step workflow (Gather Input, Select Transformations, Transform, Quality Check, Present and Refine, Handoff Guidance) covers the full lifecycle. The handoff step is particularly well-designed: it reminds users that lyrics go in the lyrics field (not style prompt), coaches on iteration strategy (generate 3-5 versions), connects to the Style Prompt Builder and Feedback Elicitor, and offers songbook saving. No dead ends — every step feeds forward.",
+      "action": "No action needed."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Headless mode and refinement mode enable orchestration integration",
+      "detail": "The three headless sub-modes (analyze, transform, refine) with a well-defined JSON output contract allow Mac (the orchestrating agent) and the Feedback Elicitor to drive this skill programmatically. The refinement mode accepts a structured adjustment spec with typed adjustments (section-restructure, line-rewrite, metatag-change, rhythmic-fix). This is thoughtful API design for an agent skill — it acts as both an interactive collaborator and a headless pipeline component.",
+      "action": "No action needed."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "medium",
+      "category": "gap",
+      "title": "No explicit multi-language lyric transformation guidance beyond a warning",
+      "detail": "Step 1 mentions that syllable counting, cliche detection, and rhyme analysis are English-optimized and offers to skip script-based analysis for non-English input. However, the skill claims structure tagging and chorus creation 'work across languages' without providing any language-specific guidance. For a user transforming a Spanish poem or Japanese haiku into a Suno song, the skill offers to degrade gracefully but not to adapt. Given that Suno supports multiple languages and the skill already handles communication_language vs document_output_language, this is a meaningful gap in the core workflow.",
+      "action": "Add a brief multi-language transformation guidance section — even a paragraph noting key differences (e.g., syllable counting approaches for syllable-timed vs stress-timed languages, rhyme conventions in Romance vs Germanic languages). If full support is out of scope, state that explicitly and narrow the skill description to English-primary."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "medium",
+      "category": "gap",
+      "title": "No versioning or history tracking for iterative refinement loops",
+      "detail": "The skill supports refinement mode and iterative adjustment, and the headless output includes an original_hash for change tracking. However, there is no mechanism to track versions across multiple refinement passes. If a user transforms lyrics, hears the Suno output, requests changes via Feedback Elicitor, and then wants to go back to a previous version, there is no version history. The songbook save is a single snapshot, not a version chain. For a skill that explicitly supports iterative loops (transform, listen on Suno, refine, repeat), this is a workflow gap.",
+      "action": "Consider adding version tracking to the songbook save — append a version number or timestamp, and maintain a brief changelog in the frontmatter. Alternatively, save each refinement pass as a separate file with a link to the previous version."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "low",
+      "category": "gap",
+      "title": "No guidance for collaborative or multi-song workflows",
+      "detail": "The skill handles one song at a time. For concept albums, EP workflows, or users transforming a collection of poems into a cohesive set, there is no guidance on maintaining thematic or sonic consistency across songs. The band profile partially addresses this (consistent writer voice), but there is no 'album mode' or batch transformation capability. This is an edge case but relevant for the kind of serious songwriter this skill targets.",
+      "action": "Consider a suggestion in the README or SKILL.md noting that for multi-song consistency, users should establish a band profile first and use consistent song direction parameters. A future enhancement could support batch headless transformation with shared parameters."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "low",
+      "category": "redundancy",
+      "title": "Scream bleed-through prevention guidance duplicated across SKILL.md and metatag-reference.md",
+      "detail": "The scream bleed-through prevention strategies appear in both SKILL.md Step 3b (Structure Tagging) and metatag-reference.md (Scream Bleed-Through Prevention section). The content is nearly identical — vocal style reset with whispered, explicit reset tags after aggressive sections, avoiding exclamation points and ALL CAPS after aggressive sections, buffer sections. While reference duplication is sometimes intentional for standalone readability, this creates a maintenance burden where updates to one location may not propagate to the other.",
+      "action": "Keep the detailed guidance in metatag-reference.md (the authoritative reference) and reduce SKILL.md Step 3b to a brief mention with a pointer: 'Apply scream bleed-through prevention (see metatag-reference.md) after aggressive sections.' This also applies to the harmonized vocal style sweet spot guidance, which appears in both files."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "low",
+      "category": "redundancy",
+      "title": "Line density as tempo control duplicated across SKILL.md and metatag-reference.md",
+      "detail": "The line density as primary tempo control mechanism is explained in detail in both SKILL.md Step 3d (Rhythmic Adjustment) and metatag-reference.md (Line Density as Tempo Control). Both locations include the short-lines-slow / packed-lines-fast framework and the recommendation to vary density between sections for tempo contrast. The metatag-reference version is more comprehensive (includes the multi-technique approach table), making the SKILL.md version partially redundant.",
+      "action": "In SKILL.md Step 3d, reference metatag-reference.md for the full tempo control framework rather than restating it. Keep only the RA-specific application notes (e.g., normalize WITHIN sections not across them)."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "Emotional arc visualization could enhance the transformation preview",
+      "detail": "Step 3a maps the emotional arc (setup, tension, peak, resolution) but this analysis is only used internally for transformation decisions. Presenting the emotional arc visually to the user — as a simple text-based energy curve or annotated section map — would help users understand WHY sections were placed where they were and make more informed refinement requests. The impact preview in Step 3c shows structural comparison but not emotional logic. This would make the skill feel more like a true creative collaborator and less like a black box. Type: creative enhancement. Estimated impact: medium — improves user understanding and trust in transformation decisions.",
+      "action": "Add an optional emotional arc visualization to the Step 5 presentation output. Could be as simple as a text diagram: 'Verse 1 [setup/low] -> Pre-Chorus [tension/rising] -> Chorus [payoff/peak] -> Verse 2 [deepen/medium] -> Bridge [contrast/shift] -> Final Chorus [climax/high] -> Outro [resolve/fade]'."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "A/B variant generation could leverage Suno's inherent randomness",
+      "detail": "Step 6 advises users to 'generate 3-5 versions on Suno' because Suno interprets the same lyrics differently each time. The skill could go further by offering to generate 2-3 slight lyric variants optimized for different interpretations — for example, one version with more aggressive metatags and one with softer ones, or one with a whispered verse opener and one with a belted opener. This would give users structured variation rather than hoping Suno's randomness produces good variety. Type: creative enhancement. Estimated impact: medium — directly addresses the iteration coaching advice with actionable skill support.",
+      "action": "Add an optional 'Generate Variants' sub-step after Step 4 that produces 2-3 metatag-varied versions of the approved lyrics (same words, different delivery/energy tags). Output as labeled variants the user can paste into Suno separately."
+    },
+    {
+      "file": "bmad-manifest.json",
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "Manifest could expose transformation options as sub-capabilities for richer orchestration",
+      "detail": "The bmad-manifest.json exposes two capabilities: transform-lyrics and analyze-lyrics. However, the skill internally has seven distinct transformation types (ST, CE, CC, RA, RE, FR, CD) plus WF mode. Exposing these as parameters or sub-capabilities in the manifest would allow Mac (the orchestrator) to make more targeted invocations — for example, calling just CD (cliche detection) on already-structured lyrics without running the full pipeline. Type: integration enhancement. Estimated impact: low-medium — improves orchestration granularity but current headless mode options partially address this.",
+      "action": "Consider adding a 'parameters' or 'options' field to the transform-lyrics capability in bmad-manifest.json that documents the available transformation codes. This would make the skill's internal capabilities discoverable to orchestrating agents without requiring them to parse SKILL.md."
+    },
+    {
+      "file": "references/section-jobs.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Section-jobs framework is practical and production-informed",
+      "detail": "The section job framework goes beyond textbook song structure by including production-tested guidance specific to Suno: very short poem handling strategies (double delivery, chorus extraction, thesis isolation), the explicit warning against padding with instrumental tags, the 'let the words decide' duration philosophy, and through-composed structure notes. The 'What NOT to do' callout is particularly valuable — it prevents a common mistake that would produce bad Suno output. This reference elevates every transformation the skill performs.",
+      "action": "No action needed."
+    }
+  ],
+  "assessments": {
+    "agent_identity": {
+      "name": "bmad-suno-lyric-transformer",
+      "persona_summary": "A songwriter's workshop collaborator that understands both songwriting craft and Suno's AI music generation quirks. Approaches transformation as a menu of options rather than all-or-nothing, respecting the writer's attachment to their words while offering expert-level structural and rhythmic guidance.",
+      "primary_purpose": "Transform poems, raw text, and rough lyrics into Suno-ready structured song lyrics with metatags, proper section architecture, and rhythmic consistency.",
+      "capability_count": 8
+    },
+    "cohesion_analysis": {
+      "persona_alignment": {
+        "score": "strong",
+        "notes": "The persona of a songwriter's workshop collaborator is thoroughly embodied. The skill speaks like a knowledgeable co-writer ('What's the one line you want stuck in people's heads?'), respects creative ownership (WF mode, user-choosable transformations), and brings genuine domain expertise (production-tested Suno knowledge). The persona is not just a label — it informs design decisions like offering transformation menus instead of all-or-nothing rewrites, and coaching iteration strategy rather than claiming perfect output."
+      },
+      "capability_completeness": {
+        "score": "mostly-complete",
+        "missing_areas": [
+          "multi-language transformation guidance beyond English",
+          "version tracking across refinement iterations",
+          "multi-song/album consistency workflow"
+        ],
+        "notes": "The core text-to-lyrics transformation workflow is thoroughly covered with no gaps. The seven transformation options plus WF mode cover the full spectrum from minimal touch to full rewrite. Scripts support every analysis and validation step. The gaps are at the edges: non-English support degrades to 'skip scripts, use LLM judgment' without specific guidance, iterative refinement has no version history, and multi-song workflows are not addressed. None of these are blocking for the primary use case."
+      },
+      "redundancy_level": {
+        "score": "some-overlap",
+        "consolidation_opportunities": [
+          {
+            "capabilities": ["SKILL.md Step 3b scream bleed-through", "metatag-reference.md Scream Bleed-Through Prevention"],
+            "suggested_consolidation": "Keep detailed guidance in metatag-reference.md only; SKILL.md references it with a brief pointer."
+          },
+          {
+            "capabilities": ["SKILL.md Step 3d line density guidance", "metatag-reference.md Line Density as Tempo Control"],
+            "suggested_consolidation": "Keep comprehensive multi-technique framework in metatag-reference.md; SKILL.md Step 3d focuses only on RA-specific application."
+          },
+          {
+            "capabilities": ["SKILL.md Step 3b harmonized vocal sweet spot", "metatag-reference.md Vocal Style Findings"],
+            "suggested_consolidation": "Same pattern — authoritative detail in reference, brief application note in SKILL.md."
+          }
+        ]
+      },
+      "external_integration": {
+        "external_skills_referenced": 3,
+        "integration_pattern": "intentional",
+        "notes": "Three external integrations are clearly designed: (1) bmad-init skill for config loading with graceful fallback, (2) Style Prompt Builder as a natural next step after lyrics are approved, (3) Feedback Elicitor as input source for refinement mode via structured adjustment specs. The band profile system connects to the Band Manager agent. Mac (the orchestrator) is referenced as the coordination layer. All integrations serve the workflow — none feel arbitrary. The skill functions standalone (interactive mode without bmad-init) or as a pipeline component (headless mode driven by Mac)."
+      },
+      "user_journey_score": {
+        "score": "complete-end-to-end",
+        "broken_workflows": [],
+        "notes": "A user can accomplish real work end-to-end: paste a poem, understand its analysis, choose transformations, review results with structural context, refine iteratively, and get actionable guidance for the next step (Suno generation with iteration tips, Style Prompt Builder for sound design, songbook saving). The headless mode enables programmatic orchestration. The refinement loop via Feedback Elicitor creates a feedback cycle that extends beyond this skill. No dead ends — every path produces value."
+      }
+    }
+  },
+  "summary": {
+    "total_findings": 13,
+    "by_severity": {"high": 0, "medium": 2, "low": 3, "suggestion": 3, "strength": 5},
+    "by_category": {"gap": 3, "redundancy": 2, "misalignment": 0, "opportunity": 3, "strength": 5},
+    "overall_cohesion": "cohesive",
+    "single_most_important_fix": "Add multi-language transformation guidance — the skill already handles language detection and communication language routing, but non-English transformation degrades to 'skip scripts, use LLM judgment' without specific guidance, which undercuts the skill's expert collaborator persona for non-English users."
+  }
+}

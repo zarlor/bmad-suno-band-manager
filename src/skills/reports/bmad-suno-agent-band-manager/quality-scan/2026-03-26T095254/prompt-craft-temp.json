@@ -1,0 +1,154 @@
+{
+  "scanner": "prompt-craft",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-agent-band-manager",
+  "findings": [
+    {
+      "file": "browse-songbook.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "self-containment",
+      "title": "No config header with language or project-root variables",
+      "detail": "browse-songbook.md lacks a config header. It uses {project-root} references but does not declare or receive these variables. If SKILL.md is compacted out of context, the prompt has no way to resolve these paths. All 5 capability prompts share this issue (0 of 5 have config headers per pre-pass).",
+      "action": "Add a config header to each capability prompt that declares required variables (at minimum {project-root} and {communication_language}), or document that these are inherited from the activation context."
+    },
+    {
+      "file": "init.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "self-containment",
+      "title": "No config header — relies on SKILL.md context for variables",
+      "detail": "init.md uses {project-root} but has no config header declaring it. If invoked after context compaction drops SKILL.md, the agent has no source for the variable.",
+      "action": "Add config header declaring {project-root} and {communication_language}."
+    },
+    {
+      "file": "save-memory.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "self-containment",
+      "title": "No config header — relies on SKILL.md context for variables",
+      "detail": "save-memory.md uses {project-root} but has no config header. Same compaction survival issue as other prompts.",
+      "action": "Add config header declaring {project-root}."
+    },
+    {
+      "file": "create-song.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "self-containment",
+      "title": "No config header despite heavy use of context variables",
+      "detail": "create-song.md uses {project-root}, {model_name}, and references band profiles by path, yet has no config header. This is the most complex capability prompt and most vulnerable to context compaction.",
+      "action": "Add config header declaring {project-root}, {communication_language}, and document expected context variables."
+    },
+    {
+      "file": "refine-song.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "self-containment",
+      "title": "No config header — relies on session context for variables",
+      "detail": "refine-song.md references {project-root} and expects session state from create-song but has no config header.",
+      "action": "Add config header declaring required variables."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 30,
+      "severity": "low",
+      "category": "token-waste",
+      "title": "Research Discipline section is verbose for SKILL.md — candidate for extraction",
+      "detail": "The Research Discipline section (lines 30-40, ~11 lines) repeats guidance that applies to all orchestrated skills. While the principle is load-bearing (it prevents hallucination about Suno capabilities), the detailed bullet points could be condensed to 2-3 lines in SKILL.md with full detail in a reference file. The section currently uses ~200 tokens on what is essentially one principle stated five different ways.",
+      "action": "Condense to a 2-3 line summary in SKILL.md ('Search first, assume never — verify all Suno claims via web search or reference files. Pass research findings to invoked skills.') and extract the detailed bullets to a reference file if needed."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 48,
+      "severity": "note",
+      "category": "overview-quality",
+      "title": "On Activation section is well-structured but dense",
+      "detail": "The On Activation section (lines 48-86, ~38 lines) covers first-run check, loading, greeting, context check, intent check, mode switching, preference changes, and menu presentation. This is appropriate density for a multi-capability orchestrator agent — each item serves a distinct activation concern. The preference-change handling (lines 67-71) is particularly well done, covering tier upgrades and their downstream effects.",
+      "action": "No action needed. Density is justified for an orchestrator agent."
+    },
+    {
+      "file": "SUNO-REFERENCE.md",
+      "line": 1,
+      "severity": "low",
+      "category": "progressive-disclosure",
+      "title": "Reference file at skill root instead of references/ directory",
+      "detail": "SUNO-REFERENCE.md (234 lines, ~4675 tokens) sits at the skill root rather than in the references/ directory. While it is not a capability prompt (no frontmatter), its placement at root risks it being loaded alongside capability prompts unnecessarily. The references/ directory already exists with memory-system.md.",
+      "action": "Move SUNO-REFERENCE.md to references/ directory for consistent progressive disclosure structure."
+    },
+    {
+      "file": "USAGE.md",
+      "line": 1,
+      "severity": "low",
+      "category": "progressive-disclosure",
+      "title": "Large user-facing documentation file at skill root",
+      "detail": "USAGE.md (808 lines, ~9294 tokens) is a comprehensive user guide sitting at the skill root. This is end-user documentation, not a capability prompt, and represents ~39% of total skill tokens. Its presence at root means it could be inadvertently loaded into agent context. It has no frontmatter so it should not be invoked as a capability, but its size at root is notable.",
+      "action": "Consider moving to a docs/ subdirectory or ensuring the manifest/loader excludes non-frontmatter .md files from capability loading."
+    },
+    {
+      "file": "create-song.md",
+      "line": 84,
+      "severity": "note",
+      "category": "outcome-balance",
+      "title": "Reference track decomposition guidance is well-crafted",
+      "detail": "Lines 84-87 provide excellent outcome-focused guidance: decompose references into sonic descriptors, show work before building, ask rather than guess for unknown artists. This is the kind of judgment-enabling context that prevents generic output. The 'show your work' instruction is particularly valuable for user trust.",
+      "action": "No action needed. Good example of outcome-driven prompt craft."
+    },
+    {
+      "file": "create-song.md",
+      "line": 138,
+      "severity": "note",
+      "category": "outcome-balance",
+      "title": "Package presentation template is comprehensive and Suno-UI-ordered",
+      "detail": "The 'Present the Complete Package' section (lines 138-208) includes a detailed template with conditional sections for tier, model, and feature availability. Ordering matches Suno's UI flow. While long (~70 lines), the template is the core output of the skill and every line serves the copy-paste-ready goal. The contextual tips (lines 199-202) are a nice touch for user education.",
+      "action": "No action needed. Template complexity is justified by the output requirements."
+    },
+    {
+      "file": "refine-song.md",
+      "line": 73,
+      "severity": "note",
+      "category": "self-containment",
+      "title": "Good cross-reference to create-song format without fragile back-reference",
+      "detail": "Line 75-77 references create-song Step 5 format but includes enough detail (field order list) that the agent can reconstruct the format even if create-song.md is not in context. This is a good self-containment pattern.",
+      "action": "No action needed."
+    },
+    {
+      "file": "browse-songbook.md",
+      "line": 11,
+      "severity": "low",
+      "category": "under-contextualized",
+      "title": "Minimal context for judgment-heavy browsing capability",
+      "detail": "browse-songbook.md is only 46 lines and covers scanning, presenting, and interacting with a songbook. The 'Interact' step lists four user actions (view, reuse, compare, export) but provides no guidance on how to present comparisons or what makes a good export format. For a persona-driven agent, this prompt could benefit from a line or two about Mac's personality when browsing ('browsing the record collection').",
+      "action": "Consider adding 2-3 lines of guidance on comparison presentation and export format. The line 45 persona note is good but could be reinforced with a brief example."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 8,
+      "severity": "note",
+      "category": "overview-quality",
+      "title": "Overview section is well-balanced for an orchestrator agent",
+      "detail": "The Overview (lines 8-14, 7 lines) efficiently covers mission, domain context, and design rationale in three focused paragraphs. The domain context paragraph explains the Suno two-input problem clearly. The design rationale paragraph justifies key decisions (always output full package, three modes, feedback loop as differentiator). This is appropriate for a companion-interactive/workflow-facilitator hybrid.",
+      "action": "No action needed. Overview quality is strong."
+    }
+  ],
+  "assessments": {
+    "skill_type_assessment": "companion-interactive",
+    "skillmd_assessment": {
+      "overview_quality": "appropriate",
+      "progressive_disclosure": "needs-extraction",
+      "persona_context": "appropriate",
+      "notes": "SKILL.md at 107 lines and ~2425 tokens is well within guidelines for a multi-capability agent. Persona is established effectively across Overview, Identity, Communication Style, and Principles without redundancy. The Research Discipline section is slightly verbose but genuinely load-bearing. Main structural issue is SUNO-REFERENCE.md and USAGE.md sitting at root instead of in references/ or docs/ — together they represent ~14K tokens that could be inadvertently loaded."
+    },
+    "prompts_scanned": 5,
+    "prompt_health": {
+      "prompts_with_config_header": 0,
+      "prompts_with_progression_conditions": 3,
+      "prompts_self_contained": 3,
+      "total_prompts": 5
+    }
+  },
+  "summary": {
+    "total_findings": 14,
+    "by_severity": {"critical": 0, "high": 0, "medium": 5, "low": 4, "note": 5},
+    "assessment": "Well-crafted companion-interactive agent with strong persona establishment and outcome-driven capability prompts. The primary gap is missing config headers across all 5 capability prompts, creating context-compaction vulnerability. Secondary concern is large documentation files at skill root that could benefit from relocation.",
+    "top_improvement": "Add config headers to all capability prompts declaring required variables ({project-root}, {communication_language}) to survive context compaction."
+  }
+}

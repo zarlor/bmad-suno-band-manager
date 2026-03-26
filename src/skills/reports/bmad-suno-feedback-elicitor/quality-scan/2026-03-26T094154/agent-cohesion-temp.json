@@ -1,0 +1,185 @@
+{
+  "scanner": "agent-cohesion",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-feedback-elicitor",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "strength",
+      "title": "Exceptionally well-designed feedback triage system",
+      "detail": "The five-type feedback classification (clear, positive, vague, contradictory, technical) with distinct elicitation strategies per type is the strongest design element. Each type has a clear rationale for why it needs different handling, and the strategies are genuinely different -- not just cosmetic variations. The three-phase guided elicitation for vague feedback (binary narrowing, comparative anchoring, emotional vocabulary bridge) is particularly sophisticated and shows deep understanding of the real problem: users who know something is wrong but lack vocabulary to express it.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "strength",
+      "title": "Complete end-to-end user journey with meaningful handoffs",
+      "detail": "The workflow covers the full lifecycle from receiving raw feedback through triage, elicitation, parameter mapping, recommendation presentation, and handoff to downstream skills. The handoff to Style Prompt Builder and Lyric Transformer via headless modes is well-designed -- the user never hits a dead end. The iteration log persistence enables multi-session refinement, which is critical for real music production workflows.",
+      "action": ""
+    },
+    {
+      "file": "references/feedback-triage-guide.md",
+      "line": null,
+      "severity": "strength",
+      "category": "strength",
+      "title": "Production Diagnostic Patterns table is a high-value differentiator",
+      "detail": "The table mapping non-obvious feedback patterns to root causes (e.g., 'guitar dominates' is actually a Suno limitation, 'wrong bass tone' is triggered by the word funk, 'sounds too modern' is a Persona issue) demonstrates deep domain expertise. This kind of knowledge is exactly what non-expert users cannot figure out on their own and is the core value proposition of the skill.",
+      "action": ""
+    },
+    {
+      "file": "references/suno-parameter-map.md",
+      "line": null,
+      "severity": "strength",
+      "category": "strength",
+      "title": "Parameter map is comprehensive and grounded in real testing",
+      "detail": "The suno-parameter-map.md file covers instrumentation, vocals, energy, production, mood, audio quality, Studio features, and slider behavior -- all with specific, actionable mappings. The confirmed Suno behavior notes and slider combination table from actual production use add credibility. The BPM tags ineffectiveness finding and perceived tempo alternatives demonstrate empirical validation rather than theoretical guessing.",
+      "action": ""
+    },
+    {
+      "file": "references/gemini-audio-analysis.md",
+      "line": null,
+      "severity": "strength",
+      "category": "strength",
+      "title": "Audio analysis reference is remarkably honest about tool limitations",
+      "detail": "The gemini-audio-analysis.md reference documents not just what Gemini and ChatGPT do well, but specifically where they fail and why. The temperature findings, blind vs. prompted analysis comparison, and ChatGPT reliability warnings show genuine empirical rigor. This prevents the agent from making overconfident recommendations based on unreliable analysis tools.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "medium",
+      "category": "gap",
+      "title": "No capability for the agent to leverage audio analysis tools during feedback sessions",
+      "detail": "The references/gemini-audio-analysis.md file documents extensive audio analysis workflows (librosa scripts, Gemini analysis, ChatGPT blind analysis), and the scripts/ directory contains 6 audio analysis scripts (analyze-audio.py, audio-deep-analysis.py, batch-full-analysis.py, chord-progression.py, tempo-detail.py, playlist-sequencing-data.py). Yet the SKILL.md workflow never references these analysis tools as part of the feedback elicitation process. The skill relies entirely on the user's subjective description of what they hear. If the user could provide the MP3, the agent could run librosa analysis to get objective BPM, key, energy curves, and section boundaries -- dramatically improving triage accuracy, especially for vague and contradictory feedback.",
+      "action": "Add an optional Step 2.5 or integrate into Step 2: if the user can provide the audio file path, run analyze-audio.py or audio-deep-analysis.py to get objective measurements. Use these to cross-reference subjective feedback -- e.g., if the user says 'it feels too fast' but librosa shows 92 BPM, the issue is likely perceived tempo (arrangement density) not actual tempo. This would make the skill significantly more powerful for users who have audio files locally."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "medium",
+      "category": "gap",
+      "title": "Playlist sequencing content lives in a feedback elicitation skill",
+      "detail": "The gemini-audio-analysis.md reference and the scripts directory contain substantial playlist sequencing content (Camelot wheel, BPM transitions, playlist-sequencing-data.py, chord-progression.py) that has no connection to the feedback elicitation workflow. This content relates to catalog management and album ordering -- not post-generation feedback refinement. It creates conceptual clutter and makes the skill appear to have a broader scope than its actual workflow supports.",
+      "action": "Consider whether playlist sequencing content should live in a separate skill (e.g., a catalog management or album sequencing skill) or in the Band Manager agent's references. The feedback elicitor should focus on what it does: translating subjective reactions into parameter adjustments. If these scripts are shared utilities, they could live in a common scripts directory referenced by multiple skills."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "low",
+      "category": "gap",
+      "title": "No explicit handling for multi-song comparison feedback",
+      "detail": "The workflow handles feedback on a single generation, but users often compare multiple generations of the same song ('version 2 was better than version 3 in the chorus but worse in the verse'). The skill mentions regenerating 2-3 variants as a fallback but has no structured approach for collecting and triaging comparative feedback across multiple versions. This is a natural next step after the non-convergence fallback in Steps 4c and 4d.",
+      "action": "Add a comparative feedback sub-workflow that accepts reactions to multiple versions simultaneously, identifies which dimensions each version handles best, and synthesizes a 'best of' parameter set. This could be a variant of the headless mode (--headless:compare) or an interactive sub-step after the variant generation suggestion."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "low",
+      "category": "gap",
+      "title": "No confidence calibration based on feedback round number",
+      "detail": "The skill tracks iteration rounds in the iteration log but does not adjust its confidence or strategy based on round number. A round-3 refinement where previous adjustments partially worked should be handled differently than a fresh first-round reaction -- the agent has empirical data about what moves the needle for this specific song/genre combination. The effectiveness tracking mention in Step 5 is a start but is not woven into the triage or elicitation phases.",
+      "action": "In Steps 3-4, check if this is a subsequent round. If yes, front-load what was tried and what worked/didn't from the iteration log before triaging new feedback. Adjust confidence scores based on prior round outcomes -- if slider changes had no effect last round, lower confidence for slider recommendations this round."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 53,
+      "severity": "low",
+      "category": "misalignment",
+      "title": "bmad-init dependency is declared but fallback makes it effectively optional",
+      "detail": "The bmad-manifest.json declares 'bmad-init' as a requirement, but SKILL.md Step 1 of On Activation says 'If bmad-init is unavailable, greet generically and default communication_language to English. Do not block the workflow.' This is a minor mismatch between the manifest's 'requires' declaration and the actual runtime behavior. While the graceful degradation is good design, the manifest should reflect reality.",
+      "action": "Either change bmad-manifest.json 'requires' to 'optional' or 'recommended', or add a comment in the manifest clarifying that the requirement is soft. This prevents downstream tooling from treating bmad-init as a hard dependency that blocks skill loading."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "Emotional vocabulary bridge could be offered as a standalone quick-reference card",
+      "detail": "The opposing pairs table in feedback-triage-guide.md (Heavy/Light, Fast/Slow, Polished/Raw, etc.) with their Suno parameter mappings is valuable independently of the feedback workflow. Users who know exactly what they want but lack Suno vocabulary could use this as a direct translation tool without going through the full elicitation process. It could also serve as a learning aid for users to build their own Suno vocabulary over time.",
+      "action": "Consider extracting the opposing pairs table into a quick-reference capability or a standalone reference card that users can consult outside the feedback loop. This could be a simple lookup mode: 'I want it more [adjective]' -> here are the Suno parameters to change."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "A/B testing workflow from Gemini reference could become a structured feedback sub-mode",
+      "detail": "The gemini-audio-analysis.md reference describes a disciplined A/B testing workflow (change one variable, generate both, analyze both, compare) that would be extremely powerful as a structured skill mode. Currently this knowledge is buried in a reference document. The feedback elicitor is the natural home for interpreting A/B test results -- it already handles comparative reactions and maps them to parameter adjustments.",
+      "action": "Add a --headless:ab-test or interactive A/B mode that accepts two audio analyses (from Gemini or librosa) plus the parameter delta between them, and produces a structured assessment of what the change actually affected. This turns the Gemini workflow from a manual process into an automated one."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "Band profile learning accumulation could create genre-specific feedback shortcuts",
+      "detail": "The skill mentions saving effective adjustments to band profile generation_learnings, but doesn't describe using accumulated learnings to shortcut future feedback sessions. After several rounds of refinement for a given band/genre, the agent should have enough data to predict likely adjustments from common feedback patterns. For example, if a user's metal band consistently needs 'rawer vocals' and 'less reverb' corrections, the agent could proactively suggest those as likely fixes before full elicitation.",
+      "action": "Add a pre-elicitation check: if a band profile exists with generation_learnings, scan for patterns matching the current feedback before running the full triage. Present as 'Based on your previous sessions, this might be the same vocal rawness issue we fixed last time -- want to try those same adjustments first?'"
+    }
+  ],
+  "assessments": {
+    "agent_identity": {
+      "name": "bmad-suno-feedback-elicitor",
+      "persona_summary": "A music producer's A&R collaborator who bridges the gap between subjective musical reactions and Suno-actionable parameter changes. Understands that users often know something is wrong but lack vocabulary to express it.",
+      "primary_purpose": "Guide post-generation feedback refinement, translating subjective reactions into concrete Suno parameter adjustments for the Style Prompt Builder and Lyric Transformer",
+      "capability_count": 7
+    },
+    "cohesion_analysis": {
+      "persona_alignment": {
+        "score": "strong",
+        "notes": "The A&R collaborator persona fits perfectly with the capabilities. The skill genuinely acts as a translator between subjective musical reactions and technical parameters. The communication style (natural prompts, celebration of positive feedback, non-judgmental handling of contradictions) matches the persona's collaborative, empathetic role. The three-phase elicitation sequence for vague feedback is exactly what an experienced A&R person would do in practice."
+      },
+      "capability_completeness": {
+        "score": "mostly-complete",
+        "missing_areas": [
+          "Audio analysis integration (scripts exist but are not referenced in the workflow)",
+          "Multi-version comparative feedback handling",
+          "Accumulated learning shortcuts from band profile history"
+        ],
+        "notes": "The core feedback-to-adjustment pipeline is complete and well-designed. The gaps are enhancement opportunities rather than broken workflows. The most notable gap is that 6 audio analysis scripts sit in the scripts directory but are never used in the feedback workflow -- integrating even basic librosa analysis would significantly improve triage accuracy for vague feedback."
+      },
+      "redundancy_level": {
+        "score": "clean",
+        "consolidation_opportunities": [
+          {
+            "capabilities": ["gemini-audio-analysis.md playlist sequencing", "playlist-sequencing-data.py", "chord-progression.py"],
+            "suggested_consolidation": "Playlist sequencing content (Camelot wheel, BPM transitions, sequencing scripts) is unrelated to feedback elicitation and should live in a catalog/sequencing skill or shared references"
+          }
+        ]
+      },
+      "external_integration": {
+        "external_skills_referenced": 3,
+        "integration_pattern": "intentional",
+        "notes": "References bmad-init (config), bmad-suno-style-prompt-builder (downstream handoff), and bmad-suno-lyric-transformer (downstream handoff). The bidirectional after/before relationship in the manifest correctly models the iterative refinement loop. The headless handoff modes (--headless:refine) are well-specified. Integration with the Band Manager orchestrating agent is documented in the README."
+      },
+      "user_journey_score": {
+        "score": "complete-end-to-end",
+        "broken_workflows": [],
+        "notes": "A user can enter with any type of feedback (clear, vague, contradictory, positive, technical) and leave with actionable Suno parameter adjustments ready to apply. The handoff to downstream skills is concrete, the iteration log enables multi-session work, and the headless mode enables automation. No dead-end operations exist -- even the non-convergence fallbacks (variant generation) provide a forward path. The only gap is that returning users with iteration history don't get differentiated treatment in the triage phase."
+      }
+    }
+  },
+  "summary": {
+    "total_findings": 13,
+    "by_severity": {
+      "high": 0,
+      "medium": 2,
+      "low": 3,
+      "suggestion": 3,
+      "strength": 5
+    },
+    "by_category": {
+      "gap": 4,
+      "redundancy": 0,
+      "misalignment": 1,
+      "opportunity": 3,
+      "strength": 5
+    },
+    "overall_cohesion": "cohesive",
+    "single_most_important_fix": "Integrate the existing audio analysis scripts (especially librosa-based analyze-audio.py and audio-deep-analysis.py) into the feedback workflow as an optional context-gathering step. The scripts already exist -- they just need to be wired into Steps 2-3 to provide objective measurements that dramatically improve triage accuracy for vague and contradictory feedback.",
+    "assessment": "This is a cohesive, well-designed skill with a strong persona-capability match. The five-type feedback triage system with distinct elicitation strategies is the standout design element. The main improvement opportunity is integrating the existing audio analysis scripts into the workflow -- they sit unused in the scripts directory despite being highly relevant to feedback triage. Playlist sequencing content is the one area of scope creep that should be relocated."
+  }
+}

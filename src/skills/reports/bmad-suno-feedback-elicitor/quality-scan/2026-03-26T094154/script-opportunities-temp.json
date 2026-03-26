@@ -1,0 +1,122 @@
+{
+  "scanner": "script-opportunities",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-feedback-elicitor",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 100,
+      "severity": "medium",
+      "category": "validation",
+      "title": "Headless mode input validation partially done by parse-feedback.py but triage classification still uses LLM",
+      "detail": "Determinism confidence: moderate. parse-feedback.py validates structure and extracts dimensions, but the five-type triage classification (clear/positive/vague/contradictory/technical) is inherently semantic and requires LLM judgment. The existing script correctly stays out of triage. However, the script could be extended with a pre-triage heuristic pass that flags high-confidence signal phrases (see feedback-triage-guide.md classification rules) and pre-scores likelihood per type, reducing the LLM's work from full classification to confirmation/override. Estimated token savings: 200-400 per headless invocation. Implementation complexity: moderate. Language: python. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: no. Help pattern savings: n/a (script already has --help).",
+      "action": "Extend parse-feedback.py with a signal-phrase pre-triage pass: scan feedback_text for the signal phrases defined in feedback-triage-guide.md (e.g., 'too loud' -> clear, 'doesn't feel right' -> vague, 'glitch' -> technical) and output a pre_triage field with confidence-weighted scores per type. The LLM then confirms or overrides rather than classifying from scratch."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 211,
+      "severity": "medium",
+      "category": "validation",
+      "title": "LLM translates natural language feedback to dimension/direction pairs for map-adjustments.py",
+      "detail": "Determinism confidence: moderate. Step 5 instructs the LLM to translate elicitation results into structured dimension/direction pairs (e.g., 'vocals feel too polished' -> {dimension: 'vocals', direction: 'too_polished'}). The translation from free-form language to the fixed vocabulary of map-adjustments.py is partially deterministic for common patterns. A pre-pass script could handle the unambiguous cases (direct keyword matches) and flag ambiguous ones for LLM judgment. Estimated token savings: 100-300 per invocation. Implementation complexity: moderate. Language: python. Could be prepass: yes. Feeds scanner: map-adjustments.py. Reusable across skills: no. Help pattern savings: n/a.",
+      "action": "Create a feedback-to-dimensions.py script that scans feedback text for known dimension/direction signal phrases from the feedback-triage-guide.md and suno-parameter-map.md tables (e.g., 'guitar is too loud' -> instrumentation/too_much, 'too fast' -> tempo/too_fast). Output matched dimensions with confidence scores; the LLM then validates, adjusts, and adds any that the script missed."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 228,
+      "severity": "low",
+      "category": "validation",
+      "title": "Style prompt character count validation mentioned inline but already handled by map-adjustments.py",
+      "detail": "Determinism confidence: certain. SKILL.md line 228 says 'The script validates character count against the 1,000-char limit.' This is already implemented in map-adjustments.py's check_adjustment_consistency() which checks critical zone overflow (200 chars) and exclusion overflow (200 chars). The 1,000-char total limit mentioned in the prompt is not validated by the script. Estimated token savings: 50 per invocation if the LLM is also doing this check. Implementation complexity: trivial. Language: python. Could be prepass: no. Feeds scanner: n/a. Reusable across skills: yes (style-prompt-builder could use it).",
+      "action": "Add a total style prompt character count check (1,000-char limit) to map-adjustments.py's check_adjustment_consistency(). Currently it only checks the 200-char critical zone for additions and 200-char exclusion target, but the overall 1,000-char style prompt limit is not validated."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 303,
+      "severity": "medium",
+      "category": "transformation",
+      "title": "Iteration log JSON generation is done by LLM inline in Step 6",
+      "detail": "Determinism confidence: high. Step 6 instructs the LLM to generate a compact JSON iteration log alongside recommendations. The structure is fixed (session_id, round, feedback_type, dimensions_adjusted, key_changes, user_intent). A script could generate the structural shell from the already-computed adjustment data and let the LLM fill only the semantic fields (user_intent, key_changes summary). Estimated token savings: 150-250 per invocation. Implementation complexity: trivial. Language: python. Could be prepass: no (post-processing). Feeds scanner: n/a. Reusable across skills: no. Help pattern savings: n/a.",
+      "action": "Create a generate-iteration-log.py script that accepts the map-adjustments.py output plus session metadata (round number, feedback type from triage) and produces the iteration log JSON shell. The LLM only needs to fill the natural-language summary fields (key_changes, user_intent)."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 325,
+      "severity": "low",
+      "category": "structure",
+      "title": "Feedback history file I/O (save/load iteration logs) described as LLM task",
+      "detail": "Determinism confidence: certain. Step 7 instructs saving iteration logs to {project-root}/docs/feedback-history/{band-profile-or-session}/{timestamp}.json and Step 5 mentions loading previous logs on re-invocation. File I/O with directory creation and JSON write is purely deterministic. Estimated token savings: 100-150 per invocation when saving or loading. Implementation complexity: trivial. Language: python or bash. Could be prepass: yes (loading). Feeds scanner: n/a. Reusable across skills: yes (any skill with iteration history). Help pattern savings: n/a.",
+      "action": "Create a feedback-history.py script with --save (accepts JSON from stdin, writes to the correct path with directory creation and timestamp naming) and --load (accepts a session/profile identifier, returns the most recent or specified iteration log). Removes file I/O from LLM responsibility."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 91,
+      "severity": "low",
+      "category": "extraction",
+      "title": "Band profile YAML reading described as LLM task in Step 2",
+      "detail": "Determinism confidence: certain. Step 2 instructs reading from {project-root}/docs/band-profiles/{profile-name}.yaml for baseline intent. Parsing YAML files is entirely deterministic. However, this is a simple file read that the LLM handles naturally through tool use (Read), and a script adds minimal value over direct file reading. Estimated token savings: 50-100. Implementation complexity: trivial. Language: python. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: yes (style-prompt-builder, lyric-transformer). Help pattern savings: n/a.",
+      "action": "Consider a band-profile-reader.py that reads a band profile YAML file and outputs a compact JSON summary of the fields relevant to feedback elicitation (vocal direction, genre, slider baselines, generation_learnings). Low priority since the LLM can read YAML directly via tool use."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 29,
+      "severity": "medium",
+      "category": "postprocessing",
+      "title": "Headless output JSON structure not validated against the output contract",
+      "detail": "Determinism confidence: certain. The headless output contract (lines 29-46) defines a precise JSON schema with feedback_analysis, adjustment_recommendations, confidence_scores, iteration_log, and suggested_next_action. After the LLM generates this output, there is no script validation that the output conforms to the contract. A post-processing validation script would catch structural errors before the output reaches downstream consumers. Estimated token savings: 0 (this is about reliability, not tokens). Implementation complexity: trivial. Language: python. Could be prepass: no (post-processing). Feeds scanner: n/a. Reusable across skills: yes (any skill with headless output contracts). Help pattern savings: n/a.",
+      "action": "Create a validate-headless-output.py script that accepts the LLM's headless JSON output and validates it against the contract schema defined in SKILL.md. Check required fields, valid enum values (triage_type, confidence), and structural correctness. Return pass/fail with specific violations."
+    },
+    {
+      "file": "references/feedback-triage-guide.md",
+      "line": null,
+      "severity": "low",
+      "category": "preprocessing",
+      "title": "Opposing pairs table in triage guide is loaded as raw markdown for LLM to interpret",
+      "detail": "Determinism confidence: moderate. The opposing pairs table (lines 117-129) and signal phrase lists (lines 8-61) are loaded as raw markdown. A pre-pass script could extract these into a compact JSON lookup that the LLM consumes more efficiently. However, the LLM needs to interpret these creatively (asking the right questions, placing on spectrums), so the raw reference has genuine value. Estimated token savings: 100-200 per invocation when the reference is loaded. Implementation complexity: trivial. Language: python. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: no. Help pattern savings: n/a.",
+      "action": "Low priority. Could create extract-triage-data.py that parses the triage guide into structured JSON (signal_phrases by type, opposing_pairs with their parameter mappings). The LLM would receive compact structured data instead of formatted markdown tables. Savings are moderate since the reference file is already well-structured."
+    },
+    {
+      "file": "references/suno-parameter-map.md",
+      "line": null,
+      "severity": "low",
+      "category": "preprocessing",
+      "title": "Parameter map reference loaded as full markdown when only relevant sections are needed",
+      "detail": "Determinism confidence: high. suno-parameter-map.md is 298 lines covering all feedback dimensions, models, sliders, and studio features. After triage identifies the feedback type and dimensions, only the relevant sections need to be read. A pre-pass script could extract only the relevant adjustment tables based on the identified dimensions, reducing the token load. Estimated token savings: 200-400 per invocation (only loading relevant sections vs. full file). Implementation complexity: moderate. Language: python. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: yes (style-prompt-builder uses similar references). Help pattern savings: n/a.",
+      "action": "Create extract-relevant-params.py that accepts a list of feedback dimensions and returns only the relevant sections from suno-parameter-map.md as structured JSON. For example, if dimensions are [vocals, production], return only the Vocal Direction and Production & Mix tables, plus Model-Specific patterns if model is known. The LLM gets a focused subset instead of the full 298-line reference."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 219,
+      "severity": "low",
+      "category": "comparison",
+      "title": "Effectiveness tracking compares previous adjustments vs outcomes using LLM",
+      "detail": "Determinism confidence: moderate. Step 5 describes tracking which metatags, style prompt changes, and slider adjustments were effective vs. ineffective. The comparison of 'what was recommended' vs. 'what the user reports worked' is partially deterministic (diffing the recommended changes against feedback about which ones helped). A script could pre-compute the delta between previous iteration log recommendations and current feedback dimensions. Estimated token savings: 100-200 per multi-round invocation. Implementation complexity: moderate. Language: python. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: no. Help pattern savings: n/a.",
+      "action": "Extend feedback-history.py (from finding 5) with a --diff mode that accepts the current iteration's feedback dimensions and the previous iteration log, producing a structured comparison: which recommendations were tried, which the user reports as effective/ineffective, and which dimensions persist. The LLM interprets the diff rather than computing it."
+    }
+  ],
+  "assessments": {
+    "existing_scripts": [
+      "scripts/parse-feedback.py",
+      "scripts/map-adjustments.py",
+      "scripts/analyze-audio.py",
+      "scripts/audio-deep-analysis.py",
+      "scripts/batch-full-analysis.py",
+      "scripts/chord-progression.py",
+      "scripts/playlist-sequencing-data.py",
+      "scripts/tempo-detail.py"
+    ]
+  },
+  "summary": {
+    "total_findings": 10,
+    "by_severity": {"high": 0, "medium": 4, "low": 6},
+    "by_category": {
+      "validation": 3,
+      "transformation": 1,
+      "structure": 1,
+      "extraction": 1,
+      "postprocessing": 1,
+      "preprocessing": 2,
+      "comparison": 1
+    },
+    "assessment": "This skill already has strong script coverage. parse-feedback.py and map-adjustments.py handle the two most impactful deterministic operations (input validation and parameter lookup). The remaining opportunities are incremental: pre-triage signal phrase matching (~300 tokens/invocation), headless output validation (reliability), and selective reference loading (~300 tokens/invocation). Total estimated savings across all findings: 1,000-2,000 tokens per full invocation. The highest-value single opportunity is the signal-phrase pre-triage pass (finding 1) which could feed directly into the existing parse-feedback.py pipeline. Three findings (headless output validation, feedback history I/O, band profile reader) could serve as reusable utilities across multiple skills."
+  }
+}

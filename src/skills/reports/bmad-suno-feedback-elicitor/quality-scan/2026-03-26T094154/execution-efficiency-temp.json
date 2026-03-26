@@ -1,0 +1,88 @@
+{
+  "scanner": "execution-efficiency",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-feedback-elicitor",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 320,
+      "severity": "low",
+      "category": "parallelization",
+      "title": "Sequential handoff to Style Prompt Builder and Lyric Transformer could be parallel",
+      "detail": "Step 7 says 'Or both, sequentially' when invoking bmad-suno-style-prompt-builder and bmad-suno-lyric-transformer. These two headless skill invocations are independent -- style prompt adjustments and lyric adjustments operate on different artifacts with no data dependency between them. Running both in parallel would reduce total handoff latency by roughly half when both are needed.",
+      "action": "Change 'Or both, sequentially' to 'Or both, in parallel' and add explicit guidance: 'When both style prompt and lyric adjustments are approved, invoke both skills simultaneously as parallel subagents since they operate on independent artifacts.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 104,
+      "severity": "strength",
+      "category": "resource-optimization",
+      "title": "Reference files loaded selectively per feedback type",
+      "detail": "feedback-triage-guide.md is loaded only at Step 3 (triage), and suno-parameter-map.md is loaded only at Steps 4a/4e (when parameter mapping is needed). This avoids loading large reference documents until the specific capability requires them.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 100,
+      "severity": "strength",
+      "category": "batching",
+      "title": "parse-feedback.py combines validation and dimension extraction in a single pass",
+      "detail": "The script handles both validation and structured dimension extraction in one invocation rather than requiring separate validation and parsing steps. This is an efficient batching pattern that avoids redundant file processing.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 53,
+      "severity": "strength",
+      "category": "memory-optimization",
+      "title": "Config loading delegated to bmad-init with graceful fallback",
+      "detail": "On Activation delegates config loading to the bmad-init skill rather than reading config files directly, and includes a fallback if bmad-init is unavailable. This keeps the activation path lean and avoids loading unnecessary configuration data.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 210,
+      "severity": "strength",
+      "category": "delegation",
+      "title": "Script-based adjustment mapping keeps LLM context lean",
+      "detail": "Step 5 delegates parameter mapping to map-adjustments.py rather than having the LLM reason through all parameter combinations. The script handles consistency validation and character count checks deterministically, reserving LLM judgment for refinement based on full context. This is an efficient division of labor.",
+      "action": ""
+    },
+    {
+      "file": "references/gemini-audio-analysis.md",
+      "line": null,
+      "severity": "low",
+      "category": "resource-optimization",
+      "title": "gemini-audio-analysis.md reference exists but is not explicitly loaded by any workflow step",
+      "detail": "The references directory contains gemini-audio-analysis.md, but no step in SKILL.md instructs the agent to load it. If it is intended as an optional resource for advanced users or future capabilities, this is fine. However, if it should be loaded during technical feedback resolution (Step 4e), the instruction is missing. Currently it adds no token cost since it is never loaded, but it may represent a missing capability.",
+      "action": "If audio analysis is intended as part of the feedback workflow, add an explicit load instruction in Step 4e for technical feedback cases where the user can provide audio files. If it is only for reference by developers, consider moving it outside the skill's references directory to avoid confusion."
+    }
+  ],
+  "assessments": {
+    "efficiency_profile": {
+      "parallelization": "good",
+      "resource_loading": "strong",
+      "script_delegation": "strong",
+      "memory_loading": "good",
+      "subagent_patterns": "minor-opportunity",
+      "notes": "This is primarily an interactive skill with a well-structured sequential workflow where most steps depend on prior user input. The few independent operations (Step 7 handoffs) represent a minor parallelization opportunity. Reference loading is selective and on-demand. Script usage efficiently offloads deterministic work from the LLM."
+    }
+  },
+  "summary": {
+    "total_findings": 6,
+    "by_severity": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 2,
+      "strength": 4
+    },
+    "by_category": {
+      "parallelization": 1,
+      "resource-optimization": 2,
+      "batching": 1,
+      "memory-optimization": 1,
+      "delegation": 1
+    },
+    "assessment": "Well-designed execution efficiency. The interactive feedback workflow is inherently sequential (each step depends on user input from the prior step), so there are limited parallelization opportunities. Reference loading is selective, scripts handle deterministic work efficiently, and the one actionable finding is a minor parallel handoff opportunity in Step 7."
+  }
+}

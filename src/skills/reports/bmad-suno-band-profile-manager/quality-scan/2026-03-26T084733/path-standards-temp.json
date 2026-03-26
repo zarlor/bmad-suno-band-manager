@@ -1,0 +1,246 @@
+{
+  "scanner": "path-standards",
+  "script": "scan-path-standards.py",
+  "version": "2.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-band-profile-manager",
+  "timestamp": "2026-03-26T13:47:59.668994+00:00",
+  "files_scanned": [
+    "README.md",
+    "SKILL.md",
+    "bmad-manifest.json",
+    "references/profile-schema.md",
+    "references/tier-features.md"
+  ],
+  "status": "fail",
+  "findings": [
+    {
+      "file": "README.md",
+      "line": 0,
+      "severity": "high",
+      "category": "structure",
+      "title": "Prompt file at skill root: README.md",
+      "detail": "All progressive disclosure content must be in ./references/ \u2014 only SKILL.md belongs at root",
+      "action": "Move README.md to references/README.md"
+    },
+    {
+      "file": "README.md",
+      "line": 63,
+      "severity": "high",
+      "category": "relative-prefix",
+      "title": "Parent directory reference (../) found \u2014 fragile, breaks with reorganization",
+      "detail": "This skill is part of the [BMad Suno Band Manager](../bmad-suno-agent-band-manager/README.md) module. For the full guide",
+      "action": ""
+    },
+    {
+      "file": "README.md",
+      "line": 59,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Profiles are stored as YAML files at `docs/band-profiles/{profile-name}.yaml`. The schema is defined in `references/prof",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 62,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Guide the user through building a complete band profile conversationally. Load `references/profile-schema.md` for the fu",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 71,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "6. **Model & tier** \u2014 Which Suno model/plan do they use? Run `scripts/tier-features.py` with their tier to show what's a",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 86,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "- Run `scripts/validate-profile.py` to verify structure. Use `scripts/validate-profile.py --derive-filename \"Band Name\"`",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 86,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "- Run `scripts/validate-profile.py` to verify structure. Use `scripts/validate-profile.py --derive-filename \"Band Name\"`",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 91,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "**Headless create:** Accept a complete or partial YAML profile. Validate with `scripts/validate-profile.py`. Save if val",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 95,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Run `scripts/list-profiles.py` to scan `docs/band-profiles/` and display all saved profiles with name, genre, model pref",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 101,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Use `scripts/list-profiles.py --check \"{profile-name}\"` to verify the profile exists and get its metadata. Then read fro",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 105,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "If the profile name is ambiguous, run `scripts/list-profiles.py` and ask the user to clarify.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 109,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Load the profile, accept natural language changes (\"make it more aggressive\", \"switch to v5 Pro\", \"add exclusions for sy",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 111,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Read both the target profile YAML and `references/profile-schema.md` in a single parallel batch when entering this opera",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 113,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Re-validate with `scripts/validate-profile.py`. Use `scripts/diff-profiles.py` to generate and show a structured diff of",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 113,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Re-validate with `scripts/validate-profile.py`. Use `scripts/diff-profiles.py` to generate and show a structured diff of",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 117,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Confirm the profile exists (via `scripts/list-profiles.py --check`), show its summary, get explicit user confirmation (\"",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 153,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "1. Run `scripts/validate-profile.py` for structural validity",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 169,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "Available scripts in `scripts/`:",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 170,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "- `validate-profile.py` \u2014 Validates band profile YAML against schema. Supports `--derive-filename \"Band Name\"` to get ke",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 171,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "- `list-profiles.py` \u2014 Scans `docs/band-profiles/` and returns profile summaries. Supports `--check \"profile-name\"` to v",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 172,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "- `tier-features.py` \u2014 Returns available/unavailable Suno features for a given tier. Run `scripts/tier-features.py --hel",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 173,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "- `diff-profiles.py` \u2014 Compares two profile YAML files and returns structured JSON diff. Run `scripts/diff-profiles.py -",
+      "action": ""
+    },
+    {
+      "file": "references/tier-features.md",
+      "line": 5,
+      "severity": "high",
+      "category": "bare-internal-path",
+      "title": "Bare skill-internal path without ./ prefix \u2014 use ./references/, ./scripts/, ./assets/ to distinguish from {project-root} paths",
+      "detail": "**Note:** The `scripts/tier-features.py` script is the authoritative source for this data. This reference file is provid",
+      "action": ""
+    }
+  ],
+  "assessments": {},
+  "summary": {
+    "total_findings": 23,
+    "by_severity": {
+      "critical": 0,
+      "high": 23,
+      "medium": 0,
+      "low": 0
+    },
+    "by_category": {
+      "project_root_not_bmad": 0,
+      "bare_bmad": 0,
+      "double_prefix": 0,
+      "absolute_path": 0,
+      "relative_prefix": 1,
+      "bare_internal_path": 21,
+      "memory_path": 0,
+      "frontmatter": 0,
+      "structure": 1
+    },
+    "assessment": "Path standards scan complete"
+  }
+}

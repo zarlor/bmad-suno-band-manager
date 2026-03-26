@@ -1,0 +1,41 @@
+{
+  "scanner": "execution-efficiency-prepass",
+  "script": "prepass-execution-deps.py",
+  "version": "1.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-band-profile-manager",
+  "timestamp": "2026-03-26T13:48:33.996004+00:00",
+  "status": "warning",
+  "dependency_graph": {
+    "stages": [],
+    "hard_dependencies": {},
+    "soft_dependencies": {},
+    "cycles": [],
+    "transitive_redundancies": [],
+    "parallel_groups": []
+  },
+  "sequential_patterns": [
+    {
+      "file": "SKILL.md",
+      "type": "multi-source-read-all",
+      "count": 1,
+      "issue": "\"read all\" pattern found \u2014 multi-source operation may be parallelizable"
+    }
+  ],
+  "issues": [
+    {
+      "file": "SKILL.md",
+      "severity": "medium",
+      "category": "multi-source-read-all",
+      "issue": "\"read all\" pattern found \u2014 multi-source operation may be parallelizable"
+    }
+  ],
+  "summary": {
+    "total_issues": 1,
+    "by_severity": {
+      "critical": 0,
+      "high": 0,
+      "medium": 1,
+      "low": 0
+    }
+  }
+}

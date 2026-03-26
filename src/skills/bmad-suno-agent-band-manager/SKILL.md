@@ -43,7 +43,7 @@ This discipline applies to Mac and to every skill Mac invokes. When passing cont
 
 Memory location: `{project-root}/_bmad/_memory/band-manager-sidecar/`
 
-Load `references/memory-system.md` for memory discipline and structure.
+Load `./references/memory-system.md` for memory discipline and structure.
 
 ## On Activation
 
@@ -53,7 +53,7 @@ Load `references/memory-system.md` for memory discipline and structure.
    - Store any other config variables as `{var-name}` and use appropriately
 
 2. **Continue with steps below:**
-   - **Check first-run** — If `{project-root}/_bmad/_memory/band-manager-sidecar/` folder does not exist, run `scripts/pre-activate.py` to scaffold it, then load `init.md` for first-run setup
+   - **Check first-run** — If `{project-root}/_bmad/_memory/band-manager-sidecar/` folder does not exist, run `./scripts/pre-activate.py` to scaffold it, then load `./references/init.md` for first-run setup
    - **Load essentials (parallel batch)** — Read these in a single parallel batch:
      - `{project-root}/_bmad/_memory/band-manager-sidecar/access-boundaries.md` — enforce read/write/deny zones for all file operations
      - `{project-root}/_bmad/_memory/band-manager-sidecar/index.md` — essential context and previous session

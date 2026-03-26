@@ -1,0 +1,59 @@
+{
+  "scanner": "scripts",
+  "script": "scan-scripts.py",
+  "version": "2.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-band-profile-manager",
+  "timestamp": "2026-03-26T13:48:13.246717+00:00",
+  "status": "warning",
+  "findings": [
+    {
+      "file": "scripts/list-profiles.py",
+      "line": 19,
+      "severity": "high",
+      "category": "lint",
+      "title": "[F401] `os` imported but unused",
+      "detail": "",
+      "action": "Remove unused import: `os`"
+    }
+  ],
+  "assessments": {
+    "lint_summary": {
+      "tools_used": [
+        "ruff"
+      ],
+      "files_linted": 4,
+      "lint_issues": 1
+    },
+    "script_summary": {
+      "total_scripts": 4,
+      "by_type": {
+        "python": 4,
+        "shell": 0,
+        "node": 0,
+        "other": 0
+      },
+      "scripts": {
+        "python": [
+          "diff-profiles.py",
+          "list-profiles.py",
+          "tier-features.py",
+          "validate-profile.py"
+        ]
+      },
+      "missing_tests": []
+    }
+  },
+  "summary": {
+    "total_findings": 1,
+    "by_severity": {
+      "critical": 0,
+      "high": 1,
+      "medium": 0,
+      "low": 0
+    },
+    "by_category": {
+      "lint": 1
+    },
+    "assessment": ""
+  }
+}

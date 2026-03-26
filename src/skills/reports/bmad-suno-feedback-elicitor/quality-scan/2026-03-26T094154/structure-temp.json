@@ -1,0 +1,145 @@
+{
+  "scanner": "structure",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-feedback-elicitor",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "frontmatter",
+      "title": "Skill name does not follow bmad-{code}-agent-{name} or bmad-agent-{name} pattern",
+      "detail": "Name 'bmad-suno-feedback-elicitor' uses a non-standard naming pattern. Expected pattern is bmad-{code}-agent-{name} or bmad-agent-{name}.",
+      "action": "Rename to follow the standard agent naming convention, e.g., bmad-suno-agent-feedback-elicitor, or confirm this is an intentional skill-level (non-agent) naming choice."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "title": "Missing ## Identity section",
+      "detail": "No dedicated Identity section exists. The Overview contains identity-like content ('Act as a music producer's A&R collaborator') but this is buried in a paragraph rather than surfaced as a clear one-sentence persona primer. Without a dedicated Identity section, the AI lacks a focused behavioral anchor at the top of the prompt.",
+      "action": "Add a ## Identity section after Overview with a clear one-sentence persona, e.g., 'You are a music producer's A&R collaborator who translates subjective listening reactions into concrete Suno parameter adjustments.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "title": "Missing ## Communication Style section",
+      "detail": "No Communication Style section exists. The skill involves extensive user interaction (elicitation, binary narrowing, comparative anchoring, emotional vocabulary bridging) where tone and style are critical. Without concrete style examples, the AI may default to generic assistant tone rather than the collaborative producer vibe implied by the Overview.",
+      "action": "Add a ## Communication Style section with 3-5 concrete examples showing the collaborative, non-judgmental, musically-informed tone. E.g., show how to phrase elicitation questions, how to acknowledge feedback without being patronizing, and how to present technical recommendations accessibly."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "title": "Missing ## Principles section",
+      "detail": "No Principles section exists. This skill makes many judgment calls (triage classification, elicitation strategy, when to suggest regeneration vs. prompt changes, when to pivot strategies). Without explicit principles, the AI lacks a decision framework for these ambiguous moments.",
+      "action": "Add a ## Principles section with domain-specific guiding principles. Examples: 'Never dismiss vague feedback -- it always contains signal worth extracting', 'Prefer the smallest parameter change that addresses the feedback', 'When in doubt, suggest variants over a single recommendation', 'Always check if contradictory feedback is actually describing dynamic contrast before treating it as a conflict'."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 2,
+      "severity": "strength",
+      "category": "frontmatter",
+      "title": "Description follows two-part format with specific quoted trigger phrases",
+      "detail": "The description uses the correct format: a brief summary ('Guides post-generation feedback refinement for Suno music output') followed by a trigger clause with quoted phrases ('refine a song', 'give feedback on Suno output', 'improve my generation'). This should trigger reliably and distinguish this skill from the Style Prompt Builder and Lyric Transformer.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 8,
+      "severity": "strength",
+      "category": "identity",
+      "title": "Overview contains strong implicit identity and domain context",
+      "detail": "The Overview effectively establishes domain context, the vocabulary gap problem, and the five feedback types. The 'Design rationale' paragraph is particularly strong -- it explains WHY the skill works the way it does, not just what it does. However, this identity content should be extracted into a dedicated Identity section for proper behavioral priming.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 16,
+      "severity": "strength",
+      "category": "headless-mode",
+      "title": "Headless mode is well-documented with output contract and sub-modes",
+      "detail": "The Activation Mode Detection section defines three headless sub-modes (analyze, adjustments, default) with a clear JSON output contract. This is a strong headless implementation pattern.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 51,
+      "severity": "strength",
+      "category": "activation-sequence",
+      "title": "Activation sequence is logically ordered with proper fallbacks",
+      "detail": "The activation flow (load config, greet, intent check, proceed) is correct. The config fallback ('If bmad-init is unavailable, greet generically') prevents blocking on external dependencies. The intent check correctly redirects non-feedback requests to appropriate skills.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 65,
+      "severity": "strength",
+      "category": "consistency",
+      "title": "Workflow steps are comprehensive and logically structured",
+      "detail": "The 7-step workflow covers the full feedback loop from receiving feedback through handoff. Each feedback type routes to a dedicated step with appropriate strategy. Escape hatches and non-convergence fallbacks demonstrate thoughtful error handling. The workflow maintains logical consistency throughout.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 313,
+      "severity": "note",
+      "category": "consistency",
+      "title": "Step 7 (Handoff) appears after non-step sections, breaking sequential flow",
+      "detail": "Steps 1-6 are in sequence, but then sections 'Feedback Summary', 'Before/After Preview', 'Style Prompt Adjustments', 'Exclusion Prompt Adjustments', 'Slider Adjustments', 'Lyric Adjustments', 'Studio Features', 'Strategy Note', and 'Additional Notes' appear as H2 headings between Step 6 and Step 7. These are actually part of Step 6's output template but are rendered as top-level sections, which could confuse the AI about document structure.",
+      "action": "Consider nesting the output format sections under Step 6 (as H3 subsections) or wrapping them in a code block to clarify they are template content, not standalone workflow steps."
+    },
+    {
+      "file": "README.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "title": "No config header with language variables found in README.md",
+      "detail": "The README.md prompt file lacks a config header with language variables. Config headers enable dynamic behavior based on user settings.",
+      "action": "Add a config header to README.md if it serves as a prompt file, or verify that README.md is documentation only and not a prompt."
+    },
+    {
+      "file": "README.md",
+      "line": 66,
+      "severity": "high",
+      "category": "progression",
+      "title": "No progression condition keywords found in README.md",
+      "detail": "The README.md file contains no progression condition keywords. If this file serves as a prompt, it lacks stage-gating logic that controls workflow advancement.",
+      "action": "If README.md is a prompt file, add progression conditions. If it is documentation only, this finding can be dismissed."
+    }
+  ],
+  "assessments": {
+    "sections_found": ["Overview", "Activation Mode Detection", "On Activation", "Workflow Steps", "Scripts"],
+    "sections_missing": ["Identity", "Communication Style", "Principles"],
+    "capabilities_count": 2,
+    "has_memory": false,
+    "has_headless": true,
+    "headless_quality": "well-defined with output contract and three sub-modes",
+    "activation_sequence_quality": "logically ordered with fallbacks and intent check"
+  },
+  "summary": {
+    "total_findings": 12,
+    "by_severity": {
+      "critical": 0,
+      "high": 4,
+      "medium": 2,
+      "low": 0,
+      "strength": 5,
+      "note": 1
+    },
+    "by_category": {
+      "frontmatter": 2,
+      "sections": 3,
+      "identity": 1,
+      "headless-mode": 1,
+      "activation-sequence": 1,
+      "consistency": 2,
+      "config-header": 1,
+      "progression": 1
+    },
+    "assessment": "The skill has a strong workflow design with excellent headless mode support and thorough feedback handling, but is missing three required structural sections (Identity, Communication Style, Principles) that are essential for consistent AI behavior in this highly interactive skill."
+  }
+}

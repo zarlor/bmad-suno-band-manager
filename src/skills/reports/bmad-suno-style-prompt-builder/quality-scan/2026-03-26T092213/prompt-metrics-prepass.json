@@ -1,0 +1,210 @@
+{
+  "scanner": "prompt-craft-prepass",
+  "script": "prepass-prompt-metrics.py",
+  "version": "1.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-style-prompt-builder",
+  "timestamp": "2026-03-26T14:22:28.681743+00:00",
+  "status": "info",
+  "skill_md_summary": {
+    "line_count": 262,
+    "token_estimate": 5074,
+    "overview_lines": 7,
+    "table_count": 0,
+    "table_lines": 0,
+    "fenced_block_count": 3,
+    "fenced_block_lines": 25,
+    "section_count": 17
+  },
+  "prompt_health": {
+    "total_prompts": 1,
+    "prompts_with_config_header": 0,
+    "prompts_with_progression": 0
+  },
+  "aggregate": {
+    "total_files_scanned": 2,
+    "total_token_estimate": 6008,
+    "total_waste_patterns": 0,
+    "total_back_references": 0,
+    "total_suggestive_loading": 0,
+    "total_wall_of_text": 0
+  },
+  "resource_sizes": {},
+  "files": [
+    {
+      "file": "SKILL.md",
+      "line_count": 262,
+      "token_estimate": 5074,
+      "sections": [
+        {
+          "level": 2,
+          "title": "Overview",
+          "line": 8
+        },
+        {
+          "level": 2,
+          "title": "Activation Mode Detection",
+          "line": 16
+        },
+        {
+          "level": 2,
+          "title": "On Activation",
+          "line": 41
+        },
+        {
+          "level": 2,
+          "title": "Workflow Steps",
+          "line": 52
+        },
+        {
+          "level": 3,
+          "title": "Step 1: Gather Inputs",
+          "line": 54
+        },
+        {
+          "level": 3,
+          "title": "Step 2: Build Style Prompt",
+          "line": 82
+        },
+        {
+          "level": 3,
+          "title": "Step 3: Build Exclusion Prompt",
+          "line": 130
+        },
+        {
+          "level": 3,
+          "title": "Step 4: Slider & Parameter Recommendations",
+          "line": 160
+        },
+        {
+          "level": 3,
+          "title": "Step 5: Wild Card Variant",
+          "line": 193
+        },
+        {
+          "level": 3,
+          "title": "Step 6: Validate & Present",
+          "line": 208
+        },
+        {
+          "level": 2,
+          "title": "Style Prompt ({model_name})",
+          "line": 215
+        },
+        {
+          "level": 2,
+          "title": "Exclude Styles",
+          "line": 220
+        },
+        {
+          "level": 2,
+          "title": "Parameter Recommendations",
+          "line": 225
+        },
+        {
+          "level": 2,
+          "title": "Wild Card Variant",
+          "line": 231
+        },
+        {
+          "level": 3,
+          "title": "Copy-Ready: Style Prompt",
+          "line": 239
+        },
+        {
+          "level": 3,
+          "title": "Copy-Ready: Exclude Styles",
+          "line": 242
+        },
+        {
+          "level": 2,
+          "title": "Scripts",
+          "line": 258
+        }
+      ],
+      "table_count": 0,
+      "table_lines": 0,
+      "fenced_block_count": 3,
+      "fenced_block_lines": 25,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": true,
+      "has_progression": true,
+      "wall_of_text": [],
+      "overview_lines": 7,
+      "is_skill_md": true
+    },
+    {
+      "file": "README.md",
+      "line_count": 66,
+      "token_estimate": 934,
+      "sections": [
+        {
+          "level": 2,
+          "title": "When to Use Directly vs. Through Mac",
+          "line": 5
+        },
+        {
+          "level": 2,
+          "title": "Operations",
+          "line": 9
+        },
+        {
+          "level": 3,
+          "title": "Interactive Mode (default)",
+          "line": 11
+        },
+        {
+          "level": 3,
+          "title": "Headless Mode (`--headless` or `-H`)",
+          "line": 20
+        },
+        {
+          "level": 2,
+          "title": "Scripts",
+          "line": 28
+        },
+        {
+          "level": 2,
+          "title": "Example Invocation",
+          "line": 34
+        },
+        {
+          "level": 2,
+          "title": "Creativity Modes",
+          "line": 47
+        },
+        {
+          "level": 2,
+          "title": "Supported Models",
+          "line": 55
+        },
+        {
+          "level": 2,
+          "title": "Part of the BMad Suno Band Manager Module",
+          "line": 63
+        }
+      ],
+      "table_count": 3,
+      "table_lines": 13,
+      "fenced_block_count": 1,
+      "fenced_block_lines": 8,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": false,
+      "has_progression": false,
+      "wall_of_text": [],
+      "is_skill_md": false,
+      "prompt_frontmatter": {
+        "has_frontmatter": false,
+        "fields": {},
+        "missing_fields": [
+          "name",
+          "description",
+          "menu-code"
+        ]
+      }
+    }
+  ]
+}

@@ -62,11 +62,11 @@ The orchestrating agent and each skill have their own documentation:
 
 | Component | Purpose | Key Scripts |
 |-----------|---------|-------------|
-| [**Mac (Band Manager)**](src/skills/bmad-suno-agent-band-manager/README.md) | Orchestrating agent — guides the full song creation workflow across all skills | `pre-activate.py`, `validate-path.py`, `check-memory-health.py` |
-| [**Band Profile Manager**](src/skills/bmad-suno-band-profile-manager/README.md) | CRUD for band identity profiles, writer voice analysis, tier feature awareness | `validate-profile.py`, `list-profiles.py`, `tier-features.py`, `diff-profiles.py` |
-| [**Style Prompt Builder**](src/skills/bmad-suno-style-prompt-builder/README.md) | Model-aware style prompt generation with creativity modes and wild card variants | `validate-prompt.py` |
-| [**Lyric Transformer**](src/skills/bmad-suno-lyric-transformer/README.md) | Poem/text to Suno-ready structured lyrics with metatags and cliché detection | `validate-lyrics.py`, `cliche-detector.py`, `syllable-counter.py`, `analyze-input.py`, `section-length-checker.py`, `lyrics-diff.py` |
-| [**Feedback Elicitor**](src/skills/bmad-suno-feedback-elicitor/README.md) | Post-generation feedback triage and guided refinement with musical vocabulary translation | `parse-feedback.py`, `map-adjustments.py` |
+| [**Mac (Band Manager)**](src/skills/bmad-suno-agent-band-manager/references/README.md) | Orchestrating agent — guides the full song creation workflow across all skills | `pre-activate.py`, `validate-path.py`, `check-memory-health.py` |
+| [**Band Profile Manager**](src/skills/bmad-suno-band-profile-manager/references/README.md) | CRUD for band identity profiles, writer voice analysis, tier feature awareness | `validate-profile.py`, `list-profiles.py`, `tier-features.py`, `diff-profiles.py` |
+| [**Style Prompt Builder**](src/skills/bmad-suno-style-prompt-builder/references/README.md) | Model-aware style prompt generation with creativity modes and wild card variants | `validate-prompt.py` |
+| [**Lyric Transformer**](src/skills/bmad-suno-lyric-transformer/references/README.md) | Poem/text to Suno-ready structured lyrics with metatags and cliché detection | `validate-lyrics.py`, `cliche-detector.py`, `syllable-counter.py`, `analyze-input.py`, `section-length-checker.py`, `lyrics-diff.py` |
+| [**Feedback Elicitor**](src/skills/bmad-suno-feedback-elicitor/references/README.md) | Post-generation feedback triage and guided refinement with musical vocabulary translation | `parse-feedback.py`, `map-adjustments.py` |
 
 Each skill can be invoked directly for standalone use — see the linked READMEs for details, headless modes, and examples.
 
@@ -127,14 +127,15 @@ Mac supports Suno models from v4 through v5 Pro, with model-specific prompt opti
 bmad-suno-agent-band-manager/
 ├── SKILL.md                    # Agent persona, activation, orchestration
 ├── bmad-manifest.json          # Capability registry
-├── create-song.md              # Main song creation workflow
-├── refine-song.md              # Post-generation refinement loop
-├── browse-songbook.md          # Creative history browsing
-├── save-memory.md              # Session persistence
-├── init.md                     # First-run setup
-├── README.md                   # This file
-├── USAGE.md                    # Detailed usage guide
 ├── references/
+│   ├── create-song.md          # Main song creation workflow
+│   ├── refine-song.md          # Post-generation refinement loop
+│   ├── browse-songbook.md      # Creative history browsing
+│   ├── save-memory.md          # Session persistence
+│   ├── init.md                 # First-run setup
+│   ├── README.md               # Skill documentation
+│   ├── USAGE.md                # Detailed usage guide
+│   ├── SUNO-REFERENCE.md       # Suno platform reference
 │   └── memory-system.md        # Memory discipline and structure
 └── scripts/
     ├── pre-activate.py         # First-run detection, scaffolding, menu rendering

@@ -1,0 +1,90 @@
+{
+  "scanner": "script-opportunities",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-band-profile-manager",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 86,
+      "severity": "medium",
+      "category": "postprocessing",
+      "title": "LLM assembles profile YAML then validates — assembly could be scripted from structured fields",
+      "detail": "Determinism confidence: moderate. Estimated token savings: 300-500 per invocation. Implementation complexity: moderate. Language: python. Could be prepass: no. Feeds scanner: n/a. Reusable across skills: no. Help pattern savings: ~100 tokens. After the conversational discovery, the LLM assembles a full YAML file from the collected fields. A script could take a JSON dict of field values and produce a valid, correctly-formatted YAML profile file with comments, proper field ordering, and correct indentation — eliminating YAML formatting variance.",
+      "action": "Create an assemble-profile.py script that accepts a JSON dict of profile fields (via stdin or file), applies profile-schema.md field ordering and YAML comment templates, and outputs a correctly-formatted YAML file. The LLM collects values conversationally; the script handles serialization."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 103,
+      "severity": "medium",
+      "category": "comparison",
+      "title": "LLM performs tier drift detection by comparing profile tier against user config",
+      "detail": "Determinism confidence: certain. Estimated token savings: 150-200 per invocation. Implementation complexity: trivial. Language: python. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: yes. Help pattern savings: ~50 tokens. Load Profile instructs the LLM to compare the profile's stored tier against the user's current tier and flag mismatches. This is a simple string comparison that a script could do deterministically.",
+      "action": "Add a --check-tier-drift flag to list-profiles.py (or validate-profile.py) that accepts the current user tier and compares it against the profile's stored tier, returning structured JSON with drift details. The LLM only needs to present the result conversationally."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 149,
+      "severity": "medium",
+      "category": "preprocessing",
+      "title": "Health Check runs validate-profile.py but then LLM re-checks quality dimensions that are partially deterministic",
+      "detail": "Determinism confidence: high. Estimated token savings: 200-400 per invocation. Implementation complexity: moderate. Language: python. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: no. Help pattern savings: ~80 tokens. Health Check step 2 has the LLM assess: whether style_baseline is vague, whether writer_voice is populated, whether reference_tracks exist, whether exclusion_defaults are set, whether vocal direction is generic, whether generation_history has entries. Most of these are simple emptiness/existence checks. Only 'is it vague?' and 'is it generic?' require LLM judgment.",
+      "action": "Create a health-check.py script that runs validate-profile.py plus additional completeness checks: writer_voice population (any non-empty fields), reference_tracks count, exclusion_defaults count, generation_history entry count, style_baseline character length and word count, vocal field word counts. Output a structured JSON completeness report with flags like 'writer_voice_populated: false', 'reference_tracks_count: 0', 'style_baseline_word_count: 3'. The LLM then only needs to assess the qualitative dimensions (vagueness, specificity) from the compact metrics."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 108,
+      "severity": "low",
+      "category": "transformation",
+      "title": "LLM applies natural language edits and must re-serialize modified profile YAML",
+      "detail": "Determinism confidence: moderate. Estimated token savings: 100-200 per invocation. Implementation complexity: moderate. Language: python. Could be prepass: no. Feeds scanner: n/a. Reusable across skills: no. Help pattern savings: ~50 tokens. After Edit Profile, the LLM must serialize the modified profile back to YAML. The interpretation of natural language changes requires LLM judgment, but the re-serialization to YAML is deterministic. Combined with the assemble-profile.py opportunity above, this would also benefit from a script that writes YAML consistently.",
+      "action": "Same assemble-profile.py script from finding #1 would handle the re-serialization. Additionally, a patch-profile.py script could accept a profile path and a JSON dict of field overrides, apply them to the existing YAML, and output the updated file — useful for both interactive edits and headless:edit."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 119,
+      "severity": "low",
+      "category": "transformation",
+      "title": "Duplicate Profile operation copies and modifies YAML — entirely deterministic",
+      "detail": "Determinism confidence: certain. Estimated token savings: 150-250 per invocation. Implementation complexity: trivial. Language: python. Could be prepass: no. Feeds scanner: n/a. Reusable across skills: no. Help pattern savings: ~60 tokens. Duplicate Profile copies a YAML file to a new name, optionally increments the version field, and updates the name field. This is fully deterministic file copy + field update with no LLM judgment needed.",
+      "action": "Create a duplicate-profile.py script that copies a source profile YAML to a new path, updates the 'name' field to the new name, optionally increments 'version', and validates the result. Accepts --source, --new-name, --increment-version flags. Returns JSON with status and new path."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 116,
+      "severity": "low",
+      "category": "structure",
+      "title": "Delete Profile checks existence, then LLM deletes — file deletion is deterministic",
+      "detail": "Determinism confidence: certain. Estimated token savings: 50-100 per invocation. Implementation complexity: trivial. Language: python. Could be prepass: no. Feeds scanner: n/a. Reusable across skills: no. Help pattern savings: ~40 tokens. Delete Profile uses list-profiles.py --check for existence, but the actual deletion is done by the LLM. A script could handle the delete-with-confirmation-bypass for headless mode.",
+      "action": "Create a delete-profile.py script (or add --delete flag to list-profiles.py) that deletes a profile by name from docs/band-profiles/, returning JSON status. Particularly valuable for headless:delete where no confirmation is needed."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 23,
+      "severity": "low",
+      "category": "extraction",
+      "title": "Headless mode detection and routing is partially deterministic flag parsing",
+      "detail": "Determinism confidence: high. Estimated token savings: 50-100 per invocation. Implementation complexity: trivial. Language: bash. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: yes. Help pattern savings: ~30 tokens. The activation mode detection parses --headless flags and routes to operations. While the LLM handles this inline, a pre-pass script could parse the flags and return structured JSON indicating the mode and parameters, reducing the LLM's parsing burden.",
+      "action": "Create a parse-headless-flags.py script that accepts the user's input string, detects --headless or -H flags, extracts the subcommand and arguments, and returns structured JSON: {\"mode\": \"headless\", \"operation\": \"create\", \"args\": [...]}. Low priority since the LLM handles this cheaply."
+    }
+  ],
+  "assessments": {
+    "existing_scripts": [
+      "validate-profile.py — validates profile YAML against schema, derives kebab-case filenames",
+      "list-profiles.py — scans and lists profiles, checks individual profile existence",
+      "tier-features.py — returns tier feature availability as structured JSON",
+      "diff-profiles.py — structured diff between two profile YAML files"
+    ]
+  },
+  "summary": {
+    "total_findings": 7,
+    "by_severity": {"high": 0, "medium": 3, "low": 4},
+    "by_category": {
+      "postprocessing": 1,
+      "comparison": 1,
+      "preprocessing": 1,
+      "transformation": 2,
+      "structure": 1,
+      "extraction": 1
+    },
+    "assessment": "This skill already has strong script coverage — four well-built scripts handle validation, listing, tier features, and diffing. The remaining opportunities are moderate-value. Estimated total token savings: 1000-1750 per invocation across all findings. The highest-value opportunity is the health-check.py pre-pass script (finding #3), which would extract completeness metrics into compact JSON so the LLM only judges qualitative dimensions like vagueness and specificity. The duplicate-profile.py and assemble-profile.py scripts would eliminate YAML serialization variance. Two findings (health-check pre-pass, tier drift detection) could feed LLM scanners with structured data. The conversational discovery and writer voice analysis — the core creative operations — correctly remain as LLM work."
+  }
+}

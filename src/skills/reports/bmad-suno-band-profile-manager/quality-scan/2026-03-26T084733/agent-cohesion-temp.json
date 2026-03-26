@@ -1,0 +1,184 @@
+{
+  "scanner": "agent-cohesion",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-band-profile-manager",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "strength",
+      "title": "Exceptional persona-capability alignment",
+      "detail": "The 'music producer's assistant' persona is perfectly matched to the capabilities offered. Every operation (create, edit, duplicate, analyze voice, health check) is exactly what a producer's assistant would do when managing band identity. The conversational discovery approach for profile creation fits the persona naturally -- a producer's assistant would guide you through defining your sound, not hand you a form.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "strength",
+      "title": "Complete CRUD lifecycle with meaningful extras",
+      "detail": "The skill covers the full profile lifecycle: create, read (load/list), update (edit), delete, plus duplicate and health check. This is textbook capability completeness. The duplicate operation is a thoughtful addition that supports real workflows (versioning, side projects, sound evolution). The health check goes beyond validation to assess quality, which shows product-level thinking.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "strength",
+      "title": "Dual-mode design (interactive + headless) is architecturally sound",
+      "detail": "Supporting both conversational and headless modes makes this skill usable by humans and by other skills/agents in automated pipelines. The headless mode covers all operations with structured JSON responses, enabling clean integration. The activation mode detection at the top of the skill is the right pattern.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "strength",
+      "title": "Thoughtful Suno-specific domain knowledge embedded in workflow",
+      "detail": "The skill bakes in real Suno platform knowledge: negative prompts don't work well (so exclusions get translated to positive language), front-load style prompts in the first 200 characters, persona era-anchoring behavior, Audio Influence effective ranges. This isn't generic profile management -- it's deeply informed by how Suno actually works, which makes the agent genuinely useful rather than just a YAML editor.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "strength",
+      "title": "Progressive disclosure in profile creation flow",
+      "detail": "The 12-step discovery flow is well-sequenced: it starts with identity (name, instrumental/vocal), moves to sound (genre, mood, references), then to technical settings (model, tier, sliders), and ends with optional enrichment (writer voice). Each step builds on the previous. The instruction to ask 'Anything else to add, or move on?' between sections respects user autonomy.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 69,
+      "severity": "medium",
+      "category": "gap",
+      "title": "Reference track research mandate may fail silently without web search",
+      "detail": "The Create Profile flow has a 'research mandate' requiring web search to verify artist/song sonic characteristics, with a fallback to asking the user. However, the skill has no way to detect whether a search tool is available before attempting it. If the LLM tries and fails, the user experience degrades without explanation. This is a gap in the user journey for environments without web search.",
+      "action": "Add an explicit check or note in the flow: 'If web search is unavailable, tell the user: I can not verify reference tracks right now -- describe what you love about these artists and I will decompose from your description.' Make the fallback feel intentional, not like a failure."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "medium",
+      "category": "gap",
+      "title": "No export or share capability for profiles",
+      "detail": "Users can create, edit, and manage profiles, but there is no operation for exporting a profile in a portable format (e.g., shareable YAML snippet, JSON export for backup, or formatted summary for sharing with collaborators). The profiles live as YAML files which are technically portable, but a user who wants to share their band's sonic identity with a collaborator has no explicit workflow for it.",
+      "action": "Consider adding an 'Export' operation that produces a clean, shareable version of a profile -- either as formatted text for pasting into a message, or as a standalone YAML file with a summary header. This is low priority since the YAML is already human-readable, but an explicit export pathway would complete the user journey."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "low",
+      "category": "gap",
+      "title": "No import capability for profiles from external sources",
+      "detail": "Users can create profiles conversationally or via headless YAML, but there is no explicit 'import' operation for bringing in a profile someone else shared or from a backup. The headless:create partially covers this, but a dedicated import flow could validate, adapt tier settings, and resolve conflicts with existing profiles.",
+      "action": "A dedicated 'Import' operation would complete the portability story. It could accept YAML, validate it, check for name conflicts, and optionally adapt tier/model settings to the user's current plan. Low priority since headless:create covers the mechanical need."
+    },
+    {
+      "file": "references/profile-schema.md",
+      "line": null,
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "Profile comparison capability could enhance sound evolution workflows",
+      "detail": "The diff-profiles.py script exists for showing changes during edits, but there is no user-facing 'Compare' operation. Users who duplicate profiles for sound evolution (e.g., 'midnight-echoes-v1' vs 'midnight-echoes-v2') would benefit from a side-by-side comparison that highlights what changed in their sonic direction. This supports a natural workflow: duplicate, evolve, compare, decide which direction to keep.",
+      "action": "Add a 'Compare Profiles' operation that uses diff-profiles.py to show a human-friendly comparison between two profiles, highlighting what changed and what it means sonically. Frame it as 'How has your sound evolved?' rather than a dry diff."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "Profile archiving could prevent accidental loss of abandoned-but-useful profiles",
+      "detail": "Delete is permanent ('This cannot be undone'). For users experimenting with sound evolution, an archive operation that moves profiles to an 'archived' subfolder would be safer than deletion. Archived profiles could be restored or used as historical reference without cluttering the active profile list.",
+      "action": "Consider adding an 'Archive' operation as a soft-delete alternative. Move to docs/band-profiles/archived/ and exclude from default list-profiles output. Restore operation brings them back. This is especially valuable for users who duplicate-then-evolve and want to keep a record of abandoned directions."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 56,
+      "severity": "low",
+      "category": "misalignment",
+      "title": "Wrong-skill redirect mentions 'Band Manager agent' without clear invocation path",
+      "detail": "When a user asks to 'make a song' or 'create music', the skill says to suggest invoking the 'Band Manager agent or Style Prompt Builder.' But the user may not know how to invoke those. The redirect is helpful in intent but incomplete in execution -- it identifies the right destination without providing the route.",
+      "action": "Include a concrete invocation example in the redirect guidance, e.g., 'Suggest: You can ask Mac to help with that -- say create a song with [band name].' This turns a dead end into a warm handoff."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "Generation learnings could be surfaced proactively during profile load",
+      "detail": "The profile schema includes generation_learnings and known_limitations, but the Load Profile operation only displays sections passively. These learnings are high-value institutional knowledge that could be surfaced proactively: 'Heads up: last time you worked with this profile, you found that metal in the style prompt triggers screaming. You switched to progressive heavy groove instead.' This would make the agent feel like it has memory and context.",
+      "action": "Enhance the Load Profile operation to highlight generation_learnings and known_limitations when they exist, framing them as 'What you have learned about this sound so far' rather than just another YAML section."
+    },
+    {
+      "file": "bmad-manifest.json",
+      "line": null,
+      "severity": "low",
+      "category": "redundancy",
+      "title": "Capability decomposition in manifest could be consolidated",
+      "detail": "The bmad-manifest.json lists three capabilities: manage-profiles, analyze-writer-voice, and health-check. From a user perspective, analyze-writer-voice and health-check are both operations within the profile manager, not separate capabilities. The manifest correctly mirrors the SKILL.md operation table, but from a cohesion standpoint, these are sub-operations of profile management, not independent capabilities.",
+      "action": "This is a minor structural observation, not a real problem. If the manifest schema supports sub-capabilities or if the orchestrating agent benefits from granular capability declarations, the current structure is fine. If not, consider consolidating into a single 'manage-profiles' capability with richer trigger phrases covering voice analysis and health checks."
+    }
+  ],
+  "assessments": {
+    "agent_identity": {
+      "name": "bmad-suno-band-profile-manager",
+      "persona_summary": "A music producer's assistant who understands sonic identity, vocal direction, and writing voice. Meets users where they are -- from deep musical vocabulary to beginners who know what they like but can not name it.",
+      "primary_purpose": "Manage persistent band identity profiles that define consistent sonic and lyrical identity for AI-assisted music creation via Suno",
+      "capability_count": 8
+    },
+    "cohesion_analysis": {
+      "persona_alignment": {
+        "score": "strong",
+        "notes": "The producer's assistant persona is an excellent fit. Every capability serves the core mission of defining and maintaining band identity. The conversational discovery approach, reference track decomposition, and writer voice analysis all feel like things a knowledgeable producer's assistant would naturally do. The tone guidance ('meet them where they are') ensures the persona adapts to the user's expertise level."
+      },
+      "capability_completeness": {
+        "score": "mostly-complete",
+        "missing_areas": [
+          "Export/share profiles for collaboration",
+          "Compare profiles side-by-side for sound evolution tracking",
+          "Archive (soft-delete) as alternative to permanent deletion"
+        ],
+        "notes": "The core CRUD lifecycle is fully covered with thoughtful extras (duplicate, health check, voice analysis). The gaps are in secondary workflows: collaboration, evolution tracking, and safe experimentation. None of these are blocking -- a user can accomplish their primary work end-to-end."
+      },
+      "redundancy_level": {
+        "score": "clean",
+        "consolidation_opportunities": [
+          {
+            "capabilities": ["analyze-writer-voice", "health-check", "manage-profiles"],
+            "suggested_consolidation": "These are already well-integrated as operations within a single skill. The manifest lists them separately for routing purposes, which is reasonable. No real consolidation needed."
+          }
+        ]
+      },
+      "external_integration": {
+        "external_skills_referenced": 4,
+        "integration_pattern": "intentional",
+        "notes": "References bmad-init (config loading), Style Prompt Builder, Lyric Transformer, and Feedback Elicitor. The integration is well-designed: this skill produces profiles that downstream skills consume. The dependency direction is clear (profile manager is upstream). The bmad-init fallback behavior is properly handled. The 'wrong skill' redirect to Band Manager agent shows awareness of the larger ecosystem."
+      },
+      "user_journey_score": {
+        "score": "complete-end-to-end",
+        "broken_workflows": [],
+        "notes": "A user can create a profile from scratch through guided conversation, refine it, check its health, analyze their writing voice, duplicate it for experiments, and manage the full lifecycle. The post-operation flow ('Anything else?') keeps the session alive. The only friction point is the wrong-skill redirect lacking a concrete invocation path, but that is a minor polish issue, not a broken workflow."
+      }
+    }
+  },
+  "summary": {
+    "total_findings": 13,
+    "by_severity": {
+      "high": 0,
+      "medium": 2,
+      "low": 3,
+      "suggestion": 3,
+      "strength": 5
+    },
+    "by_category": {
+      "gap": 3,
+      "redundancy": 1,
+      "misalignment": 1,
+      "opportunity": 3,
+      "strength": 5
+    },
+    "overall_cohesion": "cohesive",
+    "single_most_important_fix": "Make the reference track research fallback explicit and graceful when web search is unavailable, so the profile creation flow never feels broken regardless of environment."
+  }
+}

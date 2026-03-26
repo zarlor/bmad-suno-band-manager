@@ -1,0 +1,200 @@
+{
+  "scanner": "prompt-craft-prepass",
+  "script": "prepass-prompt-metrics.py",
+  "version": "1.0.0",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-lyric-transformer",
+  "timestamp": "2026-03-26T14:32:09.383855+00:00",
+  "status": "info",
+  "skill_md_summary": {
+    "line_count": 312,
+    "token_estimate": 6525,
+    "overview_lines": 7,
+    "table_count": 1,
+    "table_lines": 10,
+    "fenced_block_count": 5,
+    "fenced_block_lines": 54,
+    "section_count": 16
+  },
+  "prompt_health": {
+    "total_prompts": 1,
+    "prompts_with_config_header": 0,
+    "prompts_with_progression": 0
+  },
+  "aggregate": {
+    "total_files_scanned": 2,
+    "total_token_estimate": 7572,
+    "total_waste_patterns": 0,
+    "total_back_references": 0,
+    "total_suggestive_loading": 0,
+    "total_wall_of_text": 1
+  },
+  "resource_sizes": {},
+  "files": [
+    {
+      "file": "SKILL.md",
+      "line_count": 312,
+      "token_estimate": 6525,
+      "sections": [
+        {
+          "level": 2,
+          "title": "Overview",
+          "line": 8
+        },
+        {
+          "level": 2,
+          "title": "Activation Mode Detection",
+          "line": 16
+        },
+        {
+          "level": 2,
+          "title": "On Activation",
+          "line": 50
+        },
+        {
+          "level": 2,
+          "title": "Workflow Steps",
+          "line": 62
+        },
+        {
+          "level": 3,
+          "title": "Step 1: Gather Input",
+          "line": 64
+        },
+        {
+          "level": 3,
+          "title": "Refinement Mode",
+          "line": 96
+        },
+        {
+          "level": 3,
+          "title": "Step 2: Select Transformations",
+          "line": 120
+        },
+        {
+          "level": 3,
+          "title": "Step 3: Transform",
+          "line": 144
+        },
+        {
+          "level": 3,
+          "title": "Step 4: Quality Check",
+          "line": 240
+        },
+        {
+          "level": 3,
+          "title": "Step 5: Present & Refine",
+          "line": 256
+        },
+        {
+          "level": 2,
+          "title": "Transformed Lyrics",
+          "line": 263
+        },
+        {
+          "level": 2,
+          "title": "Transformation Summary",
+          "line": 267
+        },
+        {
+          "level": 2,
+          "title": "Changes Made",
+          "line": 274
+        },
+        {
+          "level": 2,
+          "title": "Cliche Report (if CD was applied)",
+          "line": 277
+        },
+        {
+          "level": 3,
+          "title": "Step 6: Handoff Guidance",
+          "line": 292
+        },
+        {
+          "level": 2,
+          "title": "Scripts",
+          "line": 301
+        }
+      ],
+      "table_count": 1,
+      "table_lines": 10,
+      "fenced_block_count": 5,
+      "fenced_block_lines": 54,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": true,
+      "has_progression": true,
+      "wall_of_text": [
+        {
+          "start_line": 33,
+          "length": 15
+        }
+      ],
+      "overview_lines": 7,
+      "is_skill_md": true
+    },
+    {
+      "file": "README.md",
+      "line_count": 67,
+      "token_estimate": 1047,
+      "sections": [
+        {
+          "level": 2,
+          "title": "When to Use Directly vs. Through Mac",
+          "line": 5
+        },
+        {
+          "level": 2,
+          "title": "Transformation Options",
+          "line": 9
+        },
+        {
+          "level": 3,
+          "title": "Headless Mode (`--headless` or `-H`)",
+          "line": 24
+        },
+        {
+          "level": 2,
+          "title": "Scripts",
+          "line": 31
+        },
+        {
+          "level": 2,
+          "title": "Example Invocation",
+          "line": 44
+        },
+        {
+          "level": 2,
+          "title": "Key Constraints",
+          "line": 57
+        },
+        {
+          "level": 2,
+          "title": "Part of the BMad Suno Band Manager Module",
+          "line": 64
+        }
+      ],
+      "table_count": 2,
+      "table_lines": 20,
+      "fenced_block_count": 1,
+      "fenced_block_lines": 8,
+      "waste_patterns": [],
+      "back_references": [],
+      "suggestive_loading": [],
+      "has_config_header": false,
+      "has_progression": false,
+      "wall_of_text": [],
+      "is_skill_md": false,
+      "prompt_frontmatter": {
+        "has_frontmatter": false,
+        "fields": {},
+        "missing_fields": [
+          "name",
+          "description",
+          "menu-code"
+        ]
+      }
+    }
+  ]
+}

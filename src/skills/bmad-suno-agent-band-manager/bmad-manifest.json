@@ -7,7 +7,7 @@
       "name": "create-song",
       "menu-code": "CS",
       "description": "Orchestrated song creation: gathers direction, runs Lyric Transformer + Style Prompt Builder, presents complete Suno package.",
-      "prompt": "create-song.md",
+      "prompt": "./references/create-song.md",
       "phase-name": "anytime",
       "after": [
         "manage-profiles"
@@ -17,7 +17,7 @@
       "name": "refine-song",
       "menu-code": "RS",
       "description": "Post-generation refinement: runs Feedback Elicitor, routes adjustments back through relevant skills.",
-      "prompt": "refine-song.md",
+      "prompt": "./references/refine-song.md",
       "phase-name": "anytime",
       "after": [
         "create-song"
@@ -27,7 +27,7 @@
       "name": "save-memory",
       "menu-code": "SM",
       "description": "Save current session context to memory.",
-      "prompt": "save-memory.md",
+      "prompt": "./references/save-memory.md",
       "phase-name": "anytime"
     },
     {
@@ -76,7 +76,7 @@
       "name": "browse-songbook",
       "menu-code": "SB",
       "description": "Browse past songs, successful prompts, and creative history.",
-      "prompt": "browse-songbook.md",
+      "prompt": "./references/browse-songbook.md",
       "phase-name": "anytime",
       "after": [
         "create-song"

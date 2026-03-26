@@ -1,0 +1,118 @@
+{
+  "scanner": "prompt-craft",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-feedback-elicitor",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 8,
+      "severity": "strength",
+      "category": "overview-quality",
+      "title": "Overview establishes mission, domain context, and design rationale concisely",
+      "detail": "The 7-line Overview covers what the agent does (feedback-to-parameter translation), domain constraints (agent cannot hear songs, users range from musicians to casual listeners), five feedback types, and design rationale (why triage-first matters). This is exactly the kind of context that enables intelligent improvisation when situations don't match the script.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 10,
+      "severity": "strength",
+      "category": "persona-voice",
+      "title": "A&R collaborator persona is load-bearing and consistent throughout",
+      "detail": "The 'music producer's A&R collaborator' framing carries through all workflow steps — celebrating positive feedback, using natural conversational prompts, bridging emotional vocabulary to technical parameters. This persona context directly shapes output quality for a companion-interactive skill.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 104,
+      "severity": "strength",
+      "category": "progressive-disclosure",
+      "title": "Good use of mandatory reference loading for detailed content",
+      "detail": "Step 3 directs 'Load references/feedback-triage-guide.md for detailed classification rules' and Step 4a/4e direct loading of suno-parameter-map.md. These are mandatory directives, not suggestive. The triage guide and parameter map contain substantial domain knowledge that would bloat SKILL.md if inlined.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "medium",
+      "category": "progressive-disclosure",
+      "title": "SKILL.md at 6303 tokens exceeds single-purpose agent guideline of ~5000 tokens",
+      "detail": "While the 336-line count is within the 500-line allowance for single-purpose agents with deep persona, the token estimate of 6303 exceeds the ~5000 token guideline by ~26%. The inline output template (lines 269-301) and headless JSON contract (lines 28-47) account for roughly 800-1000 tokens that could be extracted.",
+      "action": "Extract the Step 6 output format template (lines 269-301) to references/output-template.md and the headless output contract JSON (lines 28-47) to references/headless-contract.md. Replace with brief descriptions and mandatory load directives. This would bring SKILL.md closer to ~5000 tokens."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 184,
+      "severity": "low",
+      "category": "progressive-disclosure",
+      "title": "Step 4e Technical Resolution contains dense domain knowledge that could be in a reference",
+      "detail": "Lines 184-205 detail specific resolution paths for artifacts, vocal quality, timing, pronunciation, quality degradation, instrument bleed, and section-specific issues including tier-specific Studio feature guidance. This is ~22 lines of Suno-specific technical knowledge that overlaps with what suno-parameter-map.md likely covers. The density is high but each item is distinct and actionable.",
+      "action": "Consider whether the Studio feature resolution paths (Legacy Editor, Replace Section, Stems workflow) are already covered in suno-parameter-map.md. If so, replace the inline detail with a mandatory load directive. If not, this content is appropriately placed as workflow-critical instructions."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 329,
+      "severity": "low",
+      "category": "anti-pattern",
+      "title": "Step 7 references iteration log acceptance 'in Step 2' but Step 2 does not mention it",
+      "detail": "Line 329 says 'Accept iteration log on re-invocation: If the user provides a previous iteration log in Step 2...' but Step 2 (Gather Context, lines 83-100) does not mention accepting or handling iteration logs from previous sessions. This creates a gap where the agent might not recognize iteration logs during context gathering.",
+      "action": "Add a bullet to Step 2's 'Valuable context' list: 'Previous iteration log — Did the user provide a log from a prior feedback session? If yes, load it to track what was tried and what worked.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 51,
+      "severity": "strength",
+      "category": "self-containment",
+      "title": "On Activation includes config fallback for resilience",
+      "detail": "Line 57 specifies 'If bmad-init is unavailable, greet generically and default communication_language to English. Do not block the workflow.' This graceful degradation prevents the skill from stalling when dependencies are unavailable.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 207,
+      "severity": "strength",
+      "category": "intelligence-placement",
+      "title": "Good script/LLM boundary in adjustment mapping workflow",
+      "detail": "Step 5 correctly delegates structured dimension extraction and parameter mapping to scripts (parse-feedback.py, map-adjustments.py) while reserving LLM judgment for refining recommendations based on full context, band profile, and creative intent. This is the right boundary — scripts handle deterministic lookups, the LLM handles semantic interpretation.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 146,
+      "severity": "strength",
+      "category": "outcome-balance",
+      "title": "Vague feedback elicitation includes non-convergence fallbacks",
+      "detail": "Steps 4c and 4d both include fallback strategies when elicitation doesn't converge — suggesting 2-3 variants to turn an elicitation problem into a selection problem. This shows mature outcome-driven design that handles real-world failure modes rather than assuming the happy path.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 221,
+      "severity": "note",
+      "category": "outcome-balance",
+      "title": "Research mandate in Step 5 adds web search dependency",
+      "detail": "Line 221 directs the agent to use web search to verify Suno-specific recommendations against current behavior, with graceful fallback to training knowledge. This is appropriate given Suno's rapid model evolution but adds a tool dependency. The fallback clause makes this resilient.",
+      "action": ""
+    }
+  ],
+  "assessments": {
+    "skill_type_assessment": "companion-interactive",
+    "skillmd_assessment": {
+      "overview_quality": "appropriate",
+      "progressive_disclosure": "good",
+      "persona_context": "appropriate",
+      "notes": "SKILL.md is well-structured for a companion-interactive agent with strong domain framing and consistent persona voice. At 6303 tokens it's modestly over the ~5000 guideline — the output template and headless contract are the main extraction candidates. Progressive disclosure to references is already well-implemented for triage rules and parameter maps."
+    },
+    "prompts_scanned": 0,
+    "prompt_health": {
+      "prompts_with_config_header": 0,
+      "prompts_with_progression_conditions": 0,
+      "prompts_self_contained": 0,
+      "total_prompts": 0
+    }
+  },
+  "summary": {
+    "total_findings": 10,
+    "by_severity": {"critical": 0, "high": 0, "medium": 1, "low": 2, "note": 1, "strength": 6},
+    "assessment": "Well-crafted companion-interactive skill with strong persona context, good progressive disclosure, and correct intelligence placement boundaries. The main improvement opportunity is extracting inline templates to references to reduce SKILL.md token count from ~6300 to ~5000.",
+    "top_improvement": "Extract the Step 6 output format template and headless JSON contract to reference files to bring SKILL.md within the ~5000 token guideline for single-purpose agents."
+  }
+}

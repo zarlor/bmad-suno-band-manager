@@ -1,0 +1,342 @@
+{
+  "scanner": "enhancement-opportunities",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-style-prompt-builder",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 60,
+      "severity": "high-opportunity",
+      "category": "experience-gap",
+      "title": "No band profile discovery flow when user has no profiles yet",
+      "detail": "Step 1 says 'Ask if they want to use a saved profile' and offers to list profiles from docs/band-profiles/. But a first-time user who has never created a band profile gets dumped into a cold 'no profiles found' state with no guidance on how to create one or whether they even need one. The skill assumes the user either has profiles or knows to skip them. This is the most common first-timer dead-end.",
+      "action": "When no profiles exist in docs/band-profiles/, proactively offer two paths: (1) 'We can build a prompt from scratch right now -- just describe your sound' and (2) 'If you want to save your band's sound for reuse, I can hand you off to the Profile Manager first.' Frame the no-profile path as the default, not the exception."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 84,
+      "severity": "high-opportunity",
+      "category": "facilitative-pattern",
+      "title": "Missing soft gate elicitation during input gathering",
+      "detail": "Step 1 collects inputs conversationally but uses a checklist-style enumeration (model, creativity mode, specific requests, references). There are no soft gates like 'anything else about the sound you want, or shall we start building?' A user in creative flow might volunteer brilliant direction ('I want it to sound like driving through fog at 2am') but the current structure moves through items without drawing out these moments. Soft gates at natural transitions would surface richer creative input.",
+      "action": "After collecting the initial genre/mood direction, insert a soft gate: 'That gives me a solid foundation. Anything else about the feel, the instruments, or the vibe -- or shall I start building?' Repeat after model/creativity selection: 'Last chance to add anything before I draft the prompt.' These pauses draw out the details users did not know they had."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 93,
+      "severity": "medium-opportunity",
+      "category": "facilitative-pattern",
+      "title": "No capture-don't-interrupt mechanism for out-of-scope creative input",
+      "detail": "When gathering inputs, users in creative flow often volunteer information that belongs to other parts of the workflow -- lyric ideas, song structure preferences, mixing notes. The skill has no mechanism to silently capture this and defer it. If a user says 'and the bridge should have a key change with sparse drums,' that structural info is valuable for the Lyric Transformer but irrelevant to the style prompt. Without capture-and-defer, the skill either ignores it (user feels unheard) or tries to incorporate it (wrong output).",
+      "action": "Add a capture-and-defer note in Step 1: 'If the user provides lyric, structure, or mix-stage information during style prompt gathering, acknowledge it briefly (\"Great note about the bridge -- I will pass that along\") and store it as context for handoff to Lyric Transformer or Feedback Elicitor. Do not try to encode structural directions in the style prompt.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 209,
+      "severity": "high-opportunity",
+      "category": "experience-gap",
+      "title": "No iteration history or version tracking across refinement loops",
+      "detail": "Step 6 offers refinement ('Want to adjust anything?') but each iteration overwrites the previous version in the conversation. After 3-4 rounds of tweaking, the user cannot compare version 1 to version 3, cannot revert to an earlier variant they preferred, and cannot see what changed. This is especially painful for experimental users who want to explore and then cherry-pick. The wild card variant compounds this -- it is a great idea that gets lost the moment the user asks for a refinement.",
+      "action": "Number each prompt version explicitly (v1, v2, v3...) and briefly note what changed ('v2: swapped to v5 Pro format, added brass accents'). At the end of a refinement session, offer a summary: 'Here are all the versions we built today: [v1: indie folk-rock conversational], [v2: same but v5 crisp], [v3: added brass]. Want me to collect them all in one copy-ready block?' This turns the refinement loop from ephemeral to archival."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 195,
+      "severity": "medium-opportunity",
+      "category": "delight-opportunity",
+      "title": "Wild card variant could be more targeted with a 'twist dial'",
+      "detail": "The wild card rules say 'twist one or two major elements' but the user has no control over what gets twisted. An expert user who loves their genre foundation but wants to explore production approaches cannot say 'keep the genre, twist the production.' A user who wants to explore adjacent genres cannot say 'keep the vocals, twist the genre.' The wild card is a black box of creativity rather than a directed exploration tool.",
+      "action": "Offer a brief 'twist dial' before generating the wild card: 'What should I twist? (a) genre fusion, (b) era/production shift, (c) mood inversion, (d) instrumentation flip, (e) surprise me.' Default to (e) for users who do not specify. This turns the wild card from a party trick into a serious creative exploration tool."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 20,
+      "severity": "medium-opportunity",
+      "category": "edge-case",
+      "title": "Headless refine mode assumes well-structured delta input but provides no schema",
+      "detail": "The --headless:refine mode accepts 'an existing style prompt + structured adjustments (add/remove/reorder) from the Feedback Elicitor' but does not define what 'structured adjustments' looks like. If the Feedback Elicitor sends ambiguous deltas ('make it heavier' vs. {add: ['crushing distortion'], remove: ['acoustic guitar']}), the skill has no contract to validate against. This is the most likely headless failure point because it depends on another skill's output format.",
+      "action": "Define an explicit input schema for --headless:refine in the SKILL.md or in references/. Example: {existing_prompt: string, model: string, adjustments: {add: string[], remove: string[], reorder: string[], replace: {from: string, to: string}[]}}. Reference this schema in both the Style Prompt Builder and the Feedback Elicitor so their contract is explicit."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 24,
+      "severity": "medium-opportunity",
+      "category": "autonomous-potential",
+      "title": "Headless migrate mode could enable batch model migration across a catalog",
+      "detail": "The --headless:migrate mode reformats a single prompt from one model to another. But a band with 15 songs on v4.5 wanting to try v5 Pro would need to invoke this 15 times manually. The mode is built for single-prompt invocation when the highest-value use case is batch migration. An automator or pipeline could chain these, but the skill does not advertise or facilitate batch input.",
+      "action": "Document a batch invocation pattern in the README: 'For catalog-wide migration, invoke --headless:migrate for each prompt in a loop. Input: array of {prompt, from_model, to_model}. Consider adding a --headless:migrate-batch mode that accepts an array and returns an array, reducing invocation overhead for pipeline users.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 100,
+      "severity": "medium-opportunity",
+      "category": "edge-case",
+      "title": "Web search dependency for reference track decomposition has no timeout or fallback chain",
+      "detail": "Step 2.5 says 'Always use web search to verify an artist's distinctive sonic characteristics' and falls back to asking the user only when 'no search tool is available.' But web search can also be available-but-slow, rate-limited, or returning irrelevant results. There is no intermediate fallback: use training knowledge with a confidence disclaimer. The binary available/unavailable check misses the degraded-search scenario that is far more common in practice.",
+      "action": "Add a three-tier fallback chain: (1) web search for verification, (2) if search is slow/unhelpful, use training knowledge but flag with 'Based on my knowledge -- please verify these details match what you hear in [artist]', (3) if confidence is low even with training knowledge, ask the user. This graceful degradation prevents the skill from blocking on a slow search or producing nothing when the search returns noise."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 126,
+      "severity": "medium-opportunity",
+      "category": "experience-gap",
+      "title": "Model-specific formatting differences are invisible to the user until output",
+      "detail": "The skill silently chooses between conversational (v4.5) and film-brief (v5) formatting based on model selection. The user never sees WHY their prompt looks the way it does. An expert who chose v5 Pro might wonder why the prompt is so terse; a first-timer on v4.5-all might think the verbose output is wrong. The formatting rationale is hidden inside the skill's logic, creating a comprehension gap between 'what I got' and 'why it looks like this.'",
+      "action": "Add a one-line rationale above the style prompt output: 'v5 Pro responds best to crisp, film-brief descriptors -- so I kept this tight and evocative rather than conversational.' This takes zero extra tokens in the prompt itself but transforms the user's understanding of the output."
+    },
+    {
+      "file": "references/model-prompt-strategies.md",
+      "line": null,
+      "severity": "high-opportunity",
+      "category": "delight-opportunity",
+      "title": "Massive domain knowledge in model-prompt-strategies.md is invisible during interactive use",
+      "detail": "The model-prompt-strategies reference contains production-tested findings (NOLA funk as rhythmic loosener, baroque keyboard triggers, bass prominence limitations, three-phase dynamic arc redundancy) that represent hard-won knowledge from real Suno sessions. But in interactive mode, this knowledge only surfaces when the skill happens to encounter a relevant scenario. A user building a prompt for 'heavy progressive metal' will never learn that 'progressive metal' triggers Dream Theater shred unless they happen to use those exact words. The reference is a goldmine that the skill barely mines.",
+      "action": "Add a 'gotchas check' substep after building the initial style prompt in Step 2: scan the constructed prompt against the Genre Term Behavior Table, Dangerous Words, and Vocal Behavior sections. Proactively warn: 'Heads up -- \"progressive metal\" in Suno tends to produce Dream Theater-style technical shred. I used \"progressive groove metal\" instead for Mastodon-adjacent pocket grooves. Sound right?' This turns passive reference material into active quality assurance."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 43,
+      "severity": "low-opportunity",
+      "category": "journey-friction",
+      "title": "bmad-init config failure silently degrades the greeting but not the workflow context",
+      "detail": "The fallback when bmad-init is unavailable handles greeting and language gracefully, but does not address other config values that downstream steps might expect (e.g., default model preferences, output directories, tier information). If bmad-init provides tier info that Step 1 uses for tier detection, the fallback only covers greeting/language, creating a hidden dependency gap.",
+      "action": "Audit what bmad-init provides beyond user_name and communication_language. If tier, default model, or output paths come from config, add explicit fallbacks for each in the On Activation fallback block."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 246,
+      "severity": "medium-opportunity",
+      "category": "facilitative-pattern",
+      "title": "No dual-output for downstream LLM consumption",
+      "detail": "The skill produces human-readable output (formatted prompt package with headers and reasoning) and copy-ready blocks for Suno's UI. But when another skill (Feedback Elicitor, Lyric Transformer) needs to consume the style prompt programmatically, it must parse the human-formatted output. There is no LLM-optimized distillate -- a compact structured representation of the prompt package that downstream skills can consume without parsing presentation formatting.",
+      "action": "After the copy-ready blocks, offer a structured JSON distillate for downstream consumption: {model, style_prompt, exclusion_prompt, sliders: {weirdness, style_influence, audio_influence}, wild_card: string|null, creativity_mode, profile_used}. Gate this behind a flag or only emit it when the invoker is another skill (detectable via headless mode or explicit request)."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "low-opportunity",
+      "category": "edge-case",
+      "title": "User who changes model mid-refinement gets a full rebuild instead of a targeted reformat",
+      "detail": "Step 6 says 'model changes affect style prompt formatting' and loops back to the relevant step. But changing from v4.5-all to v5 Pro is not just a formatting change -- it is a fundamental prompt philosophy change (conversational to film-brief). The current flow treats this like any other refinement, but the user experience should acknowledge this is a significant transformation, not a tweak. The user might not realize their 800-character conversational prompt will become a 200-character film brief.",
+      "action": "When the user requests a model change, preview the impact before rebuilding: 'Switching to v5 Pro means rewriting from conversational style to crisp film-brief -- your prompt will get much shorter and more evocative. The musical intent stays the same. Ready?' This sets expectations and avoids surprise when the output looks radically different."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "low-opportunity",
+      "category": "assumption-risk",
+      "title": "Skill assumes user understands Suno's UI fields and where to paste each output",
+      "detail": "The output includes 'Style Prompt,' 'Exclude Styles,' and slider recommendations as separate sections. But a first-timer may not know where these go in Suno's interface. The copy-ready blocks help with the what but not the where. A user who pastes the exclusion prompt into the style prompt field (a common mistake) would get the opposite of what they intended.",
+      "action": "Add a brief parenthetical after each copy-ready section for first-timers: 'Copy-Ready: Style Prompt (paste into Suno's \"Style of Music\" field)' and 'Copy-Ready: Exclude Styles (paste into Suno's \"Exclude Styles\" field -- Pro/Premier only).' Zero cost for experts, prevents the most common first-timer mistake."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "medium-opportunity",
+      "category": "facilitative-pattern",
+      "title": "No parallel review lenses before finalizing the prompt package",
+      "detail": "The skill builds the prompt, presents it, and offers refinement. But it never self-reviews the output through multiple lenses before presenting. A quick internal check from a 'genre accuracy' lens (does this prompt actually describe the requested genre?), a 'Suno gotchas' lens (does this prompt contain any known trigger words?), and a 'user intent' lens (does this prompt capture what the user actually asked for?) would catch issues before the user sees them, reducing refinement round-trips.",
+      "action": "Add a brief self-review substep between building and presenting (Step 2 to Step 6): internally check the draft prompt against (1) the Genre Term Behavior Table for known triggers, (2) the user's original stated intent for drift, and (3) the model-specific strategy for format compliance. Surface any catches as inline notes: 'Note: I avoided \"progressive metal\" because it triggers Dream Theater shred on Suno -- used \"progressive groove metal\" instead.'"
+    },
+    {
+      "file": "scripts/validate-prompt.py",
+      "line": null,
+      "severity": "low-opportunity",
+      "category": "delight-opportunity",
+      "title": "Validation script could check for known genre trigger words from model-prompt-strategies.md",
+      "detail": "The validate-prompt.py script checks character limits, critical zone, front-loading, metatag contamination, and asterisks. But it does not check for known dangerous words (baroque, orchestral, cinematic, metal without vocal guidance) that are documented in model-prompt-strategies.md. These are the most impactful prompt quality issues -- a prompt that passes all structural checks can still produce terrible results because it contains 'baroque.'",
+      "action": "Add an optional --check-triggers flag to validate-prompt.py that loads the known trigger words from model-prompt-strategies.md (or a hardcoded subset) and warns when they appear without mitigating context. Example: warn if 'metal' appears without any vocal descriptor, or if 'baroque' appears at all."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "design",
+      "title": "Headless mode design is exceptionally well-thought-out with five distinct invocation patterns",
+      "detail": "The skill supports from-profile, custom, refine, migrate, and hybrid headless modes, each with clear semantics. The error contract with structured JSON errors for missing inputs is a genuine rarity in skill design. This makes the skill pipeline-friendly and automator-friendly from day one.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "design",
+      "title": "Critical zone awareness and front-loading guidance bakes platform expertise into the workflow",
+      "detail": "The 200-character critical zone concept, the genre-first ordering rule, and the explicit character budgets per model are the kind of hard-won platform knowledge that most users would never discover on their own. Embedding this directly into the construction process means every prompt benefits from expert knowledge without the user needing to learn it.",
+      "action": ""
+    },
+    {
+      "file": "references/model-prompt-strategies.md",
+      "line": null,
+      "severity": "strength",
+      "category": "design",
+      "title": "Production-tested genre behavior table is an exceptional knowledge asset",
+      "detail": "The Genre Term Behavior Table, Dangerous Words section, Vocal Behavior triggers, and instrument-specific guidance are all derived from real production testing with specific, verifiable claims (e.g., 'BPM tags have zero detectable effect -- confirmed by librosa analysis'). This is not theoretical -- it is empirical platform knowledge that would take any user dozens of hours to accumulate.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "design",
+      "title": "Copy-ready output blocks eliminate the last-mile friction between AI output and Suno input",
+      "detail": "Providing both the formatted presentation (with reasoning and character counts) AND separate copy-ready blocks (raw text for pasting) means the user gets both understanding and utility. This dual output recognizes that the user's next action is always 'paste this into Suno' and removes the manual cleanup step.",
+      "action": ""
+    }
+  ],
+  "assessments": {
+    "skill_understanding": {
+      "purpose": "Generate model-aware Suno style prompts that translate musical intent into the precise descriptor language each Suno model responds to best, producing a complete package of style prompt, exclusion prompt, slider recommendations, and wild card variant",
+      "primary_user": "Musicians and music producers using Suno AI to generate songs, ranging from casual free-tier users to Pro/Premier subscribers with complex band profiles and multi-song catalogs",
+      "key_assumptions": [
+        "Users understand what Suno is and have an account",
+        "Users have at least a vague musical direction (genre, mood, or reference)",
+        "Band profiles exist in a known directory structure when referenced",
+        "The bmad-init skill is available for config loading",
+        "Web search tools are available for reference track decomposition",
+        "Users know which Suno model they want to use or can choose when asked"
+      ]
+    },
+    "user_journeys": [
+      {
+        "archetype": "first-timer",
+        "summary": "A user who has heard about Suno and wants to make a song but has never written a style prompt. They invoke the skill and are asked about band profiles, models, and creativity modes -- all concepts they may not understand. The skill does explain creativity modes well, but model selection requires knowledge of Suno's model lineup. The output is excellent once produced, but the input gathering phase assumes more Suno familiarity than a true first-timer has.",
+        "friction_points": [
+          "Model selection question requires Suno platform knowledge",
+          "Band profile question is confusing if they have no profiles",
+          "No guidance on where to paste each output in Suno's UI",
+          "Tier detection question assumes they know their subscription tier"
+        ],
+        "bright_spots": [
+          "Creativity mode explanations are concrete and helpful",
+          "Copy-ready blocks eliminate manual formatting",
+          "Character count display builds trust in the output"
+        ]
+      },
+      {
+        "archetype": "expert",
+        "summary": "A power user with multiple band profiles, a preferred model, and specific sonic requirements. They know exactly what they want and find the input gathering efficient thanks to profile loading. The refinement loop serves them well. Their main frustration is lack of version tracking across iterations and inability to direct the wild card twist.",
+        "friction_points": [
+          "No version history across refinement iterations",
+          "Wild card variant is untargeted -- cannot specify what to twist",
+          "No batch mode for migrating multiple prompts across models",
+          "Cannot fast-track by providing all inputs in a single structured message in interactive mode"
+        ],
+        "bright_spots": [
+          "Profile baseline + per-song modification is exactly the right workflow",
+          "Headless modes are comprehensive and well-designed",
+          "Model-specific formatting is automatic and correct",
+          "Reference track decomposition with show-your-work is trust-building"
+        ]
+      },
+      {
+        "archetype": "confused",
+        "summary": "A user who wanted the Lyric Transformer but invoked the Style Prompt Builder by accident, or a user who thinks 'style prompt' means song lyrics. The skill has no intent verification step -- it proceeds directly to input gathering. This user will get increasingly confused as they are asked about genre descriptors when they wanted to write lyrics.",
+        "friction_points": [
+          "No intent verification -- skill assumes correct invocation",
+          "No 'did you mean to use a different skill?' escape hatch",
+          "Terminology ('style prompt', 'exclusion prompt') is Suno jargon without definition"
+        ],
+        "bright_spots": [
+          "The README does explain when to use this skill vs. Mac",
+          "Conversational input gathering would eventually reveal the mismatch"
+        ]
+      },
+      {
+        "archetype": "edge-case",
+        "summary": "A user who wants to build a prompt for a genre Suno handles poorly (e.g., microtonal music, field recordings, musique concrete) or who provides contradictory input ('make it sound heavy and acoustic, aggressive but gentle'). The skill has no explicit handling for genres outside Suno's effective range or for contradictory creative direction.",
+        "friction_points": [
+          "No guidance for genres Suno cannot produce well",
+          "No mechanism to surface and resolve contradictions in user input",
+          "Reference track decomposition may fail on very obscure artists"
+        ],
+        "bright_spots": [
+          "Confidence check for reference tracks prevents hallucinated decompositions",
+          "Web search fallback helps with obscure references",
+          "Creativity modes give a framework for handling unusual requests"
+        ]
+      },
+      {
+        "archetype": "hostile-environment",
+        "summary": "The skill is invoked but band profile files are missing, bmad-init is down, web search is unavailable, and the docs/band-profiles/ directory does not exist. The skill handles bmad-init failure gracefully. Profile-not-found has a fallback (list available or proceed without). Web search unavailability falls back to asking the user. The hostile environment journey is surprisingly resilient.",
+        "friction_points": [
+          "If docs/band-profiles/ directory itself does not exist, the 'list available profiles' fallback may produce a confusing filesystem error",
+          "validate-prompt.py execution failure has no documented fallback -- if Python is unavailable, Step 6 validation silently fails"
+        ],
+        "bright_spots": [
+          "bmad-init fallback is explicit and does not block",
+          "Profile missing-fields handling warns and fills from conversation",
+          "Web search fallback chain is honest about uncertainty"
+        ]
+      },
+      {
+        "archetype": "automator",
+        "summary": "A CI pipeline or another skill that wants to invoke this skill headlessly to generate prompts for a batch of songs. The headless mode is comprehensive with five invocation patterns, structured error contracts, and clear defaults. The automator journey is excellent -- this skill was clearly designed with automation in mind. The main gap is batch invocation for migrate mode.",
+        "friction_points": [
+          "No batch invocation pattern for --headless:migrate",
+          "Headless refine input schema is undefined",
+          "No structured output schema documented for headless mode return value"
+        ],
+        "bright_spots": [
+          "Five distinct headless modes cover real use cases",
+          "Structured JSON error contract with missing field details",
+          "Sensible defaults for omitted optional parameters",
+          "Wild card disabled by default in headless mode (correct for automation)"
+        ]
+      }
+    ],
+    "autonomous_assessment": {
+      "potential": "headless-ready",
+      "hitl_points": 6,
+      "auto_resolvable": 5,
+      "needs_input": 1,
+      "suggested_output_contract": "Structured text prompt package containing style_prompt, exclusion_prompt, slider_recommendations, and optional wild_card_prompt, plus a JSON distillate for programmatic consumption",
+      "required_inputs": [
+        "genre_mood (required -- the minimum musical direction)",
+        "model (optional, defaults to v4.5-all)",
+        "creativity_mode (optional, defaults to balanced)",
+        "profile_name (optional, loads band profile baseline)",
+        "specific_requests (optional, additional creative direction)",
+        "reference_tracks (optional, 'sounds like X meets Y')",
+        "include_wild_card (optional, defaults to false in headless)"
+      ],
+      "notes": "This skill is already headless-ready with five distinct invocation modes. The only gap is a formal output schema for headless returns (currently outputs structured text but not a documented JSON contract) and undefined input schema for the refine mode. The interactive HITL points (profile selection, model selection, creativity mode, specific requests, reference decomposition confirmation, refinement loop) all have sensible defaults or can accept pre-supplied parameters."
+    },
+    "top_insights": [
+      {
+        "title": "The model-prompt-strategies reference is a goldmine that the interactive workflow barely mines",
+        "detail": "Production-tested knowledge about genre triggers, dangerous words, vocal behavior, and instrument limitations sits in a reference file that is only consulted during prompt construction. The skill never proactively warns users about known Suno pitfalls based on their input. A user requesting 'progressive metal' will get Dream Theater shred without warning; a user including 'baroque' will get keyboard soup. The reference material could power an active quality gate rather than serving as passive background knowledge.",
+        "action": "Add a 'gotchas check' substep that scans the constructed prompt against known genre triggers and dangerous words, proactively warning the user before presenting the final output. This transforms the reference from a build-time resource into a quality assurance layer."
+      },
+      {
+        "title": "Version tracking across refinement iterations would transform the experience for power users",
+        "detail": "The refinement loop is the most-used part of the skill for serious users, but each iteration is ephemeral. After 3-4 rounds, users cannot compare variants, revert to earlier versions, or see what changed. Numbering versions and offering a summary at session end would make the refinement loop an exploration tool rather than a replacement cycle.",
+        "action": "Number each prompt version, note what changed, and offer a collected summary of all versions at session end."
+      },
+      {
+        "title": "Soft gate elicitation would draw out richer creative direction from users",
+        "detail": "The input gathering phase uses a structured checklist approach. Adding 'anything else or shall we move on?' pauses at natural transitions would draw out the best creative direction -- the kind users have but do not know to volunteer. This is the single highest-leverage conversational pattern missing from the skill.",
+        "action": "Insert soft gates after initial genre/mood gathering and after model/creativity selection. These two pauses alone would meaningfully increase the creative richness of user input."
+      }
+    ]
+  },
+  "summary": {
+    "total_findings": 20,
+    "by_severity": {
+      "high-opportunity": 3,
+      "medium-opportunity": 8,
+      "low-opportunity": 5,
+      "strength": 4
+    },
+    "by_category": {
+      "edge_case": 3,
+      "experience_gap": 3,
+      "delight_opportunity": 2,
+      "assumption_risk": 1,
+      "journey_friction": 1,
+      "autonomous_potential": 1,
+      "facilitative_pattern": 4,
+      "design": 4
+    },
+    "assessment": "This is an exceptionally well-designed skill with deep platform expertise baked into every step -- the headless modes, critical zone awareness, and production-tested genre knowledge are genuinely impressive. The boldest practical idea: add an active 'gotchas check' that scans constructed prompts against the Genre Term Behavior Table and Dangerous Words before presenting output, transforming passive reference knowledge into a proactive quality gate that catches Suno pitfalls before the user wastes generations discovering them."
+  }
+}

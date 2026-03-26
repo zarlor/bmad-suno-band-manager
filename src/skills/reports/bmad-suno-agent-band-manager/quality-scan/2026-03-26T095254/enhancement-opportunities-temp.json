@@ -1,0 +1,375 @@
+{
+  "scanner": "enhancement-opportunities",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-agent-band-manager",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 50,
+      "severity": "high-opportunity",
+      "category": "facilitative-pattern",
+      "title": "Activation sequence scans context before understanding intent, violating Intent-Before-Ingestion",
+      "detail": "The On Activation flow loads essentials (access boundaries, memory index, manifest) before greeting the user and checking intent. This means Mac reads prior session state, band profiles, and chronology before knowing why the user showed up. If the user came back to refine a song, loading the full band profile catalog is noise. If they came back to browse their songbook, loading the active session's style prompt is irrelevant. The current order also front-loads administrative overhead before the creative conversation begins, which dampens the warm producer persona.",
+      "action": "Reorder activation: greet first with minimal context (just user_name and communication_language from config), then ask intent ('What are we working on today?'), then load only the context relevant to that intent. Memory index can be scanned lightly for continuity cues ('Last time we worked on X') but full context loading should be deferred until the capability is selected."
+    },
+    {
+      "file": "create-song.md",
+      "line": 36,
+      "severity": "high-opportunity",
+      "category": "facilitative-pattern",
+      "title": "Mode selection is a hard menu when it should be a soft gate",
+      "detail": "Step 1 presents Demo/Studio/Jam as a selection the user must make. The agent already has auto-detect logic for when users provide 3+ parameters, and it says to default Demo for short requests and Studio for longer ones. But the explicit mode question interrupts creative flow for users who just want to say what they want. A first-timer does not know the difference between Demo, Studio, and Jam yet. An expert already communicated their intent through the detail level of their request. The mode question adds ceremony without value for most users.",
+      "action": "Replace the explicit mode question with inference-first behavior: always infer mode from the user's opening message detail level (already described in the auto-detect row). Only surface mode options when the inference is ambiguous. Use a soft gate at the end of direction-gathering: 'I'm reading this as a quick Demo vibe -- want more control, or should I run with it?' This draws out intent without forcing a premature administrative decision."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 56,
+      "severity": "high-opportunity",
+      "category": "experience-gap",
+      "title": "First-run setup asks four questions up front before any creative work happens",
+      "detail": "A new user who invoked Mac to make a song is immediately hit with four setup questions (Suno tier, preferred mode, band profile, exclusions) before they can do anything creative. This is the highest-friction moment in the entire agent. The user came to create music, not fill out a preferences form. Every question between 'hello' and 'let me hear your idea' is a dropout risk, especially for users who do not know their Suno tier or what Demo/Studio/Jam means yet.",
+      "action": "Implement progressive preference discovery: on first run, ask only what is absolutely required (nothing -- sensible defaults exist for everything). Infer tier from what happens when they try (or ask casually during the first song: 'By the way, which Suno plan are you on? It helps me know what features to recommend.'). Let mode emerge from behavior. Capture exclusions organically during the first feedback loop. Save preferences as they naturally surface rather than front-loading an interview."
+    },
+    {
+      "file": "create-song.md",
+      "line": null,
+      "severity": "high-opportunity",
+      "category": "facilitative-pattern",
+      "title": "Missing Capture-Don't-Interrupt pattern during creative direction gathering",
+      "detail": "When users describe their song in Step 2, they often share information that belongs to multiple downstream skills -- vocal preferences that should go to the Style Prompt Builder, lyrical themes that inform the Lyric Transformer, and emotional arcs that affect both. If the user provides this in a single creative burst, the agent needs to silently capture all of it and route appropriately rather than interrupting to categorize. Currently there is no explicit instruction to capture out-of-scope information during direction gathering. A user saying 'I want a moody electronic track with lyrics about my grandmother's garden, and I never want autotune' is providing song direction, lyric context, and an exclusion preference in one breath.",
+      "action": "Add a Capture-Don't-Interrupt directive to Step 2: when the user provides information that spans multiple downstream concerns (lyrics content, style preferences, exclusions, band profile updates, Suno feature questions), capture everything silently and route to the appropriate skill or memory update. Never interrupt creative flow to categorize or redirect. Process the full input, then confirm what was captured: 'Got it -- moody electronic sound, grandmother\\'s garden theme for lyrics, and autotune is permanently banned. Anything else before I start building?'"
+    },
+    {
+      "file": "browse-songbook.md",
+      "line": null,
+      "severity": "medium-opportunity",
+      "category": "experience-gap",
+      "title": "Songbook is read-only with no creative re-entry points beyond 'reuse'",
+      "detail": "The songbook capability lets users view, reuse, compare, and export past songs. But it misses the most powerful creative action: remixing or evolving a past song. A user looking at their songbook is often thinking 'I loved the vibe of Song X but want to take it somewhere new.' The current 'reuse' option just pre-loads a style prompt -- it does not offer creative evolution paths like 'what if this song were acoustic?' or 'make a sequel to this song' or 'combine the best elements of these two songs.' The songbook is a museum when it should be a launchpad.",
+      "action": "Add creative re-entry actions beyond reuse: 'Evolve' (take a song in a new direction with one major change), 'Mashup' (combine elements from two songs), 'Sequel' (generate a thematically connected follow-up), 'Acoustic/Electric flip' (re-imagine the instrumentation). These route to create-song with rich pre-loaded context from the original, giving the user a head start on creative evolution rather than starting from scratch."
+    },
+    {
+      "file": "refine-song.md",
+      "line": 20,
+      "severity": "medium-opportunity",
+      "category": "journey-friction",
+      "title": "Starting a refinement fresh requires the user to recall and re-provide their original prompts",
+      "detail": "If a user comes directly to refine-song without having run create-song in the same session, they are asked to provide their original style prompt, lyrics, parameters, model, and intent. Most users will not have this readily available -- they pasted it into Suno, generated, listened, and came back. Asking them to reproduce the technical details they already forgot creates friction. The 'minimal context path' helps but still requires the user to describe what they generated, which may have been days ago.",
+      "action": "Add automatic package lookup: if the user has songbook entries or chronology entries, offer to pull the most recent package. 'Looks like your last song was Jasmine House -- is that the one you want to refine?' If no saved work exists, accept the absolute minimum: 'Just tell me what it sounds like and what you wish were different -- I will work backwards from there.' The Feedback Elicitor can diagnose from emotional descriptions alone."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 100,
+      "severity": "medium-opportunity",
+      "category": "edge-case",
+      "title": "Skill availability check has no retry or delayed-availability handling",
+      "detail": "The activation sequence checks if external skills are available and offers degraded paths if they are not. But skills in an LLM environment may become available mid-conversation (e.g., tool registration delay, context window reload). Once Mac announces a skill is unavailable and switches to inline handling, there is no mechanism to re-check later in the session. A user who starts with degraded mode is stuck there even if the skill recovers.",
+      "action": "Add a soft re-check: when a user requests a capability that was previously degraded, re-check skill availability before proceeding inline. 'Good news -- my style prompt specialist is back online. Want me to re-run your prompt through the full engine?' This also means not over-committing to degraded mode in the initial announcement: 'My style prompt specialist is not responding right now. I will handle it myself for now, but I will check again if you need another prompt later.'"
+    },
+    {
+      "file": "save-memory.md",
+      "line": null,
+      "severity": "medium-opportunity",
+      "category": "experience-gap",
+      "title": "Memory save is manual-only with no auto-save on significant milestones",
+      "detail": "The save-memory capability requires explicit invocation (menu code SM or accepting the prompt after create-song). If a user creates a great song package, provides three rounds of refinement feedback, discovers important preferences, and then closes their session without saving, everything is lost. The agent mentions 'Want me to remember your preferences?' after song creation, but this is easily dismissed, and it does not trigger after refinement rounds or preference changes that are not write-through.",
+      "action": "Implement milestone-based auto-save prompts: after completing a refine-song loop (not just create-song), after discovering a new pattern (user mentions the same preference twice), and after any session exceeding 10 exchanges. Make the prompt lightweight: 'Quick save before we continue?' rather than a formal capability invocation. For write-through items (tier, mode, exclusions), these already auto-save -- extend that list to include the current song package state so refinement can resume across sessions."
+    },
+    {
+      "file": "create-song.md",
+      "line": 98,
+      "severity": "medium-opportunity",
+      "category": "edge-case",
+      "title": "Song extension workflow is under-specified compared to other paths",
+      "detail": "The song extension path ('user wants to add to or continue a previously generated song') gets three bullet points while other paths (instrumental, non-English, long text) get detailed handling instructions. Extension is actually one of the most common real-world use cases -- a user loves their verse/chorus but wants to add a bridge, extend the outro, or create a Part 2. The current instructions do not address key questions: how to maintain metatag continuity, how to handle the Extend feature's tendency to drift from the original style, or how to generate a compatible second half that tonally matches the first.",
+      "action": "Expand the song extension workflow to match the detail level of other special paths. Include: (1) load the original package from songbook/memory, (2) analyze what sections exist and what is missing, (3) generate new sections with explicit style continuity constraints passed to the Style Prompt Builder, (4) warn about Suno Extend drift and suggest generating the extension as a fresh song with matching parameters as an alternative, (5) present the combined package with old and new sections clearly marked."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "medium-opportunity",
+      "category": "facilitative-pattern",
+      "title": "No Parallel Review Lenses before presenting the final package",
+      "detail": "The create-song flow assembles the package from the Lyric Transformer and Style Prompt Builder outputs and presents it directly. There is no moment where the assembled package is reviewed from multiple perspectives before the user sees it. A quick internal review could catch issues like: the style prompt describes energy that contradicts the lyric metatags, the exclusion list conflicts with the style prompt's genre implications, or the wild card variant is too similar to the primary to be useful. The Feedback Elicitor exists for post-generation review, but a pre-presentation sanity check would reduce round-trips.",
+      "action": "Before presenting the package in Step 5, run a brief internal consistency check across three lenses: (1) Coherence -- do the style prompt, lyrics, and exclusions tell the same story? (2) Suno Awareness -- does anything in the package trigger known Suno pitfalls (e.g., 'metal' without vocal direction, BPM tags in lyrics, exceeding character limits)? (3) Surprise Value -- is the wild card variant genuinely different from the primary, or just a rephrasing? Flag any issues to the user as part of the presentation: 'One thing to watch: your style prompt says mellow but the chorus has belted vocals and exclamation marks -- Suno might push the energy higher than you want.'"
+    },
+    {
+      "file": "create-song.md",
+      "line": 13,
+      "severity": "medium-opportunity",
+      "category": "autonomous-potential",
+      "title": "Headless mode contract is solid but missing batch and pipeline integration patterns",
+      "detail": "The headless input/output contract is well-defined for single song creation. However, the most valuable headless use case is batch processing -- generating an album's worth of songs from a concept document, or A/B testing multiple style prompt variations for the same lyrics. The current contract returns a single package; there is no pattern for 'generate 5 variations of this concept' or 'here are 12 song descriptions for an album, generate all packages.' The USAGE.md mentions batch processing conceptually but provides no concrete contract.",
+      "action": "Extend the headless contract with a batch mode: accept an array of song specifications and return an array of packages. Add a 'variations' parameter that generates N packages with controlled variation (e.g., same lyrics but different style prompts, or same genre with different creativity modes). Define the output contract for batch mode: array of packages with an index and status per entry, plus a summary of any failures. This transforms Mac from a single-song tool into an album production pipeline."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 19,
+      "severity": "medium-opportunity",
+      "category": "delight-opportunity",
+      "title": "Mac's persona could leverage music knowledge more actively during creative direction",
+      "detail": "Mac is described as having 'the soul of a New Orleans musician and the ear of a producer,' but the creative direction gathering in create-song is mostly receptive -- Mac asks questions and processes answers. A real producer does not just ask what you want; they hear what you are describing and make creative leaps: 'You know what that reminds me of? There is this thing Tom Waits does where...' or 'That bittersweet vibe you are describing -- have you heard of shoegaze? It lives in exactly that emotional space.' Mac could be more generative during direction-gathering, offering creative suggestions and unexpected connections that expand the user's vision rather than just narrowing it down.",
+      "action": "Add a 'creative riff' behavior to Studio and Jam modes: after the user provides initial direction, Mac offers one unexpected creative connection or suggestion before building. In Studio mode, this is a thoughtful musical reference ('That emotional arc you described reminds me of how Radiohead builds tension in OK Computer -- want me to channel some of that spaciousness?'). In Jam mode, this is a wild creative leap ('What if we took that sad folk vibe and ran it through a drum-and-bass filter? Trust me.'). Keep it to one suggestion per song -- more becomes pushy."
+    },
+    {
+      "file": "init.md",
+      "line": null,
+      "severity": "medium-opportunity",
+      "category": "assumption-risk",
+      "title": "Setup assumes the user knows their Suno tier and what the interaction modes mean",
+      "detail": "Question 1 asks 'Which plan are you on? (Free, Pro, Premier)' -- but a user who just signed up for Suno yesterday may not remember their tier name, or may not know the difference matters. Question 2 asks about Demo/Studio/Jam modes using names the user has never encountered. The explanations help, but the user is being asked to make a permanent-feeling choice about something they have no experience with. This creates decision paralysis for first-timers who are afraid of choosing wrong.",
+      "action": "For tier: offer to help them figure it out ('Not sure? Tell me if you pay for Suno or use the free version, and I will figure out the rest.'). For mode: skip the question entirely on first run and let behavior emerge naturally. After the first song, mention modes: 'By the way, I kept things quick this time -- that is Demo mode. If you ever want to go deeper into the creative details, just say Studio mode.' This teaches through experience rather than asking for a commitment before the user has context."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 54,
+      "severity": "medium-opportunity",
+      "category": "edge-case",
+      "title": "Context compaction could drop critical state in long creative sessions",
+      "detail": "A Studio mode session with multiple refinement rounds can generate substantial conversation context: the original direction, lyric transformer output, style prompt builder output, the assembled package, user feedback, feedback elicitor triage, adjusted package, more feedback, etc. In long sessions, LLM context compaction may drop early conversation details. The agent has no mechanism to detect when critical state (the original song direction, the current package state, the band profile context) might be at risk of being lost. If compaction drops the current style prompt mid-refinement, the next adjustment round will produce incoherent results.",
+      "action": "Add a lightweight state checkpoint mechanism: after each complete create or refine cycle, summarize the current package state and key decisions into a compact block that can be re-injected if context feels thin. This could be as simple as: at the top of each refinement round, re-state the current package in a condensed format. Alternatively, lean on the save-memory capability more aggressively -- auto-checkpoint after each refinement round so the state exists on disk even if context compaction drops it from the conversation."
+    },
+    {
+      "file": "create-song.md",
+      "line": 89,
+      "severity": "low-opportunity",
+      "category": "edge-case",
+      "title": "URL detection tells user Mac cannot listen but does not leverage web search for context",
+      "detail": "When a user pastes a YouTube or Spotify URL, Mac says it cannot listen and asks the user to describe what they hear. But the Research Discipline section of SKILL.md establishes that Mac should search first. For a YouTube URL, Mac could search for the song title and artist to get genre, instrumentation, and mood context -- even without hearing the audio. For a Suno URL, the page might contain the style prompt and settings that were used. The current handling leaves value on the table.",
+      "action": "When a URL is pasted, attempt to extract the song/artist name from the URL or ask the user for it, then use web search to look up the song's sonic characteristics. 'I cannot listen to the audio, but let me look up that track... Okay, that is a dreamy shoegaze track with heavy reverb guitars and breathy vocals. Sound right? I will use that as our starting point.' This turns a dead-end into a productive interaction."
+    },
+    {
+      "file": "browse-songbook.md",
+      "line": null,
+      "severity": "low-opportunity",
+      "category": "delight-opportunity",
+      "title": "Songbook could surface creative evolution insights over time",
+      "detail": "The songbook groups songs by band profile and shows technical details (date, transformations, model). But it does not help the user see their creative evolution: how their sound has changed over time, which genres they gravitate toward, what feedback patterns keep recurring, or which experiments produced breakthroughs. A songbook that just lists songs is a filing cabinet. A songbook that shows creative growth is a mirror.",
+      "action": "Add a 'Creative Evolution' view to the songbook that synthesizes patterns from chronology.md and patterns.md: 'Over your last 10 songs, you have moved from clean pop toward rawer indie folk. Your breakthrough moment was when you tried lo-fi production on Jasmine House. Your most common refinement feedback is about vocals being too polished.' This can be generated on-demand ('show me my creative evolution') without adding complexity to the default browse view."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 66,
+      "severity": "low-opportunity",
+      "category": "journey-friction",
+      "title": "Mode switching is supported but the current mode is never surfaced proactively",
+      "detail": "Users can switch modes at any time, and Mac adjusts immediately. But the user has no visible indicator of what mode they are currently in. In a long session, a user might forget they switched to Jam mode three songs ago and wonder why Mac is being so experimental. There is no 'you are here' signal in the conversation.",
+      "action": "Include a subtle mode indicator in the package presentation header: 'Your Suno Package (Studio Mode)' or mention it naturally: 'Here is your Demo package -- quick and punchy.' This also serves as a reminder that other modes exist: a user who always sees 'Demo Mode' might eventually wonder what Studio Mode offers."
+    },
+    {
+      "file": "refine-song.md",
+      "line": null,
+      "severity": "low-opportunity",
+      "category": "delight-opportunity",
+      "title": "Refinement loop has no concept of 'good enough' or diminishing returns",
+      "detail": "The refinement loop tells users they can keep refining indefinitely ('Each time they return with feedback, loop back to Step 2'). But in practice, Suno's stochastic nature means that after 2-3 rounds of prompt refinement, the remaining gap between what the user wants and what Suno produces is often not addressable through prompt changes -- it is inherent to the generation model. A user chasing perfection through infinite refinement rounds will get frustrated. Mac, as a producer, should know when to say 'this is as good as the prompt can get -- now generate 5 versions and pick the best one.'",
+      "action": "After 2-3 refinement rounds on the same song, Mac should offer a producer's perspective: 'We have refined this prompt pretty thoroughly. At this point, the best strategy is to generate 5-10 versions on Suno with these settings and pick the one that clicks. Suno's randomness is your friend here -- one of those versions will probably nail it.' This is honest, actionable, and matches how real producers work with generative tools."
+    },
+    {
+      "file": "SKILL.md",
+      "line": null,
+      "severity": "strength",
+      "category": "facilitative-pattern",
+      "title": "Three-mode architecture is well-designed and genuinely serves different user contexts",
+      "detail": "Demo/Studio/Jam is not just cosmetic -- each mode meaningfully changes the question depth, default behaviors, and creative energy of the interaction. Demo mode's 'just go' approach respects users' time, Studio mode's songwriter workshop creates real creative depth, and Jam mode's experimental push enables discovery. The auto-detect for users who provide rich initial context is particularly smart -- it avoids forcing experienced users through a selection they do not need.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 100,
+      "severity": "strength",
+      "category": "edge-case",
+      "title": "Graceful degradation for missing skills is explicit and honest",
+      "detail": "The skill availability section does exactly what it should: inform the user, offer a degraded path, and be transparent about the quality tradeoff. 'I can not reach my style prompt specialist right now, so I will do my best -- but you will get better results once it is back' is perfect. It sets expectations without alarming the user and preserves forward momentum.",
+      "action": ""
+    },
+    {
+      "file": "create-song.md",
+      "line": 13,
+      "severity": "strength",
+      "category": "autonomous-potential",
+      "title": "Headless mode is already designed with a clear input/output contract",
+      "detail": "The create-song headless contract is well-structured with sensible defaults for every optional parameter. The fact that it exists at all puts this agent ahead of most -- it was designed with automation in mind from the start. The contract is clean enough that another agent or script could invoke it today.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 30,
+      "severity": "strength",
+      "category": "delight-opportunity",
+      "title": "Research Discipline section prevents confident hallucination about a rapidly changing platform",
+      "detail": "The explicit instruction to search first, treat reference files as starting points, and verify artist references through research rather than training knowledge is unusually disciplined. This directly addresses one of the highest-risk failure modes for a music production agent: confidently asserting Suno behaviors that changed last week. The instruction to state uncertainty honestly when no search tool is available is the right call.",
+      "action": ""
+    },
+    {
+      "file": "USAGE.md",
+      "line": null,
+      "severity": "strength",
+      "category": "experience-gap",
+      "title": "USAGE.md is comprehensive and genuinely useful as standalone documentation",
+      "detail": "The usage guide covers every capability with concrete examples, explains the feedback elicitation process in detail, documents headless modes, and includes a troubleshooting section that addresses real user problems. The example Suno package output with all fields filled in is especially valuable -- it shows the user exactly what to expect. This is not a perfunctory README; it is a real user guide.",
+      "action": ""
+    }
+  ],
+  "assessments": {
+    "skill_understanding": {
+      "purpose": "Orchestrates Suno music creation by coordinating four specialized skills (Band Profile Manager, Style Prompt Builder, Lyric Transformer, Feedback Elicitor) through a warm, music-savvy persona that meets users at their skill level via three interaction modes",
+      "primary_user": "Musicians, poets, and creative people who want to create music with Suno but struggle to translate their vision into Suno's required inputs (style prompts and structured lyrics)",
+      "key_assumptions": [
+        "Users have a Suno account and understand the basic concept of AI music generation",
+        "Users know their Suno tier (Free/Pro/Premier) and what interaction mode they prefer before starting",
+        "Users will complete setup before their first creative work",
+        "Users will remember to save their session manually or accept the save prompt",
+        "The four external skills are generally available and reliable",
+        "Users interact in a single continuous session per song creation/refinement cycle",
+        "Users can articulate enough about their musical vision to give Mac a starting point"
+      ]
+    },
+    "user_journeys": [
+      {
+        "archetype": "first-timer",
+        "summary": "A user who just signed up for Suno and invoked Mac for the first time. They are hit with four setup questions about preferences they do not yet understand (tier, mode, band profiles, exclusions). If they survive setup, they enter create-song and may be asked to choose a mode they have no context for. The actual song creation flow is smooth once reached -- Demo mode asks minimal questions and produces a complete package with helpful Suno guidance. The output package is well-formatted and the first-use Suno instructions are genuinely helpful.",
+        "friction_points": [
+          "Four setup questions before any creative work",
+          "Asked to choose Demo/Studio/Jam without understanding the difference",
+          "May not know their Suno tier",
+          "Menu presentation with codes (CS, RS, MB, SP, TL, FE, SB, SM) is overwhelming for someone who just wants to make a song"
+        ],
+        "bright_spots": [
+          "Demo mode asks minimal questions and gets to output fast",
+          "First-use Suno guidance explains exactly how to paste the output",
+          "Mac's warm persona and music metaphors make the experience approachable",
+          "The output package is comprehensive and copy-paste ready"
+        ]
+      },
+      {
+        "archetype": "expert",
+        "summary": "A producer who knows Suno well, has specific model preferences, and wants to move fast. Auto-detect kicks in when they provide 3+ parameters in their opening message, skipping mode selection entirely. Studio mode gives them section-by-section control. The headless mode contract lets them script batch operations. The main friction is that Mac's conversational style may feel slow for someone who just wants to type parameters and get output.",
+        "friction_points": [
+          "Cannot bypass the greeting and menu to go straight to a command",
+          "No shortcut syntax for experienced users (e.g., 'CS v5 dreamy-folk midnight-porch' as a one-liner)",
+          "Headless mode lacks batch processing for album workflows",
+          "Wild card variant may feel like noise when the user has a precise vision"
+        ],
+        "bright_spots": [
+          "Auto-detect skips mode selection for parameter-rich inputs",
+          "Studio mode provides deep creative control",
+          "Direct skill access via slash commands bypasses Mac entirely",
+          "Headless contracts are well-defined for automation"
+        ]
+      },
+      {
+        "archetype": "confused",
+        "summary": "A user who invoked Mac by accident or thought it did something else. The activation sequence includes an intent check that catches misalignment and offers graceful redirect. This is well-handled. However, if the user is confused about what Suno is (not just what Mac does), there is no educational path -- Mac explains how to use Suno's UI but not what Suno is or why someone would want it.",
+        "friction_points": [
+          "No 'what is Suno?' explanation for users who do not know the platform",
+          "Menu codes assume familiarity with the system",
+          "If confused mid-flow, the only escape is to say 'help' -- no persistent navigation or back button"
+        ],
+        "bright_spots": [
+          "Intent check on activation catches misalignment early",
+          "Graceful redirect to other capabilities",
+          "Mac adapts vocabulary to the user's technical level"
+        ]
+      },
+      {
+        "archetype": "edge-case",
+        "summary": "A user who provides technically valid but unexpected input: a 2,000-word poem, lyrics in Mandarin with non-Latin script, a request for a 'song' that is actually a podcast intro or ambient soundscape, or contradictory direction ('upbeat sad song'). Long text detection handles the poem case well with three options. Non-English detection is thoughtful. But edge cases like non-music audio (podcast intros, sound effects, ambient backgrounds) are not addressed -- these are valid Suno use cases that do not fit the song structure the agent assumes.",
+        "friction_points": [
+          "Non-music audio use cases (podcast intros, soundscapes, jingles) have no workflow",
+          "Song extension is under-specified",
+          "Contradictory direction gets routed to Feedback Elicitor but could be caught earlier during direction gathering",
+          "Multiple songs in one session (album workflow) have no batch or sequencing support at the orchestrator level"
+        ],
+        "bright_spots": [
+          "Long text detection with three handling options",
+          "Non-English detection with metatag reliability warnings",
+          "URL detection with graceful explanation of limitations",
+          "Instrumental detection with automatic exclusion defaults"
+        ]
+      },
+      {
+        "archetype": "hostile-environment",
+        "summary": "A scenario where external skills fail, memory files are corrupted, or the sidecar directory is missing. First-run detection and scaffolding handle the missing directory case. Skill unavailability has explicit graceful degradation. But memory file corruption (malformed index.md, missing chronology.md after it existed) has no handling. Access boundary enforcement exists but the deny zone for 'all other directories' could block legitimate paths the user wants Mac to read (e.g., a poem file on their desktop).",
+        "friction_points": [
+          "No recovery path for corrupted memory files",
+          "Access boundaries could block reading user-provided source text files outside the allowed zones",
+          "No validation of memory file integrity on load",
+          "If pre-activate.py fails, there is no fallback to manual directory creation"
+        ],
+        "bright_spots": [
+          "First-run scaffolding via pre-activate.py",
+          "Explicit skill unavailability handling with degraded paths",
+          "Access boundaries are loaded and enforced on every activation",
+          "Memory health check script exists (check-memory-health.py)"
+        ]
+      },
+      {
+        "archetype": "automator",
+        "summary": "A script, CI pipeline, or another agent invoking Mac headlessly. The create-song headless contract is clean and well-documented. Individual skills also have headless modes. The main gap is batch processing -- an automator who wants to generate 12 song packages for an album concept has to call the headless mode 12 times sequentially. There is also no structured error contract for partial failures in multi-step workflows (e.g., Lyric Transformer succeeds but Style Prompt Builder fails).",
+        "friction_points": [
+          "No batch processing contract for multiple songs",
+          "No partial failure handling in headless mode (what if one skill fails mid-pipeline?)",
+          "No way to pass a band profile inline in headless mode -- must reference by name, which requires prior setup",
+          "Headless output format is described as 'structured JSON' but the exact schema is not documented"
+        ],
+        "bright_spots": [
+          "Headless mode exists with clear input contract and sensible defaults",
+          "Individual skills all have headless variants with multiple sub-modes",
+          "Error contract returns structured JSON with missing field identification",
+          "USAGE.md documents headless modes comprehensively"
+        ]
+      }
+    ],
+    "autonomous_assessment": {
+      "potential": "easily-adaptable",
+      "hitl_points": 8,
+      "auto_resolvable": 6,
+      "needs_input": 2,
+      "suggested_output_contract": "Complete Suno package as structured JSON containing: style_prompt (string), lyrics (string with metatags), exclude_styles (string), settings (object with vocal_gender, lyrics_mode, weirdness, style_influence, audio_influence), song_title (string), wild_card_variant (object with style_prompt and pitch), metadata (object with model, character_count, character_limit, band_profile_used)",
+      "required_inputs": [
+        "genre_mood (required -- the minimum viable creative direction)",
+        "source_text (optional -- triggers Lyric Transformer)",
+        "band_profile (optional -- name of existing profile to load)",
+        "model (optional -- defaults to v4.5-all)",
+        "creativity_mode (optional -- defaults to balanced)"
+      ],
+      "notes": "The agent is already easily adaptable -- headless mode exists for create-song with a documented contract. The main gaps are: (1) no batch mode for album-scale operations, (2) no inline band profile specification (must reference by name), (3) headless output schema is described but not formally defined with field types and enums. The HITL points that genuinely need input are: initial creative direction (genre_mood) and source text if lyrics are desired. Everything else has reasonable defaults."
+    },
+    "top_insights": [
+      {
+        "title": "First-run setup is the highest-friction moment and should be replaced with progressive preference discovery",
+        "detail": "Every question between 'hello' and 'tell me about your song' is a dropout risk. The four setup questions ask for decisions the user has no basis to make yet (mode preference, exclusion defaults). Deferring all preferences to organic discovery during the first creative workflow would eliminate the setup wall entirely while capturing the same information.",
+        "action": "Remove the explicit first-run interview. Set sensible defaults (Free tier, Demo mode, no exclusions). During the first create-song flow, ask tier casually, let mode emerge from behavior, and capture preferences as they naturally surface. Save everything at the end of the first session."
+      },
+      {
+        "title": "A pre-presentation consistency check would reduce Suno generation round-trips",
+        "detail": "The assembled package goes directly from skill outputs to user presentation. A quick internal coherence check (style prompt vs. lyric energy, exclusions vs. genre implications, character limit compliance, known Suno pitfalls) would catch mismatches before the user wastes a generation on Suno. Given that Suno credits are limited (especially on Free tier), preventing a wasted generation is high-value.",
+        "action": "Add a three-lens review step before Step 5 presentation: coherence across package components, Suno pitfall detection (leveraging the extensive knowledge in SUNO-REFERENCE.md), and wild card differentiation check."
+      },
+      {
+        "title": "Mac's producer persona could be more generative during creative direction, not just receptive",
+        "detail": "A real producer hears what you describe and makes creative leaps -- 'that reminds me of...' or 'what if we tried...' Mac currently gathers direction through questions but rarely offers unexpected creative connections. In Studio and Jam modes especially, one proactive creative suggestion per song would make Mac feel like a collaborator rather than a form processor.",
+        "action": "Add a 'creative riff' behavior to Studio and Jam modes: after initial direction, Mac offers one unexpected musical connection or creative suggestion before building the package. Keep it to one per song to avoid being pushy."
+      }
+    ]
+  },
+  "summary": {
+    "total_findings": 22,
+    "by_severity": {
+      "high-opportunity": 4,
+      "medium-opportunity": 10,
+      "low-opportunity": 4,
+      "strength": 4
+    },
+    "by_category": {
+      "edge_case": 4,
+      "experience_gap": 4,
+      "delight_opportunity": 3,
+      "assumption_risk": 1,
+      "journey_friction": 2,
+      "autonomous_potential": 1,
+      "facilitative_pattern": 4
+    },
+    "assessment": "Mac is a remarkably well-architected agent with genuine creative depth -- the three-mode system, the feedback elicitation process, and the headless contracts all demonstrate thoughtful design. The boldest practical improvement would be eliminating the first-run setup interview entirely in favor of progressive preference discovery during the first creative workflow. The second most impactful change would be adding a pre-presentation coherence check that catches package inconsistencies before the user burns Suno credits on a mismatched prompt. The agent already does the hardest things well (graceful degradation, research discipline, tier-aware behavior); the opportunities here are about removing friction from the first five minutes and adding creative generativity to Mac's producer persona."
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "scanner": "prompt-craft",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-lyric-transformer",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "progressive-disclosure",
+      "title": "Monolithic SKILL.md at 312 lines / ~6525 tokens exceeds size guidelines",
+      "detail": "SKILL.md contains the full workflow (6 steps with deep sub-steps) inline rather than delegating detail to capability prompt files. At 312 lines and ~6525 tokens, it exceeds the ~250 line guideline for multi-capability agents. The transformation sub-steps (3a-3g) alone span ~95 lines of detailed procedural content that would benefit from extraction. The references are already properly extracted, which is good, but the core workflow detail remains monolithic.",
+      "action": "Extract Step 3 (Transform) into a dedicated capability prompt file (e.g., transform.md) since it is the most complex step with 7 sub-procedures. Consider also extracting Refinement Mode and the Headless Output Contract. This would reduce SKILL.md to a concise workflow overview with brief capability section descriptions, while detailed instructions live in prompt files that are loaded on demand."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 144,
+      "severity": "medium",
+      "category": "progressive-disclosure",
+      "title": "Step 3 Transform contains dense domain knowledge that duplicates reference content",
+      "detail": "Lines 159-217 contain detailed Suno-specific metatag behavior guidance (scream bleed-through, ALL CAPS effects, parentheses as backing vocals, line density as tempo control, exclamation point warnings) that substantially overlaps with content already documented in references/metatag-reference.md. This means the same domain knowledge is loaded twice when the agent follows the instruction at line 146 to pre-load the metatag reference.",
+      "action": "Replace the inline Suno behavior guidance in Step 3 with a mandatory reference load directive: 'Apply guidance from references/metatag-reference.md for all metatag placement, vocal delivery cues, punctuation effects, and capitalization effects.' Keep only the transformation-specific procedural instructions (what to DO) and let the reference provide the domain knowledge (what to KNOW)."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 33,
+      "severity": "low",
+      "category": "anti-pattern",
+      "title": "Wall of text in Headless Output Contract area (15 consecutive lines without structure)",
+      "detail": "The pre-pass flagged a wall of text from lines 33-47. This is the JSON code block for the Headless Output Contract. While it is inside a fenced block (which provides some visual structure), the surrounding context from lines 20-31 is a dense numbered list with nested bullets that could benefit from clearer separation.",
+      "action": "No action strictly required since the JSON block is already fenced. The surrounding activation mode detection content is dense but functionally appropriate for its purpose."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 163,
+      "severity": "medium",
+      "category": "token-waste",
+      "title": "Duplicated scream bleed-through prevention guidance",
+      "detail": "Lines 167-170 in SKILL.md describe scream bleed-through prevention (insert vocal style reset, consider Break/Instrumental buffer, remove ! and ALL CAPS after aggressive sections). This exact guidance appears in references/metatag-reference.md lines 332-337 under 'Scream Bleed-Through Prevention.' The duplication costs ~80 tokens and risks divergence if one copy is updated without the other.",
+      "action": "Remove the inline scream bleed-through prevention bullet points from Step 3b and instead add a single line: 'Apply scream bleed-through prevention per metatag-reference.md after any aggressive section.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 210,
+      "severity": "medium",
+      "category": "token-waste",
+      "title": "Duplicated line density as tempo control guidance",
+      "detail": "Lines 210-215 describe line density as tempo control with bullet points explaining short fragmented lines vs long packed lines. This same content appears in detail in references/metatag-reference.md lines 292-317 under 'Line Density as Tempo Control' with more depth and examples. The SKILL.md version is a condensed duplicate that adds ~100 tokens of redundancy.",
+      "action": "Replace the inline line density guidance with a reference directive. Keep only the actionable instruction: 'Use line density variation between sections for tempo contrast (see metatag-reference.md). Normalize syllable counts WITHIN sections, not across them.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 216,
+      "severity": "medium",
+      "category": "token-waste",
+      "title": "Duplicated ALL CAPS and parentheses guidance",
+      "detail": "Lines 216-217 describe ALL CAPS as loudness ceiling and parentheses as backing vocals. Both topics are covered in references/metatag-reference.md (lines 274-290). The inline versions add ~60 tokens of content already available in the pre-loaded reference.",
+      "action": "Remove inline ALL CAPS and parentheses guidance from Step 3d. The metatag reference is already mandated to be pre-loaded at Step 1 (line 87), so this information is available when needed."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 8,
+      "severity": "note",
+      "category": "overview-quality",
+      "title": "Overview section is well-crafted with appropriate domain context and design rationale",
+      "detail": "The 7-line Overview establishes mission (transforms poems/text to Suno-ready lyrics), domain framing (Suno metatag system, character limits, singability), theory of mind (varying user attachment to original words), and design rationale (menu of options, word fidelity mode, cliche detection rationale). This is excellent for a domain-expert skill -- concise but rich enough for informed judgment.",
+      "action": "No action needed. Overview is a strong example of appropriate persona and domain context."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 50,
+      "severity": "note",
+      "category": "self-containment",
+      "title": "SKILL.md is self-contained with no back-references to external context",
+      "detail": "Pre-pass confirms zero back-references and zero suggestive loading patterns. All reference loads are mandatory directives (line 87: pre-load references). The skill defines its own vocabulary, explains its own domain, and does not depend on external context that could be lost to compaction.",
+      "action": "No action needed."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 301,
+      "severity": "note",
+      "category": "intelligence-placement",
+      "title": "Good intelligence placement -- scripts handle deterministic work, prompts handle judgment",
+      "detail": "The skill correctly delegates deterministic operations to scripts (syllable counting, validation, cliche detection, option validation, section length checking, input analysis, diff generation) while reserving LLM judgment for creative work (emotional arc mapping, chorus creation, voice matching, quality assessment against band profile). Line 208 explicitly mandates verification against script output before making claims. This is strong intelligence placement.",
+      "action": "No action needed. The script/prompt boundary is well-designed."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 148,
+      "severity": "low",
+      "category": "outcome-balance",
+      "title": "Compaction survival block is a good defensive pattern",
+      "detail": "Lines 148-151 define a compact state summary that survives context compaction, preserving source hash, transforms, profile, voice constraints, emotional core, and character budget. This is a thoughtful approach to context compaction resilience for a long-running transformation workflow.",
+      "action": "No action needed. This is a well-designed pattern worth preserving."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 171,
+      "severity": "low",
+      "category": "outcome-balance",
+      "title": "Genre-aware section length relaxation is outcome-driven but could be more concise",
+      "detail": "Lines 171 describe relaxing section length expectations for prog/metal/experimental genres. The instruction is good -- it prevents false positives in quality checks -- but the explanation is slightly verbose for an inline instruction.",
+      "action": "Consider condensing to: 'For prog/metal/experimental genres, relax section length expectations -- a 16-line verse is normal for these genres.'"
+    }
+  ],
+  "assessments": {
+    "skill_type_assessment": "domain-expert",
+    "skillmd_assessment": {
+      "overview_quality": "appropriate",
+      "progressive_disclosure": "needs-extraction",
+      "persona_context": "appropriate",
+      "notes": "Overview is concise and well-crafted with domain context, design rationale, and theory of mind. However, SKILL.md is monolithic at 312 lines -- the transformation workflow (Step 3) contains ~95 lines of detailed procedural content that should be extracted into a capability prompt file. Reference documents are properly extracted but their content is partially duplicated inline in Step 3, adding ~240 tokens of redundancy. The songwriter's workshop persona voice is appropriate and not excessive."
+    },
+    "prompts_scanned": 1,
+    "prompt_health": {
+      "prompts_with_config_header": 0,
+      "prompts_with_progression_conditions": 0,
+      "prompts_self_contained": 0,
+      "total_prompts": 0
+    }
+  },
+  "summary": {
+    "total_findings": 11,
+    "by_severity": {"critical": 0, "high": 1, "medium": 3, "low": 3, "note": 4},
+    "assessment": "Well-crafted domain-expert skill with strong overview, good intelligence placement, and proper reference extraction. Primary issue is monolithic SKILL.md that should extract its most complex workflow step into a capability prompt, and ~240 tokens of domain knowledge duplicated between Step 3 and the already-loaded metatag reference.",
+    "top_improvement": "Extract Step 3 (Transform) into a dedicated capability prompt file and remove inline domain knowledge that duplicates references/metatag-reference.md content."
+  }
+}

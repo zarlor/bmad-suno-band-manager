@@ -1,0 +1,105 @@
+{
+  "scanner": "script-opportunities",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-style-prompt-builder",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 62,
+      "severity": "medium",
+      "category": "extraction",
+      "title": "LLM reads band profile YAML and extracts fields that a script could pre-parse",
+      "detail": "Determinism confidence: high. Estimated token savings: 300-500 per invocation (profile YAML varies in size). Implementation complexity: moderate. Language: python. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: yes (any skill that loads band profiles). Help pattern savings: ~50 tokens. Step 1 instructs the LLM to read from docs/band-profiles/{profile-name}.yaml and extract style_baseline, vocal section, exclusion_defaults, model_preference, tier, and reference_tracks. All of these are structured YAML field lookups -- deterministic extraction that a script could do, returning a compact JSON summary instead of the LLM parsing raw YAML.",
+      "action": "Create scripts/extract-profile.py that reads a band profile YAML, extracts style_baseline, vocal, exclusion_defaults, model_preference, tier, and reference_tracks into a compact JSON object. The LLM would receive pre-parsed structured data instead of reading and parsing raw YAML itself."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 63,
+      "severity": "low",
+      "category": "structure",
+      "title": "LLM lists available profiles from a directory when profile not found",
+      "detail": "Determinism confidence: certain. Estimated token savings: 50-100 per invocation (only triggered on error path). Implementation complexity: trivial. Language: bash. Could be prepass: no. Feeds scanner: n/a. Reusable across skills: yes. Help pattern savings: minimal. When a profile is not found, the LLM is instructed to list available profiles from docs/band-profiles/. This is a simple directory listing -- purely deterministic.",
+      "action": "Add a --list-profiles flag to the proposed extract-profile.py script (or a standalone bash one-liner: ls docs/band-profiles/*.yaml) that returns available profile names. The LLM would invoke the script rather than doing filesystem enumeration."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 84,
+      "severity": "medium",
+      "category": "preprocessing",
+      "title": "LLM reads entire model-prompt-strategies.md reference to find model-specific strategy",
+      "detail": "Determinism confidence: high. Estimated token savings: 800-1500 per invocation (model-prompt-strategies.md is ~6700 tokens; only one model's section is needed per invocation). Implementation complexity: moderate. Language: python. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: yes (any skill referencing model strategies). Help pattern savings: ~30 tokens. Step 2 instructs the LLM to load references/model-prompt-strategies.md and find the strategy for the selected model. A script could extract only the relevant model section plus the Universal Rules, returning a focused subset instead of the entire 330-line file.",
+      "action": "Create scripts/extract-model-strategy.py that accepts --model and returns only the relevant model section plus the Universal Rules section from model-prompt-strategies.md. This would reduce the LLM's context window consumption by 50-75% per invocation since it only needs one model's strategy, not all five."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 209,
+      "severity": "strength",
+      "category": "validation",
+      "title": "Character limit validation already scripted in validate-prompt.py",
+      "detail": "The skill correctly delegates style prompt character count validation, critical zone checks, front-loading checks, and structural validation to scripts/validate-prompt.py. This is exactly the right pattern -- deterministic validation handled by a script rather than LLM instructions.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 107,
+      "severity": "low",
+      "category": "validation",
+      "title": "Genre word danger-checking is done by the LLM inline during prompt construction",
+      "detail": "Determinism confidence: high. Estimated token savings: 150-200 per invocation (the genre awareness instructions at lines 107-116 consume tokens every invocation). Implementation complexity: moderate. Language: python. Could be prepass: no (post-processing). Feeds scanner: validate-prompt.py could be extended. Reusable across skills: yes. Help pattern savings: ~20 tokens. Steps 8-10 in the construction process instruct the LLM to check for dangerous genre words (metal, sludge, death, thrash, black) and rhythm nouns vs. tempo adjectives. These are pattern-matching operations against known word lists -- deterministic checks that could be added to validate-prompt.py as a post-processing pass.",
+      "action": "Extend scripts/validate-prompt.py with a --check-dangers flag that scans the generated style prompt for dangerous genre words (metal, sludge, death, thrash, black) and warns if they appear without corresponding vocal direction. Also check for BPM values and tempo adjectives (slow, fast, upbeat) that should be rhythm nouns instead. This moves the checking out of LLM prompt instructions into deterministic post-validation."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 130,
+      "severity": "medium",
+      "category": "postprocessing",
+      "title": "Exclusion prompt character counting and item counting done by LLM",
+      "detail": "Determinism confidence: certain. Estimated token savings: 100-200 per invocation. Implementation complexity: trivial. Language: python. Could be prepass: no (post-processing). Feeds scanner: validate-prompt.py already validates exclusions. Reusable across skills: yes. Help pattern savings: minimal. Step 3 instructs the LLM to keep exclusions under ~200 characters and prioritize 2-3 items. validate-prompt.py already checks exclusion length and item count, but the LLM prompt still contains these instructions as inline guidance during generation. The LLM needs to be aware of the constraint during generation, but the verification is already scripted.",
+      "action": "No new script needed -- validate-prompt.py already handles this. However, the SKILL.md could reference the script's validation as the authority for these checks rather than restating the rules inline, saving ~100 tokens of instruction that merely duplicate what the script enforces."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 20,
+      "severity": "medium",
+      "category": "preprocessing",
+      "title": "Headless mode input parsing and error contract could be handled by a dispatch script",
+      "detail": "Determinism confidence: high. Estimated token savings: 200-400 per headless invocation. Implementation complexity: moderate. Language: python. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: yes (headless dispatch pattern). Help pattern savings: ~100 tokens. The Activation Mode Detection section (lines 20-38) describes parsing --headless flags, determining sub-modes (from-profile, custom, refine, migrate), applying defaults for omitted parameters, and generating structured JSON errors for missing required inputs. All of this is deterministic dispatch logic -- flag parsing, default application, and required-field validation.",
+      "action": "Create scripts/headless-dispatch.py that parses --headless flags, determines the sub-mode, applies defaults (model=v4.5-all, creativity=balanced, wild_card=false), validates required inputs per sub-mode, and outputs either a structured JSON input object for the LLM or a JSON error object. The LLM would receive pre-validated, normalized input instead of doing the parsing itself."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 157,
+      "severity": "low",
+      "category": "transformation",
+      "title": "Translating profile exclusion_defaults from negative to positive phrasing is LLM-appropriate work",
+      "detail": "Determinism confidence: low. This is correctly LLM work. The translation of negative exclusion phrases ('no screaming') into positive style prompt language ('clean singing with grit on peaks') requires semantic judgment about musical intent. This is NOT a script opportunity.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 190,
+      "severity": "low",
+      "category": "transformation",
+      "title": "Exclude Styles formatting as comma-separated list could be scripted",
+      "detail": "Determinism confidence: certain. Estimated token savings: 30-50 per invocation. Implementation complexity: trivial. Language: python. Could be prepass: no (post-processing). Feeds scanner: validate-prompt.py. Reusable across skills: no. Help pattern savings: minimal. Step 4 instructs the LLM to output Exclude Styles as a comma-separated list for copy-paste. If exclusions were generated as a structured list, a script could format them. However, the savings are minimal since the LLM naturally produces comma-separated text.",
+      "action": "Marginal value -- could be added to validate-prompt.py as a --format-exclusions flag that normalizes exclusion output to comma-separated format, but the token savings are too small to prioritize."
+    },
+    {
+      "file": "references/model-prompt-strategies.md",
+      "line": null,
+      "severity": "low",
+      "category": "preprocessing",
+      "title": "Genre Term Behavior Table could be extracted into a structured lookup",
+      "detail": "Determinism confidence: high. Estimated token savings: 200-400 per invocation (only if the LLM doesn't need the full table). Implementation complexity: moderate. Language: python. Could be prepass: yes. Feeds scanner: n/a. Reusable across skills: yes. Help pattern savings: ~50 tokens. The Genre Term Behavior Table (lines 147-161), Dangerous Words table (lines 167-173), and Vocal Behavior section (lines 180-196) contain structured lookup data that a script could extract and filter based on the user's genre inputs. Instead of the LLM reading 50+ lines of tables, a pre-pass could return only the relevant rows for the user's specified genres.",
+      "action": "Create scripts/genre-lookup.py that accepts genre terms and returns only the relevant rows from the Genre Term Behavior Table, Dangerous Words, and Vocal Behavior sections. The LLM would receive a focused subset (e.g., only the 'metal' and 'sludge' entries if those genres are specified) instead of reading all tables."
+    }
+  ],
+  "assessments": {
+    "existing_scripts": ["scripts/validate-prompt.py"]
+  },
+  "summary": {
+    "total_findings": 10,
+    "by_severity": {"high": 0, "medium": 4, "low": 5, "strength": 1},
+    "by_category": {"extraction": 1, "structure": 1, "preprocessing": 3, "validation": 2, "postprocessing": 1, "transformation": 2},
+    "assessment": "This skill already follows good practices by delegating character limit validation to validate-prompt.py. The highest-value opportunity is a model strategy extractor (scripts/extract-model-strategy.py) that could save 800-1500 tokens per invocation by feeding the LLM only the relevant model section from the 330-line reference file. A headless dispatch script and band profile extractor are the next best candidates. Total estimated savings across all actionable findings: ~1800-3200 tokens per invocation. Three findings could become pre-pass scripts feeding the LLM focused data instead of raw files."
+  }
+}

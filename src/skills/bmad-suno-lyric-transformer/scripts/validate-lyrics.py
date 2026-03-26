@@ -78,7 +78,6 @@ def parse_lyrics(text: str) -> dict:
     lines = text.split('\n')
     sections = []
     current_section = None
-    orphaned_descriptors = []
     all_tags = []
 
     for i, line in enumerate(lines, 1):
@@ -158,7 +157,6 @@ def validate_lyrics(text: str) -> list[dict]:
         })
 
     # Check for blank lines between sections
-    tag_lines = {s["line"] for s in sections}
     for section in sections:
         line_num = section["line"]
         if line_num > 1:
@@ -200,7 +198,7 @@ def validate_lyrics(text: str) -> list[dict]:
             })
 
     # Count actual lyric lines (non-empty, non-tag)
-    lyric_lines = [l.strip() for l in lines if l.strip() and not re.match(r'^\[.*\]$', l.strip())]
+    lyric_lines = [line.strip() for line in lines if line.strip() and not re.match(r'^\[.*\]$', line.strip())]
     lyric_count = len(lyric_lines)
 
     if lyric_count < MIN_LYRIC_LINES:
@@ -263,7 +261,7 @@ def validate_lyrics(text: str) -> list[dict]:
                 "category": "consistency",
                 "location": {"line": tag_info["line"]},
                 "issue": f"Unrecognized metatag [{tag_text}] at line {tag_info['line']}. May not be interpreted by Suno.",
-                "fix": f"Use standard section tags or descriptor tags (Mood/Energy/Vocal Style/Instrument)."
+                "fix": "Use standard section tags or descriptor tags (Mood/Energy/Vocal Style/Instrument)."
             })
 
     # Punctuation density check
@@ -321,8 +319,8 @@ def build_report(findings: list, text: str, skill_path: str = "") -> dict:
         status = "warning"
 
     parsed = parse_lyrics(text)
-    lyric_lines = [l.strip() for l in text.split('\n')
-                   if l.strip() and not re.match(r'^\[.*\]$', l.strip())]
+    lyric_lines = [line.strip() for line in text.split('\n')
+                   if line.strip() and not re.match(r'^\[.*\]$', line.strip())]
 
     return {
         "script": SCRIPT_NAME,

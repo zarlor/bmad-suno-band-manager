@@ -152,8 +152,8 @@ def estimate_structure(line_count: int) -> dict:
 def analyze_input(text: str) -> dict:
     """Analyze input text and extract metrics."""
     lines = text.split('\n')
-    non_empty_lines = [l for l in lines if l.strip()]
-    content_lines = [l.strip() for l in lines if l.strip() and not re.match(r'^\[.*\]$', l.strip())]
+    non_empty_lines = [line for line in lines if line.strip()]
+    content_lines = [line.strip() for line in lines if line.strip() and not re.match(r'^\[.*\]$', line.strip())]
 
     # Detect metatags
     existing_tags = find_metatags(text)

@@ -226,8 +226,8 @@ def main():
         f.write("# Generated via librosa analysis + Camelot wheel mapping\n\n")
 
         f.write("## Track Data (Playlist Order)\n\n")
-        f.write(f"| # | Track | BPM | Key | Camelot | Entry Key | Exit Key | Energy | Intro% | Outro% |\n")
-        f.write(f"|---|-------|-----|-----|---------|-----------|----------|--------|--------|--------|\n")
+        f.write("| # | Track | BPM | Key | Camelot | Entry Key | Exit Key | Energy | Intro% | Outro% |\n")
+        f.write("|---|-------|-----|-----|---------|-----------|----------|--------|--------|--------|\n")
         for i, r in enumerate(results):
             if 'error' in r:
                 continue

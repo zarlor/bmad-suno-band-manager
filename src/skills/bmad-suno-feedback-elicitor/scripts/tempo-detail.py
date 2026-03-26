@@ -53,7 +53,7 @@ def analyze_tempo_detail(filepath):
             print(f"{time_label:<20} {avg:>8.1f} {mn:>8.1f} {mx:>8.1f} {stability:>10}")
 
     # Detect significant tempo shifts between consecutive beats
-    print(f"\n--- Potential Tempo Events ---")
+    print("\n--- Potential Tempo Events ---")
     found = False
     for i in range(len(local_bpms) - 1):
         diff = abs(local_bpms[i+1] - local_bpms[i])
@@ -66,7 +66,7 @@ def analyze_tempo_detail(filepath):
         print("  No significant tempo shifts detected (all beat-to-beat changes < 20 BPM)")
 
     # Odd time / irregular beat detection
-    print(f"\n--- Beat Regularity ---")
+    print("\n--- Beat Regularity ---")
     median_ibi = np.median(ibis)
     irregular = []
     for i, ibi in enumerate(ibis):

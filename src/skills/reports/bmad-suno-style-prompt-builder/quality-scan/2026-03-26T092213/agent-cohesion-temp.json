@@ -1,0 +1,158 @@
+{
+  "scanner": "agent-cohesion",
+  "agent_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-style-prompt-builder",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Exceptionally deep domain knowledge encoded in workflow",
+      "detail": "The skill encodes hard-won production knowledge -- genre trigger words that cause unwanted vocals, BPM being ignored, critical zone awareness, instrument bleed-through limitations, bass prominence limitations, and dynamic control via style prompt overriding lyric tags. This is not generic documentation; it reads like distilled real-world testing notes. Users get the benefit of dozens of production experiments without running them. This depth of domain encoding is rare and extremely valuable.",
+      "action": "Preserve and continue expanding the tested-behavior documentation as Suno models evolve."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Dual-mode activation (interactive + headless) with clear contracts",
+      "detail": "The skill supports both conversational use and programmatic invocation via headless flags. The headless error contract returns structured JSON, making it composable with orchestrating agents or scripts. The five headless sub-modes (from-profile, custom, refine, migrate, bare hybrid) cover the realistic ways another skill or agent would invoke prompt building. This is well-designed for a multi-skill ecosystem.",
+      "action": "No action needed -- this is a model for other skills to follow."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Complete prompt package output with copy-ready blocks",
+      "detail": "Outputting style prompt + exclusion prompt + slider recommendations + wild card variant as a single package, then providing separate copy-ready blocks, shows strong user-journey thinking. Users copy-paste into Suno's UI fields -- giving them raw text blocks without headers or metadata eliminates manual cleanup. The design rationale explaining why everything is generated up front (cheaper than re-running) is transparent and correct.",
+      "action": "No action needed."
+    },
+    {
+      "file": "references/model-prompt-strategies.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Genre Term Behavior Table is a standout reference asset",
+      "detail": "The table documenting what Suno actually produces for specific genre terms (e.g., 'progressive metal' produces Dream Theater-style shred, 'progressive groove metal' produces Mastodon-adjacent grooves) is uniquely valuable. This is empirical testing data that no official documentation provides. The Dangerous Words section and Vocal Behavior triggers are similarly battle-tested. This reference file alone justifies the skill's existence as a domain expert.",
+      "action": "Consider versioning this table with Suno model versions so users know which model each finding was tested against."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "medium",
+      "category": "gap",
+      "title": "No prompt history or versioning capability",
+      "detail": "The skill builds prompts and offers refinement loops, but there is no mechanism to save, recall, or compare previous prompt packages for a given song or profile. In a real production workflow, users iterate across sessions -- they generate a prompt, try it in Suno, come back days later wanting to tweak it. Without history, they start from scratch or must manually save outputs. The headless:refine mode accepts an existing prompt but relies on external storage.",
+      "action": "Add an optional save/recall mechanism -- write prompt packages to a per-profile or per-song output directory (e.g., docs/band-profiles/{profile}/prompt-history/) with timestamps. Allow 'show last prompt for {profile}' as a conversational command."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "medium",
+      "category": "gap",
+      "title": "Web search dependency for reference track decomposition lacks graceful degradation path",
+      "detail": "Step 2 item 5 instructs the agent to 'always use web search to verify an artist's sonic characteristics' before decomposing references, falling back to asking the user only when no search tool is available. However, the skill does not define how to detect whether a search tool is available, nor does it provide a structured set of questions for the fallback case. The fallback is a single generic question ('Can you describe what you like about their sound?') which may not extract enough detail for accurate decomposition.",
+      "action": "Add a structured fallback questionnaire for when web search is unavailable: ask about genre, era, vocal style, key instruments, energy/dynamics, and emotional tone separately. This mirrors the extraction framework already defined in model-prompt-strategies.md under 'What to Extract from a Reference'."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "low",
+      "category": "gap",
+      "title": "No guidance for multi-song batch workflows",
+      "detail": "The skill handles one song at a time. For users building an album or EP, generating style prompts for multiple songs in sequence (with shared profile baseline but different per-song directions) would be a natural workflow. The headless modes partially support this via scripting, but there is no explicit batch mode or guidance for maintaining sonic coherence across a set of songs.",
+      "action": "Consider adding a batch/album mode or at least documenting a recommended workflow: 'For album coherence, use the same profile and Persona across songs, vary only song-specific elements. Generate the most representative track first to calibrate your baseline.'"
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "low",
+      "category": "gap",
+      "title": "Cover feature mentioned in references but not in skill workflow steps",
+      "detail": "The model-prompt-strategies.md reference file documents Cover feature behavior and its commercial use restriction, but the SKILL.md workflow steps do not include a path for building cover-style prompts. A user asking 'build me a cover prompt' would not find a clear workflow step for it. The skill's activation triggers in bmad-manifest.json also do not mention covers.",
+      "action": "Either add a headless sub-mode (--headless:cover) and a brief workflow path for cover prompts, or explicitly scope covers out in the SKILL.md overview with a note pointing users to the reference for manual cover prompting."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "Prompt A/B testing guidance would strengthen the iteration loop",
+      "detail": "The skill tells users to 'generate 3-5 versions before modifying the prompt' and 'change only 1-2 variables per iteration,' which is good advice. But it could go further by suggesting a structured A/B testing approach: generate with prompt A, then tweak one element for prompt B, compare results, keep the winner. This would formalize the iteration process and help users build intuition for what works. The skill already has the domain knowledge to suggest what variables to isolate first (genre terms, vocal descriptors, Weirdness slider).",
+      "action": "Add an optional 'iteration coach' conversational mode that guides users through structured A/B testing: suggest which variable to change next based on what the user reports about the Suno output."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "Prompt template library for common starting points",
+      "detail": "The model-prompt-strategies.md file contains example prompts for a few genres. Expanding this into a browsable template library (organized by genre family, mood, and model) would give users fast starting points. Many users may not know how to describe what they want -- starting from a template and tweaking is easier than building from scratch. This would also encode more of the tested genre-term knowledge in a directly usable form.",
+      "action": "Create a references/prompt-templates.md with 15-20 tested starting-point prompts organized by genre family, with model-specific variants for v4.5 conversational and v5 film-brief styles."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "Reverse-engineering existing Suno outputs could strengthen the feedback loop",
+      "detail": "The skill builds prompts going forward (intent to prompt) but does not support the reverse direction (Suno output to refined prompt). When a user gets a generation they partially like, they need help understanding what in their prompt caused the good parts and what caused the bad parts. A 'diagnose my generation' capability -- where the user describes what they got and the skill suggests prompt adjustments -- would close the loop between generation and refinement. The headless:refine mode is close but requires structured input from the Feedback Elicitor rather than freeform user description.",
+      "action": "Consider adding an interactive 'diagnose' mode: user describes what Suno produced (or pastes Suno's generation metadata if available), and the skill suggests which prompt elements to change based on its genre-term behavior knowledge."
+    },
+    {
+      "file": "bmad-manifest.json",
+      "severity": "low",
+      "category": "misalignment",
+      "title": "Manifest capability name 'build-style-prompt' understates the full output",
+      "detail": "The manifest lists a single capability 'build-style-prompt' with description mentioning 'style prompt package with exclusion prompt and slider recommendations.' The skill actually produces four distinct outputs (style prompt, exclusion prompt, slider recommendations, wild card variant) and supports five headless sub-modes plus interactive mode. The single capability entry is technically correct but undersells the skill's breadth. Users scanning the manifest might not realize this skill also handles prompt migration, refinement, and cover guidance.",
+      "action": "Consider whether the manifest should list sub-capabilities or at minimum expand the description to mention migration and refinement modes, since these are distinct user intents that route to this skill."
+    }
+  ],
+  "assessments": {
+    "agent_identity": {
+      "name": "bmad-suno-style-prompt-builder",
+      "persona_summary": "A music producer's sound engineer who translates musical intent into Suno-optimized style prompts, with deep empirical knowledge of how Suno models interpret prompt language",
+      "primary_purpose": "Generate model-aware Suno style prompt packages (style prompt + exclusion prompt + slider recommendations + wild card variant) from band profiles and user creative direction",
+      "capability_count": 6
+    },
+    "cohesion_analysis": {
+      "persona_alignment": {
+        "score": "strong",
+        "notes": "The 'sound engineer' persona perfectly matches the capabilities. The skill talks like an engineer (critical zones, character budgets, instrument bleed-through, frequency ranges), thinks like an engineer (systematic construction process, validation scripts, model-specific strategies), and produces engineer-level output (precise parameter recommendations with reasoning). The persona is not just a label -- it genuinely shapes how the skill communicates and makes decisions."
+      },
+      "capability_completeness": {
+        "score": "mostly-complete",
+        "missing_areas": [
+          "prompt history/versioning across sessions",
+          "cover prompt workflow integration",
+          "batch/album workflow support"
+        ],
+        "notes": "The core prompt-building workflow is thorough and complete. The headless modes cover realistic automation needs. The gaps are in session-to-session continuity (no history), edge-case workflows (covers), and scale (batch/album). None of these prevent the skill from delivering its primary value, but they represent natural next steps for a production-ready tool."
+      },
+      "redundancy_level": {
+        "score": "clean",
+        "consolidation_opportunities": []
+      },
+      "external_integration": {
+        "external_skills_referenced": 3,
+        "integration_pattern": "intentional",
+        "notes": "The skill references bmad-init (config loading), Feedback Elicitor (headless:refine mode accepts structured adjustments from it), and Lyric Transformer (mentioned as a handoff target). The Band Manager orchestrating agent (Mac) is referenced as the coordination layer. All references are purposeful and follow a clear pattern: bmad-init provides config, peer skills provide input/output via headless modes, and Mac coordinates. No orphaned or unclear skill references."
+      },
+      "user_journey_score": {
+        "score": "complete-end-to-end",
+        "broken_workflows": [],
+        "notes": "A user can enter the skill with nothing but a vague musical idea and leave with a complete, copy-ready prompt package for Suno. The workflow covers input gathering, prompt construction, validation, presentation, and refinement. The exit points are clear (user accepts the package, ends the session, or hands off to another skill). The only friction point is cross-session continuity -- returning to refine a previous prompt requires re-entering or externally storing the prior output."
+      }
+    }
+  },
+  "summary": {
+    "total_findings": 12,
+    "by_severity": {
+      "high": 0,
+      "medium": 2,
+      "low": 3,
+      "suggestion": 3,
+      "strength": 4
+    },
+    "by_category": {
+      "gap": 4,
+      "redundancy": 0,
+      "misalignment": 1,
+      "opportunity": 3,
+      "strength": 4
+    },
+    "overall_cohesion": "cohesive",
+    "single_most_important_fix": "Add prompt history/versioning so users can recall and iterate on previous prompt packages across sessions -- this closes the biggest gap in the otherwise complete user journey."
+  }
+}

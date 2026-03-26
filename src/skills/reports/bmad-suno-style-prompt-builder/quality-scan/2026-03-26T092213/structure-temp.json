@@ -1,0 +1,126 @@
+{
+  "scanner": "structure",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-style-prompt-builder",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "frontmatter",
+      "title": "Name does not follow standard agent naming pattern",
+      "detail": "Name \"bmad-suno-style-prompt-builder\" does not follow bmad-{code}-agent-{name} or bmad-agent-{name} pattern. This is a pre-pass deterministic finding.",
+      "action": "Evaluate whether this skill intentionally uses a non-agent naming convention (it is a workflow skill, not a persona agent) and document the rationale, or rename to follow the standard pattern."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "title": "Missing ## Identity section",
+      "detail": "No dedicated Identity section exists. The Overview embeds an implicit identity ('Act as a music producer's sound engineer') but this is not in its own section. Pre-pass deterministic finding.",
+      "action": "Add a dedicated ## Identity section after Overview with a clear one-sentence persona, e.g.: 'You are a music producer's sound engineer who translates musical intent into precise, model-optimized Suno style prompts.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "title": "Missing ## Communication Style section",
+      "detail": "No Communication Style section exists. The skill interacts conversationally with users (Step 1 says 'Collect what you need conversationally') but provides no style guidance or examples. Pre-pass deterministic finding.",
+      "action": "Add a ## Communication Style section with 3-5 concrete examples showing how to ask about genre, present decompositions, and offer refinements. The tone should match a knowledgeable but approachable sound engineer."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "title": "Missing ## Principles section",
+      "detail": "No Principles section exists. The skill embeds domain-critical principles throughout workflow steps (e.g., 'Never put artist names in the style prompt', 'front-load the critical zone', 'negative prompts are unreliable') but these are scattered rather than consolidated. Pre-pass deterministic finding.",
+      "action": "Add a ## Principles section that consolidates the top 5-7 guiding principles, e.g.: 'Front-load all essential descriptors within the first 200 characters (critical zone)', 'Decompose artist references into concrete sonic descriptors — never use artist names directly', 'Translate negative intentions into positive instructions'."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 10,
+      "severity": "low",
+      "category": "identity",
+      "title": "Embedded identity is actionable but not in a dedicated section",
+      "detail": "The Overview contains 'Act as a music producer's sound engineer — you understand how to translate musical intent into the precise language Suno's models respond to best.' This is a good identity statement but is buried in a paragraph rather than standing alone.",
+      "action": "Extract this into a dedicated ## Identity section for maximum behavioral priming effect."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 3,
+      "severity": "low",
+      "category": "frontmatter",
+      "title": "Description quality is strong",
+      "detail": "Description follows the two-part format with specific quoted trigger phrases ('build a style prompt', 'generate style prompt', 'create a Suno prompt'). It clearly distinguishes this skill from other skills in the module. No action needed.",
+      "action": "None required — description is well-formed."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 41,
+      "severity": "low",
+      "category": "activation-sequence",
+      "title": "Activation sequence is logically ordered",
+      "detail": "Sequence is: (1) detect headless vs interactive mode, (2) load config via bmad-init, (3) greet user, (4) proceed to Step 1. Config loads before config vars are used, and headless detection precedes interactive flow. Includes proper fallback if bmad-init is unavailable.",
+      "action": "None required — activation sequence is sound."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 16,
+      "severity": "medium",
+      "category": "headless-mode",
+      "title": "Headless mode is well-documented but lacks a dedicated headless activation prompt",
+      "detail": "The Activation Mode Detection section thoroughly documents headless sub-modes (from-profile, custom, refine, migrate), defaults, and error contracts. However, there is no explicit 'wake prompt' or default task that the agent performs when invoked headless without a sub-mode flag — just '--headless with a profile name' falls through to hybrid mode.",
+      "action": "Consider adding explicit documentation for what happens with bare '--headless' (no sub-mode, no profile name) — currently this case appears unhandled."
+    },
+    {
+      "file": "README.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "title": "No config header with language variables found in README.md",
+      "detail": "Pre-pass deterministic finding. README.md lacks a config header with language variables.",
+      "action": "Add a config header with language variables to README.md if this prompt file requires configuration."
+    },
+    {
+      "file": "README.md",
+      "line": 66,
+      "severity": "high",
+      "category": "progression",
+      "title": "No progression condition keywords found in README.md",
+      "detail": "Pre-pass deterministic finding. No progression condition keywords were detected in the README prompt file.",
+      "action": "Add progression conditions to README.md to define how the skill advances through its workflow stages."
+    }
+  ],
+  "assessments": {
+    "sections_found": ["Overview", "Activation Mode Detection", "On Activation", "Workflow Steps", "Scripts"],
+    "sections_missing": ["Identity", "Communication Style", "Principles"],
+    "capabilities_count": 0,
+    "has_memory": false,
+    "has_headless": true,
+    "headless_modes": ["from-profile", "custom", "refine", "migrate", "hybrid"],
+    "description_quality": "strong",
+    "identity_quality": "embedded but not dedicated",
+    "activation_sequence_quality": "sound"
+  },
+  "summary": {
+    "total_findings": 10,
+    "by_severity": {
+      "critical": 0,
+      "high": 4,
+      "medium": 3,
+      "low": 3
+    },
+    "by_category": {
+      "frontmatter": 2,
+      "sections": 3,
+      "identity": 1,
+      "activation-sequence": 1,
+      "headless-mode": 1,
+      "config-header": 1,
+      "progression": 1
+    },
+    "assessment": "The skill has strong domain content and a well-structured workflow, but is missing three required behavioral sections (Identity, Communication Style, Principles). The embedded identity and scattered principles are high quality — they just need to be extracted into dedicated sections for proper AI behavioral priming. Headless mode is thorough but has one edge case gap."
+  }
+}

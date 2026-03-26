@@ -1,0 +1,146 @@
+{
+  "scanner": "structure",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-lyric-transformer",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "frontmatter",
+      "title": "Name does not follow bmad-{code}-agent-{name} or bmad-agent-{name} pattern",
+      "detail": "The skill name 'bmad-suno-lyric-transformer' uses a non-standard naming convention. Expected patterns are bmad-{code}-agent-{name} or bmad-agent-{name}.",
+      "action": "Evaluate whether this is intentional for a skill (vs agent) naming convention, or rename to follow the standard agent naming pattern."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "title": "Missing required ## Identity section",
+      "detail": "No Identity section found. The Overview contains an embedded identity hint ('Act as a songwriter's workshop collaborator') at line 10, but this is not a dedicated Identity section. Without a clear one-sentence persona section, the AI's behavioral priming is weaker and less consistent.",
+      "action": "Add a ## Identity section after ## Overview with a clear one-sentence persona, e.g.: 'You are a songwriter's workshop collaborator who understands that every song section has a job and that great lyrics balance singability with authentic voice.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "title": "Missing required ## Communication Style section",
+      "detail": "No Communication Style section found. There is one scattered style hint at line 94 ('Use the songwriter's workshop voice'), but no dedicated section with concrete examples. Without examples, the agent's tone will be inconsistent across interactions.",
+      "action": "Add a ## Communication Style section with 3-5 concrete examples showing the songwriter's workshop voice. Include examples of how to discuss structure, suggest changes, and present analysis results."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "title": "Missing required ## Principles section",
+      "detail": "No Principles section found. The skill embeds domain principles throughout the workflow (e.g., 'preserve the writer's intent and voice', character budget awareness, word fidelity constraints), but these are scattered across steps rather than consolidated into a decision framework.",
+      "action": "Add a ## Principles section that consolidates the key guiding principles: preserve writer's voice and intent, respect the 3,000-char Suno budget, never auto-replace when word fidelity is active, verify claims against script output before presenting, and cliche detection runs by default."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 3,
+      "severity": "strength",
+      "category": "frontmatter",
+      "title": "Description follows two-part format with quoted trigger phrases",
+      "detail": "The description uses the recommended format: a concise summary ('Transforms poems and text into Suno-ready structured lyrics') followed by a trigger clause with specific quoted phrases ('transform lyrics', 'convert poem to song', 'prepare lyrics for Suno'). This enables reliable activation.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 16,
+      "severity": "strength",
+      "category": "headless-mode",
+      "title": "Comprehensive headless mode with output contract and refinement mode",
+      "detail": "The Activation Mode Detection section defines multiple headless sub-modes (analyze, transform, refine), a structured JSON output contract, and a refinement spec format for targeted changes. This is a thorough headless implementation.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 50,
+      "severity": "strength",
+      "category": "activation-sequence",
+      "title": "Activation sequence is logically ordered with graceful fallback",
+      "detail": "The On Activation section follows correct order: load config first, then greet user with config vars, then proceed to workflow. Includes a fallback for when bmad-init is unavailable, preventing the skill from blocking.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 8,
+      "severity": "strength",
+      "category": "consistency",
+      "title": "Overview provides excellent domain context and design rationale",
+      "detail": "The Overview includes both domain context (Suno metatag syntax, character limits, vocal phrasing) and design rationale (why transformations are a menu, why cliche detection runs by default). This gives the AI strong contextual grounding for decision-making.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 10,
+      "severity": "low",
+      "category": "identity",
+      "title": "Embedded identity in Overview should be extracted to dedicated section",
+      "detail": "The phrase 'Act as a songwriter's workshop collaborator' at line 10 functions as an identity statement but is buried in the Overview paragraph. Identity works best as a standalone section that primes behavior before the agent reads the rest of the document.",
+      "action": "Extract the identity statement from the Overview into a new ## Identity section placed between ## Overview and ## Activation Mode Detection."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 94,
+      "severity": "low",
+      "category": "communication-style",
+      "title": "Scattered voice guidance should be consolidated",
+      "detail": "Line 94 mentions 'Use the songwriter's workshop voice' with an example question, but this is the only style guidance and it appears mid-workflow. Communication style examples should be consolidated in a dedicated section so the agent internalizes tone before starting work.",
+      "action": "Move the workshop voice example to a ## Communication Style section and add 2-4 more examples covering different interaction types (analysis presentation, change suggestions, cliche discussion, handoff guidance)."
+    },
+    {
+      "file": "README.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "title": "README.md prompt file missing config header with language variables",
+      "detail": "The README.md prompt file has no config header defining language variables. Config headers enable prompt customization and are expected for prompt files.",
+      "action": "Add a config header to README.md with relevant language variables."
+    },
+    {
+      "file": "README.md",
+      "line": 67,
+      "severity": "high",
+      "category": "progression",
+      "title": "README.md prompt file missing progression condition keywords",
+      "detail": "No progression condition keywords found in the README.md prompt file. Without progression conditions, the prompt cannot signal when to advance to the next stage or complete its task.",
+      "action": "Add progression conditions (e.g., 'when complete', 'proceed when', 'if satisfied') to define clear exit criteria for the prompt."
+    }
+  ],
+  "assessments": {
+    "sections_found": ["Overview", "Activation Mode Detection", "On Activation", "Workflow Steps", "Scripts"],
+    "sections_missing": ["Identity", "Communication Style", "Principles"],
+    "capabilities_count": 8,
+    "has_memory": false,
+    "has_headless": true,
+    "headless_quality": "strong — multiple sub-modes, output contract, refinement spec",
+    "description_quality": "good — follows two-part format with quoted trigger phrases and action verbs",
+    "activation_sequence_quality": "good — logically ordered with graceful fallback"
+  },
+  "summary": {
+    "total_findings": 12,
+    "by_severity": {
+      "critical": 0,
+      "high": 4,
+      "medium": 2,
+      "low": 2,
+      "strength": 4
+    },
+    "by_category": {
+      "frontmatter": 2,
+      "sections": 3,
+      "identity": 1,
+      "communication-style": 1,
+      "headless-mode": 1,
+      "activation-sequence": 1,
+      "consistency": 1,
+      "config-header": 1,
+      "progression": 1
+    },
+    "assessment": "Structurally functional skill with strong domain grounding and excellent headless mode, but missing three required sections (Identity, Communication Style, Principles). The scattered voice and principle guidance embedded in the workflow should be extracted into dedicated sections for consistent behavioral priming."
+  }
+}

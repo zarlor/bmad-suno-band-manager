@@ -1,0 +1,143 @@
+{
+  "scanner": "execution-efficiency",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-agent-band-manager",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 57,
+      "severity": "strength",
+      "category": "parallelization",
+      "title": "Essentials loaded as explicit parallel batch on activation",
+      "detail": "access-boundaries.md, index.md, and bmad-manifest.json are loaded in a single parallel batch during On Activation. This is the correct pattern for independent reads that are all needed at startup.",
+      "action": ""
+    },
+    {
+      "file": "create-song.md",
+      "line": 121,
+      "severity": "strength",
+      "category": "parallelization",
+      "title": "Steps 3 and 4 explicitly marked as parallel-safe with rationale",
+      "detail": "The note 'Steps 3 and 4 are independent — the Style Prompt Builder does not need the Lyric Transformer output. When both need to run, invoke them in parallel for faster results.' is an exemplary parallelization annotation. It explains the independence condition and the benefit.",
+      "action": ""
+    },
+    {
+      "file": "refine-song.md",
+      "line": 62,
+      "severity": "strength",
+      "category": "parallelization",
+      "title": "Conditional parallel routing for independent adjustments in refine flow",
+      "detail": "The refine-song prompt correctly distinguishes between independent adjustments (run both skills in parallel) and dependent ones (lyrics first, then style prompt). This conditional parallelization logic is well-designed.",
+      "action": ""
+    },
+    {
+      "file": "references/memory-system.md",
+      "line": null,
+      "severity": "strength",
+      "category": "memory-optimization",
+      "title": "Selective memory loading with load-on-demand discipline",
+      "detail": "Memory system defines index.md and access-boundaries.md as 'load on activation' while patterns.md and chronology.md are 'load when needed.' This prevents unnecessary token consumption from loading all sidecar files every session.",
+      "action": ""
+    },
+    {
+      "file": "browse-songbook.md",
+      "line": 13,
+      "severity": "low",
+      "category": "batching",
+      "title": "Three independent location scans not explicitly batched",
+      "detail": "Step 1 checks three independent locations (docs/songbook/, docs/feedback-history/, chronology.md) but does not instruct the LLM to read them in a single parallel batch. Currently listed as sequential bullet points. With only 3 items the time savings are modest.",
+      "action": "Add an explicit instruction to read all three locations in a single parallel batch, similar to the parallel batch pattern used in SKILL.md On Activation."
+    },
+    {
+      "file": "create-song.md",
+      "line": 111,
+      "severity": "medium",
+      "category": "no-output-spec",
+      "title": "Lyric Transformer invocation lacks output format specification",
+      "detail": "When invoking bmad-suno-lyric-transformer in Step 3, the prompt passes context (source text, band profile, direction, language, creativity mode) but does not specify an expected return format, token budget, or 'ONLY return' constraint. Without output format guidance, the skill may return verbose explanatory text alongside the structured lyrics, bloating the parent context.",
+      "action": "Add expected return format specification when invoking the Lyric Transformer, e.g., 'Return structured lyrics with metatags only — no commentary or explanation unless there are warnings.'"
+    },
+    {
+      "file": "create-song.md",
+      "line": 131,
+      "severity": "medium",
+      "category": "no-output-spec",
+      "title": "Style Prompt Builder invocation lacks output format specification",
+      "detail": "When invoking bmad-suno-style-prompt-builder in Step 4, context is passed but no return format is specified. The builder could return the style prompt plus extensive rationale, consuming unnecessary tokens in the parent context.",
+      "action": "Add expected return format specification when invoking the Style Prompt Builder, e.g., 'Return style prompt text, character count, exclusion list, and slider recommendations as structured data — no rationale unless requested.'"
+    },
+    {
+      "file": "refine-song.md",
+      "line": 35,
+      "severity": "medium",
+      "category": "no-output-spec",
+      "title": "Feedback Elicitor invocation lacks output format specification",
+      "detail": "When invoking bmad-suno-feedback-elicitor in Step 2, extensive context is passed but no return format is specified. The elicitor's structured adjustment recommendations should be returned in a predictable format so the parent can route efficiently.",
+      "action": "Add expected return format specification when invoking the Feedback Elicitor, e.g., 'Return adjustment recommendations as structured data: style_prompt_adjustments, lyric_adjustments, slider_changes, model_suggestion, studio_features — no narrative.'"
+    },
+    {
+      "file": "save-memory.md",
+      "line": 24,
+      "severity": "low",
+      "category": "batching",
+      "title": "Checkpoint writes to patterns.md and chronology.md could be parallelized",
+      "detail": "Step 4 checkpoints patterns.md and chronology.md sequentially after writing index.md. These two writes are independent of each other and could execute in parallel. Impact is minor since memory writes are small operations.",
+      "action": "Note that patterns.md and chronology.md checkpoint writes can run as a parallel batch after index.md write completes."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 96,
+      "severity": "strength",
+      "category": "delegation",
+      "title": "Context pass-through to external skills avoids re-gathering",
+      "detail": "The instruction 'When invoking these skills, pass relevant context... so the skill doesn't re-ask for information the user already provided' prevents redundant data gathering. Combined with the research discipline note to 'include any research findings so they don't need to re-search,' this is efficient context forwarding.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 98,
+      "severity": "strength",
+      "category": "delegation",
+      "title": "Write delegation to specialized skill preserves access boundary integrity",
+      "detail": "Band profile writes are explicitly delegated to bmad-suno-band-profile-manager rather than handled directly by Mac. This is both a security pattern and an efficient delegation pattern — Mac doesn't need to load profile management logic.",
+      "action": ""
+    }
+  ],
+  "assessments": {
+    "parallelization_health": {
+      "explicit_parallel_batches": 3,
+      "missed_batch_opportunities": 2,
+      "notes": "The skill has strong parallelization discipline with 3 explicit parallel patterns (activation essentials, create-song Steps 3+4, refine-song dual adjustments). Two minor batch opportunities exist in browse-songbook and save-memory."
+    },
+    "delegation_health": {
+      "external_skills_invoked": 4,
+      "with_output_format_spec": 0,
+      "with_context_passthrough": 4,
+      "notes": "All 4 external skill invocations pass relevant context, but none specify expected return format. This is the primary efficiency gap — without output constraints, external skills may return verbose results that bloat the orchestrator's context."
+    },
+    "memory_loading_health": {
+      "selective_loading": true,
+      "index_first_routing": true,
+      "per_capability_loading": true,
+      "access_boundaries_on_activation": true,
+      "notes": "Memory loading follows all best practices. index.md and access-boundaries.md load on activation; patterns.md and chronology.md load only when their capabilities activate."
+    }
+  },
+  "summary": {
+    "total_findings": 11,
+    "by_severity": {
+      "critical": 0,
+      "high": 0,
+      "medium": 3,
+      "low": 2,
+      "strength": 6
+    },
+    "by_category": {
+      "parallelization": 3,
+      "memory-optimization": 1,
+      "batching": 2,
+      "no-output-spec": 3,
+      "delegation": 2
+    },
+    "assessment": "The agent has strong parallelization discipline and exemplary selective memory loading. The primary efficiency gap is that all external skill invocations lack output format specifications, which risks verbose returns bloating the orchestrator's context. No critical or high-severity issues found."
+  }
+}

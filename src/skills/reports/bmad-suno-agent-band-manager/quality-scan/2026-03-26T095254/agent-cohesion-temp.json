@@ -1,0 +1,167 @@
+{
+  "scanner": "agent-cohesion",
+  "agent_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-agent-band-manager",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Exceptionally well-defined persona with natural communication style",
+      "detail": "Mac's identity as a warm New Orleans-inspired band manager is vivid, specific, and consistently reflected across all prompt files. The music production metaphors ('lay down the foundation,' 'mix this down') are baked into the communication style, and the principle of meeting users where they are (from 'just make me something sad' to detailed production notes) creates a persona that feels like a real person rather than a generic assistant. This level of persona specificity is rare and makes the agent immediately engaging.",
+      "action": "No action needed -- this is a standout design element to preserve."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Three interaction modes provide excellent user journey flexibility",
+      "detail": "The Demo/Studio/Jam mode system is a smart design that solves the fundamental tension between beginners wanting simplicity and experts wanting control. The auto-detect mode (implicit Studio when 3+ parameters provided) is particularly clever -- it avoids forcing power users through a mode selection step. Mid-session mode switching and default persistence round out a thoughtful UX design.",
+      "action": "No action needed -- the mode system is well-designed and consistently referenced across all prompts."
+    },
+    {
+      "file": "create-song.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Create-song handles an impressive range of edge cases",
+      "detail": "The create-song prompt anticipates and handles: instrumental-only, non-English lyrics, long text overflow, URL/audio paste detection, song extension, zero-input Demo, reference track decomposition, and headless/automation mode. Each edge case has a specific, thoughtful handling path rather than a generic fallback. The parallel invocation of Lyric Transformer and Style Prompt Builder (Step 3 note) shows performance-aware design.",
+      "action": "No action needed -- thoroughness of edge case coverage is a model to follow."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Research discipline prevents hallucination in a fast-changing domain",
+      "detail": "The Research Discipline section explicitly addresses the risk of stale knowledge about Suno's rapidly evolving platform. The principle of 'search first, assume never' with specific guidance on when to verify (artist references, quantitative claims, model capabilities) shows sophisticated awareness of LLM failure modes. The fallback of 'state uncertainty honestly' when no search tool is available is exactly right.",
+      "action": "No action needed -- this is a best practice that other agents should adopt."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Graceful degradation when external skills are unavailable",
+      "detail": "The Skill Availability section provides a clear degradation path: inform user, offer inline alternative, note what they are missing, never silently fail. This is unusually mature design for a multi-skill agent. Most agents either fail hard or silently produce inferior output.",
+      "action": "No action needed -- preserve this pattern."
+    },
+    {
+      "file": "SUNO-REFERENCE.md",
+      "severity": "strength",
+      "category": "strength",
+      "title": "Battle-tested reference material with empirically validated findings",
+      "detail": "The Suno Reference is not generic documentation -- it contains hard-won empirical findings (BPM tags confirmed ineffective via librosa analysis, 'baroque triggers Disney,' bass-forward rock limitations, scream bleed-through behavior). This kind of validated, specific knowledge dramatically increases the quality of agent output versus agents working from generic training data alone.",
+      "action": "No action needed -- continue validating and updating this reference as Suno evolves."
+    },
+    {
+      "file": "bmad-manifest.json",
+      "severity": "medium",
+      "category": "gap",
+      "title": "No dedicated 'delete song' or 'remove from songbook' capability",
+      "detail": "The songbook (browse-songbook.md) supports View, Reuse, Compare, and Export -- but there is no way to remove a song from the songbook. Over time, the songbook will accumulate failed experiments, test generations, and abandoned ideas. Without a cleanup mechanism, the browsing experience degrades. The agent can create and refine songs but cannot clean up its own creative history.",
+      "action": "Add a delete/archive action to browse-songbook.md (Step 3), or add a songbook management capability that allows removing or archiving entries. Even a simple 'archive this song' that moves it out of the active view would suffice."
+    },
+    {
+      "file": "browse-songbook.md",
+      "severity": "medium",
+      "category": "gap",
+      "title": "Browse songbook has no search or filter capability",
+      "detail": "The songbook groups by band profile and offers View/Reuse/Compare/Export, but for a user with dozens of songs, there is no way to search by genre, mood, date range, model used, or keyword. The presentation is a flat list that will become unwieldy at scale. Given that Mac is designed for ongoing creative work (chronology, patterns, session continuity), the songbook needs to scale with usage.",
+      "action": "Add search/filter options to Step 3: filter by band profile, genre, date range, model, or keyword search across titles and style prompts. Even basic filtering ('show me my rock songs' or 'what did I make last month') would significantly improve usability."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "low",
+      "category": "gap",
+      "title": "No explicit 'help' or 'explain Suno' capability for confused newcomers",
+      "detail": "SKILL.md mentions an intent check for confused users ('I don't know what Suno is') but the response is a redirect ('here's how to get there'). There is no dedicated capability for explaining Suno basics, walking through the platform, or onboarding a user who has never used Suno. The USAGE.md is comprehensive but is a document, not an interactive capability. Given Mac's persona as someone who 'never makes a beginner feel dumb,' a guided Suno orientation would fit naturally.",
+      "action": "Consider adding a lightweight 'Suno 101' capability or integrating basic Suno orientation into the init.md first-run flow. Mac could offer: 'New to Suno? Let me give you the 2-minute tour before we make music.' This would be a natural extension of the 'meet them where they are' principle."
+    },
+    {
+      "file": "create-song.md",
+      "severity": "low",
+      "category": "redundancy",
+      "title": "Quick refinement in create-song overlaps with refine-song capability",
+      "detail": "Create-song Step 6 handles 'quick refinement' for light adjustments within the same conversation, routing deeper feedback to the Feedback Elicitor. Refine-song (RS) is a separate capability that does the same routing. The boundary between 'light adjustment handled by Mac' and 'deeper feedback routed to Feedback Elicitor' is judgment-based rather than rule-based, which could confuse both the agent (which path to take) and users (why sometimes Mac handles feedback directly and sometimes invokes a specialist).",
+      "action": "This is a reasonable design tradeoff -- keeping quick fixes in-flow avoids forcing users to switch capabilities for minor tweaks. Document the heuristic more explicitly: e.g., 'If the user names a specific change to a specific field (style prompt word swap, add an instrument to exclusions), handle it directly. If the feedback involves judgment about what is wrong, route to FE.' The current description ('clear, simple tweaks' vs. 'deeper feedback') is slightly vague."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "Album/EP project mode for multi-song coherence",
+      "detail": "Mac handles individual songs and band profiles well, but there is no concept of a 'project' that ties multiple songs together into a coherent album or EP. Users doing album work (explicitly mentioned as a Studio mode use case) would benefit from project-level tracking: song ordering, thematic arcs across tracks, consistent production across songs, and gap analysis ('your album has 6 uptempo tracks and no ballad'). The USAGE.md mentions playlist sequencing as an available workflow, but it is reactive (order existing songs) rather than proactive (plan an album). The songbook groups by band profile but does not support intentional album curation.",
+      "action": "Consider adding a project/album concept: a named collection of songs with an intended track order, thematic arc notes, and production consistency checks. Mac could offer 'start an album project' that creates a lightweight project file tracking intended song count, mood arc, and which slots are filled. This would make the 'album work' use case in Studio mode genuinely first-class rather than just a collection of individual song creations."
+    },
+    {
+      "file": "SKILL.md",
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "Template or preset system for common song patterns",
+      "detail": "Mac starts from scratch (or band profile baseline) every time. Experienced users who have found combinations that work -- a particular structure, metatag pattern, slider configuration -- have no way to save and reuse those as templates. The songbook supports 'Reuse' (use a style prompt as a starting point) but this is song-level, not pattern-level. A template system would let users save abstract patterns ('my verse-chorus-verse-bridge structure with these metatag placements' or 'my go-to slider config for dreamy tracks') separate from specific songs.",
+      "action": "Consider adding a template/preset concept to the memory system or band profiles. Templates could capture: song structure skeletons, metatag placement patterns, slider presets by mood category, and exclusion sets. Users could say 'use my dreamy template' to pre-load a starting configuration. This would reduce repetitive setup for users with established workflows."
+    },
+    {
+      "file": "save-memory.md",
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "Memory save could offer a session summary for the user",
+      "detail": "Save-memory currently confirms with 'Memory saved. {brief-summary}' but does not offer the user a human-readable session recap. After a productive session with multiple songs or refinement rounds, a summary like 'This session: created Jasmine House (indie folk, v4.5-all), refined it twice (rawer vocals, more intimate production), updated Midnight Porch profile exclusions' would help users track their creative progress and remember where they left off -- especially since Mac offers session continuity on return.",
+      "action": "Enhance save-memory output to include an optional session recap: songs created/refined, profile changes made, patterns discovered. Keep it brief (3-5 bullets) and conversational, in Mac's voice. This complements the chronology.md entries but gives the user an immediate, readable summary."
+    },
+    {
+      "file": "browse-songbook.md",
+      "severity": "suggestion",
+      "category": "opportunity",
+      "title": "Songbook could surface creative insights and evolution patterns",
+      "detail": "The songbook is currently a portfolio browser -- it shows what exists. But given that Mac tracks patterns over time (patterns.md, chronology.md), the songbook could surface insights: 'Your style prompts have gotten more specific over the last 10 songs,' 'You gravitate toward minor keys and breathy vocals,' 'Your refinement rounds have decreased -- your first drafts are getting better.' This would make the songbook not just a record but a creative growth tool, which aligns with Mac's producer persona ('bringing out the best in every creative project').",
+      "action": "Add an optional 'creative insights' view to browse-songbook that analyzes patterns across the user's song history. This could draw from patterns.md and chronology.md to surface trends, growth, and recurring themes. Even simple observations ('7 of your 10 songs use acoustic guitar') would add value."
+    }
+  ],
+  "assessments": {
+    "agent_identity": {
+      "name": "bmad-suno-agent-band-manager",
+      "persona_summary": "Mac -- a warm, New Orleans-inspired band manager and producer who guides users through Suno music creation with three interaction modes (Demo for speed, Studio for depth, Jam for experimentation), orchestrating four specialized skills into a seamless creative workflow with iterative refinement.",
+      "primary_purpose": "Orchestrate Suno music creation by bridging the gap between a user's musical vision and Suno's required inputs (style prompt + lyrics), producing complete copy-paste-ready packages through guided creative conversation and iterative post-generation refinement.",
+      "capability_count": 8
+    },
+    "cohesion_analysis": {
+      "persona_alignment": {
+        "score": "strong",
+        "notes": "Mac's persona as a warm, music-savvy band manager with producer instincts is deeply aligned with every capability. The communication style (production metaphors, adaptive vocabulary, encouraging but honest) is consistently reflected in all prompt files. The three interaction modes map naturally to a producer who can work fast (Demo), deep (Studio), or experimental (Jam). The research discipline fits a producer who stays current. The memory system fits a manager who remembers their artists. There is no capability that feels like it belongs to a different persona."
+      },
+      "capability_completeness": {
+        "score": "mostly-complete",
+        "missing_areas": [
+          "songbook cleanup/deletion",
+          "songbook search and filtering",
+          "album/project-level planning"
+        ],
+        "notes": "The core creative workflow (create -> refine -> save -> browse) is fully supported end-to-end. The four external skills cover the key specialized tasks. The main gaps are in songbook management at scale (no delete, no search) and in multi-song project planning. These are not glaring omissions for early use but will become friction points as users build larger creative histories."
+      },
+      "redundancy_level": {
+        "score": "clean",
+        "consolidation_opportunities": [
+          {
+            "capabilities": ["create-song Step 6 (Quick Refinement)", "refine-song (RS)"],
+            "suggested_consolidation": "Not necessarily consolidation -- the overlap is intentional for UX flow. But the boundary heuristic ('clear, simple tweaks' vs. 'deeper feedback') could be documented more precisely to avoid agent confusion about when to handle inline vs. route to the Feedback Elicitor."
+          }
+        ]
+      },
+      "external_integration": {
+        "external_skills_referenced": 4,
+        "integration_pattern": "intentional",
+        "notes": "The four external skills (Band Profile Manager, Style Prompt Builder, Lyric Transformer, Feedback Elicitor) each have a clear, distinct role in the workflow. The orchestration pattern is well-defined: Mac gathers context and delegates specialized work. Context passing between skills is explicitly designed (pass band profile data, model selection, creativity mode). The manifest cleanly distinguishes between prompt-based capabilities (Mac handles directly) and skill-based capabilities (delegated). The degradation path for missing skills is thoughtful. This is a well-architected skill integration."
+      },
+      "user_journey_score": {
+        "score": "complete-end-to-end",
+        "broken_workflows": [],
+        "notes": "A user can accomplish the full creative journey: first-run setup -> create song -> try on Suno -> refine with feedback -> save progress -> browse history -> resume later. Entry points are clear (menu with codes, natural language, mode selection). Exit points provide value (complete Suno-ready package every time). The only friction is at scale -- browsing a large songbook without search, and no album-level planning. But for the core use case of creating and refining individual songs, the journey is seamless."
+      }
+    }
+  },
+  "summary": {
+    "total_findings": 14,
+    "by_severity": {"high": 0, "medium": 2, "low": 2, "suggestion": 4, "strength": 6},
+    "by_category": {"gap": 3, "redundancy": 1, "misalignment": 0, "opportunity": 4, "strength": 6},
+    "overall_cohesion": "cohesive",
+    "single_most_important_fix": "Add songbook management features (delete/archive and search/filter) so the creative history scales with ongoing use rather than becoming an unwieldy flat list."
+  }
+}

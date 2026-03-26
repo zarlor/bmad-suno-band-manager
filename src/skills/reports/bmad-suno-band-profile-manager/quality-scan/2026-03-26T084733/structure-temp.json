@@ -1,0 +1,141 @@
+{
+  "scanner": "structure",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-band-profile-manager",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "frontmatter",
+      "title": "Name does not follow bmad-{code}-agent-{name} or bmad-agent-{name} pattern",
+      "detail": "Name \"bmad-suno-band-profile-manager\" does not follow the expected naming convention. This may affect discoverability and consistency with other agents in the ecosystem.",
+      "action": "Consider renaming to follow bmad-{code}-agent-{name} pattern, e.g., bmad-suno-agent-band-profile-manager, if this is intended to be an agent-style skill."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "title": "Missing ## Identity section",
+      "detail": "The SKILL.md has no dedicated Identity section. The Overview contains identity-like content ('Act as a music producer's assistant who understands sonic identity, vocal direction, and writing voice'), but this is not in the canonical location. Without a dedicated Identity section, the persona priming is weaker and less explicit.",
+      "action": "Add a ## Identity section after Overview with a clear one-sentence persona statement, e.g., 'You are a music producer's assistant with deep knowledge of sonic identity, vocal direction, and songwriting voice — you help users define and evolve their band's sonic DNA.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "title": "Missing ## Communication Style section",
+      "detail": "No Communication Style section exists. This skill involves extensive conversational discovery with users who range from experienced musicians to complete beginners. Without style guidance and concrete examples, the agent's tone will be inconsistent across interactions.",
+      "action": "Add a ## Communication Style section with 3-5 concrete examples showing how to adapt language for musician vs. beginner users. E.g., 'Instead of: What dBFS range do you prefer? Say: How loud and punchy should it feel?'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 1,
+      "severity": "high",
+      "category": "sections",
+      "title": "Missing ## Principles section",
+      "detail": "No Principles section exists. This skill makes many judgment calls (how much to push for detail, when to accept vague answers, how to handle reference tracks for unknown artists). Without guiding principles, behavior in ambiguous situations will be inconsistent.",
+      "action": "Add a ## Principles section with domain-specific decision frameworks. E.g., 'Meet users at their vocabulary level — never assume music theory knowledge', 'Prefer specific sensory descriptors over genre labels', 'Always verify sonic claims via search before storing them in profiles'."
+    },
+    {
+      "file": "README.md",
+      "line": 1,
+      "severity": "medium",
+      "category": "config-header",
+      "title": "No config header with language variables found in README.md",
+      "detail": "The README.md prompt file lacks a config header declaring language variables. If this prompt is rendered with variable substitution, missing declarations could cause issues.",
+      "action": "Add a config header to README.md if it uses language variables, or verify that it does not need one."
+    },
+    {
+      "file": "README.md",
+      "line": 64,
+      "severity": "high",
+      "category": "progression",
+      "title": "No progression condition keywords found in README.md",
+      "detail": "The README.md prompt has no progression conditions (e.g., 'proceed when', 'move to next when'). If this is a multi-stage prompt, missing progression logic means the agent cannot determine when to advance.",
+      "action": "Add progression conditions to README.md if it represents a staged workflow, or restructure it as a single-pass reference if progression is not applicable."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 10,
+      "severity": "strength",
+      "category": "identity",
+      "title": "Overview embeds a strong implicit identity and domain context",
+      "detail": "The Overview provides excellent domain context ('A band profile is the sonic equivalent of a brand book') and a clear implicit identity ('Act as a music producer's assistant'). The design rationale explaining why conversational discovery is preferred over form-filling is a notable strength. This content should be preserved when adding the formal Identity section.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 3,
+      "severity": "strength",
+      "category": "frontmatter",
+      "title": "Description follows two-part format with specific trigger phrases",
+      "detail": "The description uses the correct pattern: summary sentence followed by 'Use when' clause with quoted trigger phrases ('create a band profile', 'edit band profile', etc.). This enables reliable activation and distinguishes the skill clearly from song-creation or style-prompt skills.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 33,
+      "severity": "strength",
+      "category": "activation-sequence",
+      "title": "Activation sequence is logically ordered with graceful fallback",
+      "detail": "The activation sequence correctly loads config first, then greets, then detects operation. The fallback behavior when bmad-init is unavailable ('greet generically and default to English, do not block') is well-designed for resilience.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 16,
+      "severity": "strength",
+      "category": "headless-mode",
+      "title": "Comprehensive headless mode with structured JSON responses",
+      "detail": "Headless mode is well-defined with specific subcommands (create, validate, load, edit, delete, duplicate) and documented return JSON shapes. Each headless operation has a clear contract. This supports automation and scripting use cases effectively.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 44,
+      "severity": "strength",
+      "category": "consistency",
+      "title": "Operation routing table is clear and comprehensive",
+      "detail": "The operation detection table maps triggers to routes cleanly, includes handling for unclear intent and wrong-skill invocation. The wrong-skill handling ('Explain this skill manages profiles, not songs') prevents user confusion and redirects appropriately.",
+      "action": ""
+    },
+    {
+      "file": "SKILL.md",
+      "line": 10,
+      "severity": "low",
+      "category": "consistency",
+      "title": "Overview is dense — consider extracting domain context to a reference file",
+      "detail": "The Overview paragraph packs identity, domain context, design rationale, and scope into a single dense section. While the content is high quality, this front-loads tokens that may not be needed on every activation.",
+      "action": "Consider moving the domain context and design rationale paragraphs into a references/ file that can be loaded on demand, keeping the Overview focused on purpose and scope."
+    }
+  ],
+  "assessments": {
+    "sections_found": ["Overview", "Activation Mode Detection", "On Activation", "Workflow Operations", "Post-Operation Flow", "Scripts"],
+    "sections_missing": ["Identity", "Communication Style", "Principles"],
+    "capabilities_count": 8,
+    "has_memory": false,
+    "has_headless": true,
+    "headless_assessment": {
+      "subcommands_defined": ["create", "validate", "load", "edit", "delete", "duplicate", "list"],
+      "return_formats_documented": true,
+      "default_behavior_defined": true
+    }
+  },
+  "summary": {
+    "total_findings": 11,
+    "by_severity": {"critical": 0, "high": 4, "medium": 2, "low": 1, "strength": 4},
+    "by_category": {
+      "frontmatter": 2,
+      "sections": 3,
+      "config-header": 1,
+      "progression": 1,
+      "identity": 1,
+      "activation-sequence": 1,
+      "headless-mode": 1,
+      "consistency": 2
+    },
+    "assessment": "The skill has strong operational design with comprehensive workflows, excellent headless mode support, and a well-crafted description. However, it is missing three required structural sections (Identity, Communication Style, Principles) which weakens persona priming and behavioral consistency — particularly problematic for a conversational-discovery skill where tone and judgment calls are critical."
+  }
+}

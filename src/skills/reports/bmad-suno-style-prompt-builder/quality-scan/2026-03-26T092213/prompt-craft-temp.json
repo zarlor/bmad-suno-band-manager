@@ -1,0 +1,109 @@
+{
+  "scanner": "prompt-craft",
+  "skill_path": "/home/zarlor/bmm/_bmad-output/bmad-suno-band-manager-module/src/skills/bmad-suno-style-prompt-builder",
+  "findings": [
+    {
+      "file": "SKILL.md",
+      "line": 8,
+      "severity": "note",
+      "category": "overview-quality",
+      "title": "Overview is concise and well-structured",
+      "detail": "The 7-line overview covers mission (sound engineer analogy), domain context (model-specific prompt behavior, character limits, critical zone), and design rationale (full package output, wild card justification). This is excellent for a domain-expert skill -- every sentence earns its place by providing context the agent needs for judgment calls.",
+      "action": "No action needed."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 82,
+      "severity": "note",
+      "category": "progressive-disclosure",
+      "title": "Heavy domain knowledge properly extracted to references",
+      "detail": "Step 2 correctly uses 'Load references/model-prompt-strategies.md' as a mandatory directive. The 333-line reference file contains model-specific strategies, genre behavior tables, vocal triggers, slider guidelines, and tested descriptors -- all properly extracted from the main SKILL.md. This is textbook progressive disclosure.",
+      "action": "No action needed."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 100,
+      "severity": "medium",
+      "category": "self-containment",
+      "title": "Web search fallback instruction may be unclear under context compaction",
+      "detail": "Line 100 instructs the agent to 'Always use web search (when a search tool is available)' before decomposing reference tracks, with a fallback to asking the user. This is a good instruction, but references/model-prompt-strategies.md lines 310-316 contain a more detailed 'Confidence Check' section covering the same logic. If context compacts and the reference file is dropped, the SKILL.md instruction is sufficient but less nuanced. If SKILL.md is dropped and only the reference survives, the confidence check still works. This is acceptable redundancy -- belt-and-suspenders for a critical judgment call.",
+      "action": "Consider whether the brief mention in SKILL.md line 100 and the detailed version in references are intentionally layered (acceptable) or accidental duplication. If intentional, add a brief note in SKILL.md: 'See Confidence Check in model-prompt-strategies.md for the full protocol.'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 117,
+      "severity": "low",
+      "category": "token-waste",
+      "title": "Instrument bleed-through section is lengthy for SKILL.md",
+      "detail": "Lines 117-123 (Step 2, item 10) contain 7 lines of detailed guidance on instrument ordering and bleed-through, including a specific DAW workflow recommendation. While this is genuinely useful domain knowledge, it reads more like reference material than workflow instruction. The core instruction ('warn the user about global instrument palette') could be stated in 2 lines with the details in the reference file.",
+      "action": "Consider extracting the detailed instrument bleed-through guidance (lines 117-123) to references/model-prompt-strategies.md under a new 'Instrument Bleed-Through' section, and replacing with a brief directive in SKILL.md: 'Warn the user that style prompt instruments bleed into ALL sections (see Instrument Bleed-Through in model-prompt-strategies.md for workaround guidance).'"
+    },
+    {
+      "file": "SKILL.md",
+      "line": 160,
+      "severity": "low",
+      "category": "token-waste",
+      "title": "Slider ranges duplicated between SKILL.md and reference file",
+      "detail": "Step 4 (lines 160-191) contains Weirdness, Style Influence, and Audio Influence slider ranges. The reference file (model-prompt-strategies.md lines 241-296) contains a more detailed and nuanced version of the same information with song-type-specific recommendations. The SKILL.md version is simpler but overlaps substantially.",
+      "action": "This duplication is borderline acceptable because SKILL.md provides the 'quick answer' while the reference provides song-type specifics. If token budget is a concern, SKILL.md Step 4 could reference the detailed table and keep only the creativity-mode ranges."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 246,
+      "severity": "low",
+      "category": "outcome-balance",
+      "title": "Refinement offer text is prescriptive rather than outcome-focused",
+      "detail": "Line 247 specifies exact phrasing for the refinement offer: 'Want to adjust anything? I can tweak the style prompt, change the creativity level, or try a different model format.' This is a HOW instruction (specific wording) rather than an outcome (offer refinement and re-enter relevant step). For a domain-expert agent with a sound engineer persona, the agent should be trusted to phrase this naturally.",
+      "action": "Replace the quoted script with an outcome directive: 'Offer refinement -- if the user wants changes, loop back to the relevant step.' The agent's persona will handle the phrasing."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 41,
+      "severity": "note",
+      "category": "persona-voice",
+      "title": "Persona is established efficiently through analogy",
+      "detail": "The 'music producer's sound engineer' analogy in the Overview (line 10) efficiently establishes the agent's perspective and domain authority. The rest of SKILL.md maintains a professional, domain-aware voice without excessive persona reinforcement. This is appropriate for a domain-expert skill.",
+      "action": "No action needed."
+    },
+    {
+      "file": "SKILL.md",
+      "line": 16,
+      "severity": "note",
+      "category": "anti-pattern",
+      "title": "Headless mode detection is well-structured",
+      "detail": "The Activation Mode Detection section (lines 16-39) cleanly separates headless sub-modes with defaults and error contracts. The structured JSON error output for missing inputs is a good pattern for machine-to-machine communication.",
+      "action": "No action needed."
+    },
+    {
+      "file": "references/model-prompt-strategies.md",
+      "line": 1,
+      "severity": "note",
+      "category": "progressive-disclosure",
+      "title": "Reference file is comprehensive and well-organized",
+      "detail": "At 333 lines, the reference file contains battle-tested domain knowledge: model strategies, genre behavior tables, vocal triggers, dangerous words, instrument guidance, dynamic control patterns, slider guidelines, and reference track decomposition. This is exactly the kind of content that belongs in a reference file -- rich domain context that the agent loads when needed rather than carrying in the base prompt.",
+      "action": "No action needed."
+    }
+  ],
+  "assessments": {
+    "skill_type_assessment": "domain-expert",
+    "skillmd_assessment": {
+      "overview_quality": "appropriate",
+      "progressive_disclosure": "good",
+      "persona_context": "appropriate",
+      "notes": "SKILL.md is well-crafted for a domain-expert skill. The overview efficiently establishes mission, domain context, and design rationale. Progressive disclosure is properly implemented with model-prompt-strategies.md handling the heavy reference material. At 262 lines / ~5074 tokens, it is at the upper boundary but justified by the complexity of the workflow (6 steps, headless modes, tier-aware logic). Minor opportunities exist to extract instrument bleed-through details and reduce slider duplication."
+    },
+    "prompts_scanned": 0,
+    "prompt_health": {
+      "prompts_with_config_header": 0,
+      "prompts_with_progression_conditions": 0,
+      "prompts_self_contained": 0,
+      "total_prompts": 0
+    }
+  },
+  "summary": {
+    "total_findings": 9,
+    "by_severity": {"critical": 0, "high": 0, "medium": 1, "low": 3, "note": 5},
+    "assessment": "This is a well-crafted domain-expert skill with clean progressive disclosure, efficient persona establishment, and zero waste patterns detected by pre-pass. The SKILL.md is at the upper token boundary but justified by workflow complexity. Minor refinements possible around extracting detailed instrument guidance to references and reducing slider duplication.",
+    "top_improvement": "Extract the 7-line instrument bleed-through guidance (SKILL.md lines 117-123) to references/model-prompt-strategies.md to keep SKILL.md focused on workflow steps rather than detailed platform workarounds."
+  }
+}
