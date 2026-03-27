@@ -216,7 +216,9 @@ Not available on Free tier — exclusions are handled through positive phrasing 
 - Weirdness: {value}% — {reasoning} (controls creative deviation: lower = safer, higher = more experimental)
 - Style Influence: {value}% — {reasoning} (controls prompt adherence: lower = looser interpretation, higher = tighter to your style prompt)
 {If Persona selected:}
-- Audio Influence: {value}% — {reasoning} (controls resemblance to Persona source: 25-40% preserves character with musical freedom, 60-75% for closer voice match but may introduce artifacts at very high values)
+- Audio Influence: {value}% — {reasoning}
+  Persona: 15-25% effective range (25% default, reduce for era mismatch)
+  Voice: 35-45% subtle flavor, 55-70% balanced (default starting point), 75-85% identity-focused, 85-95% maximum fidelity
 
 ### Song Title
 {suggested_title}

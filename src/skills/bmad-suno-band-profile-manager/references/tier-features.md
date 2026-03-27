@@ -105,6 +105,8 @@
 
 **Voices and Vocal Descriptors (v5.5, Pro/Premier):** When a Voice is active, the Voice defines the vocal identity — gender, tone, and character come from the audio sample. Omit gender vocal descriptors from the style prompt to avoid conflicts. Other vocal direction (delivery, energy, diction) can still shape performance.
 
+**Audio Influence with Voices (v5.5, Pro/Premier):** Unlike Personas (15-25% effective range), Voices uses a wider range. The sweet spot is personal — 35-45% for subtle flavor, 55-70% balanced (default starting point), 75-85% for identity-focused work, 85-95% for maximum fidelity. Adjust up if voice is unrecognizable, down if quality suffers.
+
 **Custom Models (v5.5, Pro/Premier):** Custom Models are trained on 6 or more original tracks and take 2-5 minutes to train. Up to 3 Custom Models per account. They capture a production style and sound signature. When a Custom Model is active, it shapes the overall production character — the style prompt should complement rather than fight the model's learned style.
 
 **My Taste (v5.5, All Tiers):** My Taste is passive personalization derived from the user's generation history. It requires no configuration and works across all tiers including Free. It subtly shapes generation output based on patterns in what the user has created and liked.

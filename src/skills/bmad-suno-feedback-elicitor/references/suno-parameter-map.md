@@ -19,7 +19,16 @@ When the user has a Voice active, the Voice provides the vocal identity (timbre,
 | Emotional delivery | `[Tender]`, `[Yearning]` | "emotional vocals" in style prompt |
 | Aggressive delivery | `[Aggressive]`, `[Screamed]` | "aggressive vocal style" in style prompt |
 
-**Audio Influence with Voices:** The sweet spot is ~40%. Higher values increase voice fidelity but may reduce overall generation quality. Lower values reduce voice consistency — the output may drift from the uploaded vocal identity. Start at 40% and adjust in 5-10% increments based on feedback.
+**Audio Influence with Voices — use-case dependent:**
+
+| Goal | Range | Notes |
+|------|-------|-------|
+| Voice as subtle flavor | 35-45% | Gentle influence, more generation polish |
+| Balanced voice + quality | 55-70% | Default starting point for most songs |
+| Recognizably "me" | 75-85% | Identity-focused, some polish trade-off |
+| Maximum voice fidelity | 85-95% | Identity paramount, may reduce generation quality |
+
+The sweet spot is personal — adjust up if voice is unrecognizable, down if quality suffers. Start at 55-70% and iterate in 5-10% increments based on feedback.
 
 ### Custom Models (User-Trained Production Models)
 

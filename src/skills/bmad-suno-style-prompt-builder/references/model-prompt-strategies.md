@@ -145,7 +145,16 @@ v5.5 is an additive update over v5. It uses the same audio engine, metatags, and
 - Actual voice cloning from a 15s-4min audio sample with anti-deepfake verification
 - Pro/Premier only
 - Drop gender descriptors ("male vocals", "female singer") when using Voices -- the Voice already defines these, freeing characters for production detail
-- Audio Influence ~40% is the sweet spot for Voices (higher than the 25% default for Personas)
+- Audio Influence for Voices varies by goal (higher than the 25% default for Personas):
+
+  | Goal | Range | Notes |
+  |------|-------|-------|
+  | Voice as subtle flavor | 35-45% | Gentle influence, more generation polish |
+  | Balanced voice + quality | 55-70% | Default starting point for most songs |
+  | Recognizably "me" | 75-85% | Identity-focused, some polish trade-off |
+  | Maximum voice fidelity | 85-95% | Identity paramount, may reduce generation quality |
+
+  The sweet spot is personal — adjust up if voice is unrecognizable, down if quality suffers. Start at 55-70% and iterate.
 - Pairs well with delivery metatags (`[Whispered]`, `[Belted]`, `[Breathy]`, `[Raspy]` etc.) -- Voice sets *who* sings, metatags set *how*
 - Personas still work on v4.5/v5 but Voices is the v5.5 successor. Key difference: Voices is actual voice cloning, Personas was style essence capture.
 
@@ -406,7 +415,7 @@ The Persona auto-populates the Style of Music field. Song-specific prompts shoul
 In v5.5, **Voices** replaces Personas for vocal identity. Voices is actual voice cloning (from a 15s-4min audio sample with anti-deepfake verification), while Personas was style essence capture from a source generation. Personas still work on v4.5/v5.
 
 - **Drop gender descriptors when using Voices** — "male vocals", "female singer", etc. are redundant because the Voice already defines these. This frees characters for production detail.
-- **Audio Influence ~40% is the sweet spot for Voices** — higher than the 25% Persona default, because Voices needs more influence to apply the cloned vocal tone accurately.
+- **Audio Influence for Voices is use-case dependent** — start at 55-70% for balanced voice + quality. Go higher (75-85%) if voice identity is paramount, lower (35-45%) if voice is just flavoring. The sweet spot is personal — see the Voices Audio Influence table in the v5.5 Pro section above.
 - **Pairs well with delivery metatags** — `[Whispered]`, `[Belted]`, `[Breathy]`, `[Raspy]` etc. Voice sets *who* sings, metatags set *how* they deliver each section.
 - **15s-4min audio sample required** plus anti-deepfake verification (you must prove you own or have rights to the voice).
 

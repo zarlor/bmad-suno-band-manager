@@ -82,6 +82,8 @@ Pro/Premier "More Options" additionally includes: Weirdness slider, Style Influe
 
 **Voices (v5.5, replaces Personas):** In v5.5, the **Voices** feature replaces Personas for vocal consistency. Key differences: Voices is actual voice cloning (from a 15s-4min audio sample with anti-deepfake verification), while Personas was style essence capture from a source generation. Personas still work on v4.5/v5, but Voices is the v5.5 successor and provides more precise vocal identity matching. Pro/Premier only.
 
+**Audio Influence with Voices:** Unlike Personas (15-25% effective range), Voices uses a wider range depending on the goal: 35-45% for voice as subtle flavor, 55-70% as the default balanced starting point, 75-85% for identity-focused work, 85-95% for maximum fidelity. The sweet spot is personal — adjust up if voice is unrecognizable, down if quality suffers.
+
 ---
 
 ## Package Field Mapping
