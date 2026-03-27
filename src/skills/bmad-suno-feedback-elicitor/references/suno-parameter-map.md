@@ -25,9 +25,11 @@ When the user reports that the ending or energy arc doesn't match their intent, 
 
 ### Perceived Tempo Control (BPM Tags Are Ineffective)
 
-**BPM tags in lyrics have ZERO detectable effect on Suno's actual output** — confirmed by librosa analysis across 5 songs. Suno picks a single steady tempo per song regardless of any BPM tags. Do not recommend BPM tags in lyrics as a solution for tempo issues.
+**BPM tags in lyrics have ZERO detectable effect on Suno's actual output** — confirmed by librosa analysis across 31 songs. Suno picks a single steady tempo per song regardless of any BPM tags. Do not recommend BPM tags in lyrics as a solution for tempo issues.
 
 **v5 alternative:** BPM and key specified in the style prompt (not lyrics) may be more effective in v5: e.g., `"deep house, 122 BPM, A minor, hypnotic groove"`. This is not confirmed as reliable but is worth trying when perceived tempo techniques alone are insufficient.
+
+**"Felt BPM" vs. measured BPM:** When users report tempo issues, their perception reflects felt BPM (human-perceived tempo), not what librosa measures. librosa has genre-specific biases: reads half-time on speed metal (~50% of actual), double-time on doom/sludge (~200% of actual). ~19% of tracks have significant misreads. Always interpret tempo feedback against felt BPM and genre context, not raw librosa numbers.
 
 When the user reports tempo issues, the recommended adjustment path uses perceived tempo techniques:
 

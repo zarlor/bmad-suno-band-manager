@@ -33,10 +33,17 @@ python scripts/batch-full-analysis.py /path/to/mp3s/
 
 #### librosa Notes
 
-- BPM may read double-time on faster tracks (e.g., 184 BPM may actually be ~92 half-time)
+- **BPM misreads are genre-dependent and go both directions:**
+  - Speed metal → reads **half-time** (e.g., reports 99 BPM when felt tempo is ~198 — reads snare on beat 3 as beat 1)
+  - Doom/sludge → reads **double-time** (e.g., reports 144 BPM when felt tempo is ~72 — counts subdivisions as pulse)
+  - Power ballads → overcounts (e.g., reports 96 BPM when felt is ~68)
+  - Heartbeat/pulse tracks → overcounts (e.g., reports 96 when tagged 60)
+- **~19% of tracks have significant BPM misreads** in production testing (31-track catalog). Always verify against genre/feel.
+- **"Felt BPM"** — the human-perceived tempo vs. librosa's measurement. When a user says "it feels too fast/slow," compare their perception against felt BPM, not librosa BPM. Felt BPM is what matters for playlist sequencing and feedback triage.
+- **LLM BPM estimates also diverge** — Gemini AI Studio, Gemini web, and ChatGPT produce different values for the same track. No single source is reliable for BPM; cross-reference at least two.
 - Key confidence below 0.5 is low reliability
 - Enharmonic equivalents: D# = Eb, C# = Db, A# = Bb, F# = Gb
-- librosa is deterministic — same file always produces the same results. Use as ground truth for BPM/key, cross-reference with LLM analysis for subjective qualities.
+- librosa is deterministic — same file always produces the same results. Use as ground truth for BPM/key baseline, but always apply genre-aware correction before acting on the number.
 
 ### ChatGPT Audio Analysis
 
