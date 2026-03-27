@@ -34,17 +34,8 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
-STYLE_PROMPT_LIMITS: dict[str, int] = {
-    "v4 Pro": 200,
-    "v4.5-all": 1000,
-    "v4.5 Pro": 1000,
-    "v4.5+ Pro": 1000,
-    "v5 Pro": 1000,
-}
-STYLE_PROMPT_DEFAULT_MAX = 1000
-CRITICAL_ZONE = 200  # First N chars have strongest influence on generation
-EXCLUSION_RECOMMENDED_MAX = 200
-EXCLUSION_HARD_MAX = 300
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
+from suno_constants import STYLE_PROMPT_LIMITS, STYLE_PROMPT_DEFAULT_MAX, CRITICAL_ZONE, EXCLUSION_RECOMMENDED_MAX, EXCLUSION_HARD_MAX
 
 SCRIPT_NAME = "validate-prompt"
 VERSION = "1.1.0"

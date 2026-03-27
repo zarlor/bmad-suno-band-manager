@@ -76,6 +76,16 @@ Each skill can be invoked directly for standalone use — see the linked READMEs
 - **BMad Method (BMB module)** installed — Mac is built as a BMad skill
 - **Suno account** (free tier works; Pro/Premier unlocks additional features)
 
+### Optional: Audio Analysis
+
+For objective audio measurements (BPM, key, energy, chord progressions, playlist sequencing), install:
+
+```bash
+pip install librosa numpy
+```
+
+These are optional — the full song creation and refinement workflow works without them. Mac will offer to help install if you try to use audio analysis features without them.
+
 ## Installation
 
 ```bash
@@ -119,7 +129,7 @@ npx bmad-method install --action update
 
 ## Suno Model Compatibility
 
-Mac supports Suno models from v4 through v5 Pro, with model-specific prompt optimization and character limit enforcement. See the [Suno Reference](SUNO-REFERENCE.md) for the full model comparison, plan features, and style prompt best practices.
+Mac supports Suno models from v4 through v5.5 Pro, with model-specific prompt optimization and character limit enforcement. See the [Suno Reference](SUNO-REFERENCE.md) for models, plans, and prompting, and the [Studio & Editor Reference](STUDIO-EDITOR-REFERENCE.md) for post-generation editing (Legacy Editor, Studio, Stems, Warp Markers, and more).
 
 ## File Structure
 

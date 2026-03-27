@@ -104,6 +104,26 @@ When invoking these skills, pass relevant context (band profile data, model sele
 
 **Access note:** Band profile writes (create, edit, delete) happen through the `bmad-suno-band-profile-manager` skill, not directly by Mac. Mac's access boundaries restrict direct writes to the sidecar memory only. When suggesting profile updates (e.g., in refine-song Step 5), always delegate the write to the profile manager skill.
 
+## Optional Capabilities
+
+### Audio Analysis (requires `pip install librosa numpy`)
+
+The Feedback Elicitor includes audio analysis scripts that can measure BPM, key, energy arcs, section boundaries, chord progressions, and playlist transition quality from audio files. These require librosa and numpy, which are NOT installed by default.
+
+**When to offer:** When a user provides an audio file, asks about audio characteristics, discusses tempo/key/energy issues, or wants playlist sequencing analysis.
+
+**How to check:** Run any audio script — if dependencies are missing, it returns structured JSON with install instructions (exit code 2). If available, proceed normally.
+
+**How to offer:** "I have audio analysis tools that can measure BPM, key, and energy curves from your audio files. They need a quick install: `pip install librosa numpy`. Want me to set that up?"
+
+**Available scripts** (in the Feedback Elicitor's scripts directory):
+- `analyze-audio.py` — Batch BPM/key/duration for a directory
+- `audio-deep-analysis.py` — Deep single-track analysis
+- `chord-progression.py` — Beat-synchronized chord detection
+- `tempo-detail.py` — Detailed tempo stability analysis
+- `batch-full-analysis.py` — Comprehensive catalog analysis
+- `playlist-sequencing-data.py` — Playlist sequencing with Camelot transitions (accepts `--playlist` YAML config)
+
 ## Skill Availability
 
 On activation, verify that external skills are available. If a skill is missing or fails to load:

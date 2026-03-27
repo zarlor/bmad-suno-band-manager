@@ -1,6 +1,6 @@
 # Lyric Transformer
 
-The Lyric Transformer converts poems, raw text, and rough lyrics into Suno-ready structured song lyrics with metatags, proper section architecture, and rhythmic consistency. It offers seven transformation options that users can mix and match based on how much creative control they want to retain — from lightweight structure tagging to full rewrites — plus a Word Fidelity mode for writers who want their exact words preserved. The skill enforces Suno's 3,000-character lyrics limit, runs cliche detection by default (Suno's vocal engine amplifies cliches), and integrates with band profile writer voice data to maintain authentic voice.
+The Lyric Transformer converts poems, raw text, and rough lyrics into Suno-ready structured song lyrics with metatags, proper section architecture, and rhythmic consistency. It offers seven transformation options that users can mix and match based on how much creative control they want to retain — from lightweight structure tagging to full rewrites — plus a Word Fidelity mode for writers who want their exact words preserved. The skill enforces Suno's lyrics character limits (5,000 hard limit on v4.5+, ~3,000 quality budget), runs cliche detection by default (Suno's vocal engine amplifies cliches), and integrates with band profile writer voice data to maintain authentic voice.
 
 ## When to Use Directly vs. Through Mac
 
@@ -56,7 +56,7 @@ Use this skill directly when you have existing text (a poem, prose, rough lyrics
 
 ## Key Constraints
 
-- **3,000-character Suno limit** — content beyond this is silently truncated
+- **5,000-character hard limit** (v4.5+), **~3,000-character quality budget** — beyond 3,000, Suno rushes sections; beyond 5,000, content is silently truncated
 - **FR and WF are mutually exclusive** — you cannot fully rewrite while preserving exact words
 - **CE is skipped when FR is selected** — full rewrite subsumes chorus extraction
 - Refinement mode accepts adjustment specs from the Feedback Elicitor for targeted changes

@@ -85,7 +85,7 @@ Collect what you need conversationally. Not everything is required — adapt to 
 - **Band profile** — Ask if they want to use a saved profile. If yes, read from `docs/band-profiles/{profile-name}.yaml`. If the agent has already passed profile data, use that directly. Also read the profile's `reference_tracks` field if present — these provide baseline "sounds like X meets Y" data without requiring the user to re-specify.
   - **If profile not found:** List available profiles from `docs/band-profiles/` and ask the user to choose, or offer to proceed without a profile.
   - **If profile has missing fields:** Warn which fields are absent and fill from conversation input rather than failing.
-- **Model selection** — Which Suno model? Default to profile's `model_preference` if available. If no profile, ask. Options: v4.5-all (free), v4 Pro (200-char limit), v4.5 Pro, v4.5+ Pro, v5 Pro.
+- **Model selection** — Which Suno model? Default to profile's `model_preference` if available. If no profile, ask. Options: v4.5-all (free), v4 Pro (200-char limit), v4.5 Pro, v4.5+ Pro, v5 Pro, v5.5 Pro.
 - **Creativity mode** — When presenting, explain what each mode changes concretely:
   - **Conservative** — genre-pure descriptors, proven combos, lower Weirdness (20-35)
   - **Balanced** (default) — standard approach, some distinctive touches, mid-range Weirdness (40-60)
@@ -159,7 +159,7 @@ Generate the "Exclude Styles" content — what Suno should avoid.
 
 **Tier-aware exclusion strategy:**
 
-**Pro/Premier users:** Suno provides a dedicated Exclude Styles field (currently in Early Access Beta) that uses `-` prefix syntax (e.g., `-screaming vocals`, `-steel guitar`). This is the PROPER way to handle exclusions:
+**Pro/Premier users:** Suno provides a dedicated Exclude Styles field (currently in Early Access Beta) as a comma-separated list (e.g., `screaming vocals, steel guitar, autotune`). This is the PROPER way to handle exclusions:
 - Output exclusions as Exclude Styles entries, NOT in the style prompt
 - With exclusions handled separately, the style prompt can use heavier genre language (e.g., "swamp metal") without triggering unwanted defaults — the Exclude Styles field blocks them
 - Band profile `exclusion_defaults` map directly to Exclude Styles entries on Pro/Premier

@@ -1,14 +1,49 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.9"
+# dependencies = ["librosa", "numpy"]
+# ///
 """Batch audio analysis for Solitary Fire catalog.
-Extracts BPM (librosa + aubio), estimated key, and duration for all MP3s."""
 
+Extracts BPM (librosa + aubio), estimated key, and duration for all MP3s
+in a directory.
+
+Usage:
+    python analyze-audio.py [audio-directory] [options]
+
+    # Analyze default directory
+    python analyze-audio.py
+
+    # Analyze specific directory
+    python analyze-audio.py /path/to/audio
+
+    # JSON output to file
+    python analyze-audio.py /path/to/audio --format json -o results.json
+
+Exit codes:
+  0 = success
+  1 = invalid arguments or runtime error
+  2 = missing dependencies
+"""
+
+import argparse
+import json
 import os
 import sys
-import librosa
-import numpy as np
+from datetime import datetime, timezone
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
+from audio_deps import require_audio_deps
+
+SCRIPT_NAME = "analyze-audio"
+VERSION = "1.0.0"
+
 
 def get_key(y, sr):
     """Estimate musical key using chroma features."""
+    import numpy as np
+
     chroma = librosa.feature.chroma_cqt(y=y, sr=sr)
     chroma_avg = np.mean(chroma, axis=1)
 
@@ -38,6 +73,8 @@ def get_key(y, sr):
 
 def get_aubio_bpm(filepath):
     """Get BPM using aubio."""
+    import numpy as np
+
     try:
         from aubio import source, tempo
         samplerate = 0
@@ -68,6 +105,8 @@ def get_aubio_bpm(filepath):
 
 def analyze_file(filepath):
     """Analyze a single audio file."""
+    import numpy as np
+
     filename = os.path.basename(filepath)
 
     try:
@@ -102,8 +141,99 @@ def analyze_file(filepath):
         }
 
 
+def format_text_output(results, mp3_count):
+    """Format results as human-readable text (original output format)."""
+    lines = []
+    lines.append(f"Analyzing {mp3_count} tracks...\n")
+    lines.append(f"{'Track':<50} {'Duration':>8} {'BPM(lib)':>9} {'BPM(aub)':>9} {'Key':<15} {'Conf':>5}")
+    lines.append("-" * 100)
+
+    for result in results:
+        if 'error' in result:
+            lines.append(f"{result['file']:<50} ERROR: {result['error']}")
+        else:
+            lines.append(f"{result['file']:<50} {result['duration']:>8} {result['bpm_librosa']:>9} {result['bpm_aubio']:>9} {result['key']:<15} {result['key_confidence']:>5}")
+
+    # Summary stats
+    valid = [r for r in results if 'error' not in r]
+    if valid:
+        bpms = [r['bpm_librosa'] for r in valid]
+        lines.append(f"\n{'='*100}")
+        lines.append(f"BPM range (librosa): {min(bpms):.0f} - {max(bpms):.0f}")
+        lines.append(f"Tracks analyzed: {len(valid)}/{mp3_count}")
+
+    return "\n".join(lines)
+
+
+def format_json_output(results, mp3_count):
+    """Format results as structured JSON."""
+    valid = [r for r in results if 'error' not in r]
+    errors = [r for r in results if 'error' in r]
+    findings = []
+
+    for r in results:
+        if 'error' in r:
+            findings.append({
+                "file": r["file"],
+                "level": "error",
+                "message": r["error"],
+            })
+
+    bpms = [r['bpm_librosa'] for r in valid] if valid else []
+
+    return {
+        "script": SCRIPT_NAME,
+        "version": VERSION,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "status": "pass" if not errors else "partial" if valid else "fail",
+        "metrics": {
+            "tracks_found": mp3_count,
+            "tracks_analyzed": len(valid),
+            "tracks_errored": len(errors),
+            "bpm_range_librosa": {
+                "min": min(bpms) if bpms else None,
+                "max": max(bpms) if bpms else None,
+            },
+            "tracks": results,
+        },
+        "findings": findings,
+        "summary": {"total": len(findings)},
+    }
+
+
 def main():
-    audio_dir = sys.argv[1] if len(sys.argv) > 1 else "docs/audio"
+    require_audio_deps()
+
+    import librosa  # noqa: E402
+    import numpy as np  # noqa: E402, F401
+
+    # Make librosa available to module-level helper functions
+    globals()["librosa"] = librosa
+
+    parser = argparse.ArgumentParser(
+        description="Batch audio analysis — BPM, key, duration for all MP3s in a directory.",
+    )
+    parser.add_argument(
+        "audio_dir",
+        nargs="?",
+        default="docs/audio",
+        help="Directory containing MP3 files (default: docs/audio)",
+    )
+    parser.add_argument(
+        "--format",
+        choices=["json", "text"],
+        default="json",
+        dest="output_format",
+        help="Output format (default: json)",
+    )
+    parser.add_argument(
+        "-o", "--output",
+        default=None,
+        help="Output file path (default: stdout)",
+    )
+    args = parser.parse_args()
+
+    audio_dir = args.audio_dir
 
     mp3s = sorted([
         os.path.join(audio_dir, f)
@@ -111,27 +241,20 @@ def main():
         if f.endswith('.mp3')
     ])
 
-    print(f"Analyzing {len(mp3s)} tracks...\n")
-    print(f"{'Track':<50} {'Duration':>8} {'BPM(lib)':>9} {'BPM(aub)':>9} {'Key':<15} {'Conf':>5}")
-    print("-" * 100)
-
     results = []
     for filepath in mp3s:
         result = analyze_file(filepath)
         results.append(result)
 
-        if 'error' in result:
-            print(f"{result['file']:<50} ERROR: {result['error']}")
-        else:
-            print(f"{result['file']:<50} {result['duration']:>8} {result['bpm_librosa']:>9} {result['bpm_aubio']:>9} {result['key']:<15} {result['key_confidence']:>5}")
+    if args.output_format == "text":
+        output = format_text_output(results, len(mp3s))
+    else:
+        output = json.dumps(format_json_output(results, len(mp3s)), indent=2)
 
-    # Summary stats
-    valid = [r for r in results if 'error' not in r]
-    if valid:
-        bpms = [r['bpm_librosa'] for r in valid]
-        print(f"\n{'='*100}")
-        print(f"BPM range (librosa): {min(bpms):.0f} - {max(bpms):.0f}")
-        print(f"Tracks analyzed: {len(valid)}/{len(mp3s)}")
+    if args.output:
+        Path(args.output).write_text(output + "\n")
+    else:
+        print(output)
 
 
 if __name__ == "__main__":

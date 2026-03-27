@@ -22,13 +22,26 @@
 | **Style Influence Slider** | No | Yes (0-100) | Yes (0-100) |
 | **Audio Influence Slider** | No | Yes (0-100, with audio upload) | Yes (0-100, with audio upload) |
 | | | *10-15% reduces persona era-anchoring* | *10-15% reduces persona era-anchoring* |
-| **Add Vocals/Instrumental** | No | Yes | Yes |
+| **Add Vocals/Instrumental** | No | Yes (beta) | Yes (beta) |
+| **Covers** | No | Yes (beta) | Yes (beta) |
+| **Remaster** | No | Yes | Yes |
 | **Stems** | No | Up to 12 | Up to 12 |
 | **Audio Upload** | 1 min | 8 min | 8 min |
-| **Advanced Editing** | No | Yes | Yes |
-| **Studio** | No | No | Yes |
-| **Studio 1.2 Features** | No | No | Yes (Warp Markers, Remove FX, Alternates, Time Signature) |
-| **MIDI Export** | No | No | Yes |
+| **Legacy Editor** (Replace, Extend, Crop, Fade, Rearrange) | No | Yes | Yes |
+| **Studio** (full Generative Audio Workstation) | No | No | Yes |
+| **Warp Markers** | No | No | Yes (Studio) |
+| **Remove FX** | No | No | Yes (Studio) |
+| **Alternates / Take Lanes** | No | No | Yes (Studio) |
+| **EQ** (6-band per track) | No | No | Yes (Studio) |
+| **Time Signature** control | No | No | Yes (Studio, editing only — not sent to generative models) |
+| **Context Window** | No | No | Yes (Studio) |
+| **Recording** (microphone) | No | No | Yes (Studio) |
+| **Loop Recording** | No | No | Yes (Studio) |
+| **Sounds Mode** (text-to-sound) | No | No | Yes (Studio, beta) |
+| **Stem Cover** | No | No | Yes (Studio) |
+| **Heal Edits** | No | No | Yes (Studio) |
+| **MIDI Export** (10 credits/stem) | No | No | Yes |
+| **MILO-1080 Sequencer** | No | No | Yes (Studio) |
 | **Queue Priority** | Shared | Priority, 10 at once | Priority, 10 at once |
 | **Add-on Credits** | No | Yes | Yes |
 
@@ -69,11 +82,14 @@
 - When a Voice is configured, omit gender vocal descriptors from style_baseline — the Voice defines the vocal identity
 
 **Premier tier profiles can:**
-- Everything Pro can do, plus Studio features
+- Everything Pro can do, plus full Suno Studio (GAW)
 - Set studio_preferences (BPM, key, time signature)
 - Stems separation for production work
-- MIDI export for DAW integration
+- MIDI export for DAW integration (10 credits per stem)
 - Voices and Custom Models (same as Pro)
+- EQ (6-band per track), Warp Markers, Remove FX, Alternates, Context Window
+- Recording (microphone input), Loop Recording, Sounds Mode, Stem Cover, Heal Edits
+- MILO-1080 Step Sequencer (16-track, text-to-sound, MIDI I/O)
 
 ## Production Notes
 
@@ -92,3 +108,11 @@
 **Custom Models (v5.5, Pro/Premier):** Custom Models are trained on 6 or more original tracks and take 2-5 minutes to train. Up to 3 Custom Models per account. They capture a production style and sound signature. When a Custom Model is active, it shapes the overall production character — the style prompt should complement rather than fight the model's learned style.
 
 **My Taste (v5.5, All Tiers):** My Taste is passive personalization derived from the user's generation history. It requires no configuration and works across all tiers including Free. It subtly shapes generation output based on patterns in what the user has created and liked.
+
+**Legacy Editor vs. Studio (Pro vs Premier):** Pro users get the Legacy Editor — section-level editing with Replace Section, Extend, Crop, Fade, Rearrange, and Stems. Premier users additionally get Suno Studio — a full browser-based Generative Audio Workstation with multitrack timeline, EQ, Warp Markers, Alternates/Take Lanes, Remove FX, Recording, Loop Recording, Context Window, Stem Cover, Sounds Mode, Heal Edits, and MIDI Export. For complete editing workflows, see [STUDIO-EDITOR-REFERENCE.md](../../STUDIO-EDITOR-REFERENCE.md).
+
+**Remaster (Pro/Premier):** Generates refined variations adjusting production details (instrument balance, effects, mix quality, vocal clarity) while preserving song structure. Three strength levels: Subtle, Normal, High. Does NOT change lyrics, style, or vocalist — use Cover for those. Good for final polish before export.
+
+**Replace Section Best Practices (Pro/Premier):** Key controls: Keep Duration toggle (ON = match length, OFF = creative flexibility), Instrumental Mode toggle (removes vocals), Replace Lyrics (edit lyrics for just the selected region). Best results with 10-30 second selections; typically requires 2-5 attempts for seamless transitions.
+
+**v5.5 Editing Paradigm:** v5.5 favors generate → inspect → section replace → refine (not regenerate from scratch). This preserves good material and spends fewer credits. For complete Studio and Editor workflows, see [STUDIO-EDITOR-REFERENCE.md](../../STUDIO-EDITOR-REFERENCE.md).

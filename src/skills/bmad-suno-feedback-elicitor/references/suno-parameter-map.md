@@ -427,11 +427,17 @@ When feedback maps to Studio features rather than prompt changes.
 
 | Feature | What It Does | Key Limitation |
 |---------|-------------|----------------|
-| Warp Markers | Fix timing post-generation without pitch shift — correct rushed or dragging sections | Timing adjustment only; does not affect pitch or melody |
-| Remove FX | Strip reverb/delay from the generation for external DAW processing | One-way: stripping FX in Suno is for export purposes; re-adding FX requires regeneration or external processing |
-| Time Signature | Available in the editor interface | Editing-only — does NOT affect the generative model. The model generates in whatever time signature it interprets from the style prompt and genre context. |
+| Warp Markers | Fix timing post-generation without pitch shift — correct rushed or dragging sections | Timing adjustment only; does not affect pitch or melody. Artifacts with extreme corrections. |
+| Remove FX | Strip reverb/delay from the generation for external DAW processing | One-way: stripping FX is for export. May sound thinner — rebuild space with your own reverb in a DAW. |
+| Alternates | Generate 2-6 variations of a section, audition in context, comp the best parts | Single-change alternates prevent losing song identity. |
+| EQ | 6-band per-track parametric EQ with 11 presets and spectrum analyzer | Start subtle (+/-3dB). Cut > boost for natural results. |
+| Remaster | Polish production (Subtle/Normal/High strength) without changing lyrics or structure | Does NOT change style, vocalist, or arrangement — use Cover for those. |
+| Heal Edits | Smooth transitions at edit/cut points | Use after rearranging or replacing sections. |
+| Time Signature | Grid/metronome alignment for editing | Editing-only — does NOT affect the generative model. Prompt for desired meter instead. |
 
-**Note:** Studio features are available on Premier tier. Some features (Replace Section, Add Vocals) are available on Pro tier. Always check the user's tier before recommending Studio workflows.
+**Tier mapping:** Legacy Editor features (Replace Section, Extend, Crop, Fade, Rearrange, Stems, Remaster) are available on **Pro and Premier**. Full Studio features (Warp Markers, Remove FX, Alternates, EQ, Heal Edits, Context Window, Recording, MIDI Export) are **Premier only**. Always check the user's tier before recommending.
+
+**For complete Studio & Editor workflows, tips, and troubleshooting:** See [STUDIO-EDITOR-REFERENCE.md](../../STUDIO-EDITOR-REFERENCE.md).
 
 ## Song Length & Pacing
 

@@ -9,7 +9,7 @@ description: Transforms poems and text into Suno-ready structured lyrics. Use wh
 
 This skill transforms poems, raw text, and rough lyrics into Suno-ready structured song lyrics with metatags, proper section architecture, and rhythmic consistency. Through guided conversation (or headless structured input), you analyze the user's raw material, apply selected transformations, and produce lyrics ready to paste into Suno's custom mode — while preserving the writer's intent and voice.
 
-**Domain context:** Suno is an AI music generation platform. It parses lyrics with section metatags (`[Verse]`, `[Chorus]`, etc.) and descriptor metatags (`[Mood: ...]`, `[Vocal Style: ...]`). Suno's lyrics field has a hard limit of ~3,000 characters — content beyond this is silently truncated. Consistent line lengths and syllable counts improve vocal phrasing stability. Short repeated hooks sing better than long novel choruses. Blank lines between sections improve parsing. The style prompt is a separate input — never put sound cues, asterisks, or style descriptions inside lyrics.
+**Domain context:** Suno is an AI music generation platform. It parses lyrics with section metatags (`[Verse]`, `[Chorus]`, etc.) and descriptor metatags (`[Mood: ...]`, `[Vocal Style: ...]`). Suno's lyrics field has a hard limit of **5,000 characters** on v4.5+/v5/v5.5 (3,000 on v4) — content beyond this is silently truncated. **Quality budget: ~3,000 chars** — beyond this, Suno may rush through sections or cut content. Consistent line lengths and syllable counts improve vocal phrasing stability. Short repeated hooks sing better than long novel choruses. Blank lines between sections improve parsing. The style prompt is a separate input — never put sound cues, asterisks, or style descriptions inside lyrics.
 
 **Design rationale:** Transformation is offered as a menu of options rather than an all-or-nothing rewrite because users have varying levels of attachment to their original words. Some want structural guidance only ("tag my poem with sections"), others want full creative partnership ("rewrite this as a pop song"). The "word fidelity mode" constraint exists because some writers would rather have a less-perfect song than lose their original language. Cliche detection runs by default because Suno's models amplify cliches in the vocal delivery — a subtle lyrical cliche becomes an obvious one when sung.
 
@@ -29,7 +29,7 @@ Speak as a knowledgeable co-writer, not a professor. Be direct, warm, and worksh
 
 1. **Preserve the writer's voice** — The original words are the starting point, not raw material to discard. Every change should serve the song while honoring intent.
 2. **Verify before asserting** — Never claim syllable counts, rhythmic properties, or duration estimates without script output to back them up. When making claims about Suno behavior, use web search (when available) to verify against current documentation.
-3. **Respect the 3,000-character budget** — Every transformation decision must account for Suno's hard character limit. Flag early, not late.
+3. **Respect the 3,000-character quality budget** — Suno's hard limit is 5,000 chars (v4.5+), but quality degrades above ~3,000. Every transformation decision must account for this budget. Flag early, not late.
 4. **Scripts for measurement, judgment for craft** — Delegate deterministic work (counting, validation, detection) to scripts. Apply creative judgment (emotional arc, chorus creation, voice matching) through prompting.
 5. **Graceful degradation** — When scripts fail, band profiles are missing, or bmad-init is unavailable, continue with LLM-based alternatives rather than blocking the workflow.
 
@@ -92,8 +92,8 @@ Collect the raw material and understand what the user wants.
 - **Source text** — the poem, raw text, or rough lyrics to transform. Accept pasted text or a file path. If a file path is provided, validate it exists, is readable, is a text file, and is under a reasonable size before passing to scripts.
 
 **Optional but valuable:**
-- **Band profile** — Ask if they want to use a saved profile. If yes, read from `{project-root}/_bmad/band-profiles/{profile-name}.yaml`. The writer voice section constrains lyric generation to match the user's authentic voice. If the agent has already passed profile data, use that directly.
-  - **If profile not found:** List available profiles from `{project-root}/_bmad/band-profiles/`, offer fuzzy matching on the name, or offer to proceed without a profile.
+- **Band profile** — Ask if they want to use a saved profile. If yes, read from `docs/band-profiles/{profile-name}.yaml`. The writer voice section constrains lyric generation to match the user's authentic voice. If the agent has already passed profile data, use that directly.
+  - **If profile not found:** List available profiles from `docs/band-profiles/`, offer fuzzy matching on the name, or offer to proceed without a profile.
 - **Song direction** — What kind of song is this becoming? Genre, mood, energy. This informs section structure, vocabulary, and cliche alternative suggestions.
 - **Reference tracks** — "Sounds like X meets Y" — these inform vocabulary choices (earthy/sparse vs. ethereal/modern), line length preferences, and rhyme scheme style beyond just the style prompt.
 - **Transformation options** — Which transformations to apply (see Step 2). If the user doesn't specify, present the options.
@@ -116,7 +116,7 @@ Run these in a single parallel batch:
 **Pre-structured input:** If analyze-input.py detects existing section metatags, acknowledge it: "Your text is already structured as a song with N sections. I can refine what you have (RA + CD recommended) or restructure from scratch. Which would you prefer?" Adjust default transformation recommendations: pre-structured input defaults to RA + CD, raw text defaults to ST + CC + RA + CD.
 
 **Present analysis to user:**
-Show what you found — existing structure, emotional arc, potential hooks, syllable patterns, character count vs. Suno's 3,000-char budget. This gives the user context for choosing transformations. Use the songwriter's workshop voice: "What's the one line you want stuck in people's heads?"
+Show what you found — existing structure, emotional arc, potential hooks, syllable patterns, character count vs. the 3,000-char quality budget (hard limit 5,000 on v4.5+). This gives the user context for choosing transformations. Use the songwriter's workshop voice: "What's the one line you want stuck in people's heads?"
 
 ### Refinement Mode
 
@@ -256,13 +256,13 @@ Stanza 3 (lines 13-18)      Verse 2 (lines 7-12)
 - Present flagged phrases to the user: "I found N cliches. Here are alternatives tailored to your [genre] vibe — pick the ones you like, or keep the originals if they're intentional."
 - If word fidelity mode: flag but don't auto-replace, only suggest
 
-**Character budget awareness:** After all transformations, check total character count and break out the budget: "Lyrics: X chars / Metatags: Y chars / Total: Z/3,000." If approaching 2,700 chars, note which sections could be trimmed. If over 3,000, flag as an issue — Suno will silently truncate.
+**Character budget awareness:** After all transformations, check total character count and break out the budget: "Lyrics: X chars / Metatags: Y chars / Total: Z/3,000 quality budget (5,000 hard limit)." If approaching 3,000 chars, note which sections could be trimmed — quality degrades above this point. If over 5,000, flag as critical — Suno will silently truncate.
 
 ### Step 4: Quality Check
 
 Run validation on the transformed lyrics. Run these scripts in parallel (single batch):
 
-1. `./scripts/validate-lyrics.py` — metatag formatting, blank lines, style cue contamination, section count, song length, **character count vs. 3,000-char limit**, punctuation density
+1. `./scripts/validate-lyrics.py` — metatag formatting, blank lines, style cue contamination, section count, song length, **character count vs. 3,000-char quality budget / 5,000-char hard limit**, punctuation density
 2. `./scripts/syllable-counter.py --estimate-duration` — syllable balance and duration estimate. **Note:** The script's duration estimate is a rough heuristic based on line count, syllable density, and instrumental section tags. Actual Suno output varies significantly — present the estimate with appropriate caveats and never state it as a hard limit. If the user questions the estimate, use web search to verify current Suno generation length behavior for their model/tier.
 3. `./scripts/section-length-checker.py` — section content lengths vs. expected ranges from the section-jobs framework. Does not count descriptor metatag lines as content. Supports `--genre prog` flag for relaxed section length constraints in progressive/metal genres.
 
@@ -319,12 +319,12 @@ After the user approves:
 - If they have a band profile, suggest running the Style Prompt Builder next for the full matching style prompt
 - If they want to refine after hearing the Suno output, they can invoke the Feedback Elicitor — its adjustment recommendations feed directly back into this skill's Refinement Mode
 - **Multi-song consistency:** For users working on multiple songs (e.g., an album), recommend establishing a band profile first to maintain consistent voice and style across transformations
-- **Save to songbook (optional):** "Want me to save these lyrics for future reference?" If yes, save to `{project-root}/_bmad/songbook/{band-profile-or-untitled}/{song-title}.md` with frontmatter capturing: original source hash, transformations applied, date, version number, band profile used, character count, and any notes. For iterative refinement, increment the version number and append a changelog entry to the frontmatter.
+- **Save to songbook (optional):** "Want me to save these lyrics for future reference?" If yes, save to `docs/songbook/{band-profile-or-untitled}/{song-title}.md` with frontmatter capturing: original source hash, transformations applied, date, version number, band profile used, character count, and any notes. For iterative refinement, increment the version number and append a changelog entry to the frontmatter.
 
 ## Scripts
 
 Available scripts in `./scripts/`:
-- `validate-lyrics.py` — Validates lyrics structure, metatags, formatting, character count (3,000-char Suno limit), and punctuation density. Run `./scripts/validate-lyrics.py --help` for usage.
+- `validate-lyrics.py` — Validates lyrics structure, metatags, formatting, character count (3,000-char quality budget / 5,000-char hard limit on v4.5+), and punctuation density. Run `./scripts/validate-lyrics.py --help` for usage.
 - `cliche-detector.py` — Detects cliche phrases in lyrics with categorized alternatives. Run `./scripts/cliche-detector.py --help` for usage.
 - `syllable-counter.py` — Counts syllables per line, analyzes rhythmic consistency, and estimates song duration. Run `./scripts/syllable-counter.py --help` for usage.
 - `validate-options.py` — Validates transformation option selections against mutual exclusion rules. Run `./scripts/validate-options.py --help` for usage.

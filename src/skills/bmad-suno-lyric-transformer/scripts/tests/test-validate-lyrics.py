@@ -118,11 +118,11 @@ class TestValidateLyrics:
         assert "validate" in result.stdout.lower()
 
     def test_character_count_error(self):
-        """Lyrics exceeding 3000 chars should produce high severity finding."""
-        # Build lyrics over 3000 characters
+        """Lyrics exceeding 5000 chars (hard limit) should produce high severity finding."""
+        # Build lyrics over 5000 characters (hard limit for v4.5+/v5/v5.5)
         line = "This is a long line of lyrics for testing character count limits yeah\n"
-        lyrics = "[Verse 1]\n" + line * 60  # well over 3000 chars
-        assert len(lyrics) > 3000
+        lyrics = "[Verse 1]\n" + line * 80  # well over 5000 chars
+        assert len(lyrics) > 5000
         report, code = run_script("--text", lyrics)
         assert report is not None
         issues = [f for f in report["findings"] if "character count" in f["issue"].lower()]
@@ -130,15 +130,15 @@ class TestValidateLyrics:
         assert any(f["severity"] == "high" for f in issues)
 
     def test_character_count_warning(self):
-        """Lyrics between 2700 and 3000 chars should produce medium severity finding."""
-        # Build lyrics between 2700 and 3000 characters
+        """Lyrics between 3000 and 5000 chars should produce medium severity finding (quality degrades)."""
+        # Build lyrics between 3000 and 5000 characters (quality budget exceeded)
         line = "This is a medium line of lyrics for testing\n"
         base = "[Verse 1]\n"
-        # Each line is 45 chars. Need total between 2700 and 3000.
-        count = 62  # 10 + 62*45 = 2800
+        # Each line is 45 chars. Need total between 3000 and 5000.
+        count = 72  # 10 + 72*45 = 3250
         lyrics = base + line * count
         total = len(lyrics)
-        assert 2700 < total < 3000, f"Got {total} chars"
+        assert 3000 < total < 5000, f"Got {total} chars"
         report, code = run_script("--text", lyrics)
         assert report is not None
         issues = [f for f in report["findings"] if "character count" in f["issue"].lower()]

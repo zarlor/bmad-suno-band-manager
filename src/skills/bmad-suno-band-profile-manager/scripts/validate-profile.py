@@ -26,14 +26,13 @@ from pathlib import Path
 
 import yaml
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
+from suno_constants import VALID_MODELS, VALID_TIERS, STYLE_PROMPT_LIMITS, STYLE_PROMPT_DEFAULT_MAX, FREE_TIER_MODEL
 
-VALID_MODELS = {"v4.5-all", "v4 Pro", "v4.5 Pro", "v4.5+ Pro", "v5 Pro"}
-VALID_TIERS = {"free", "pro", "premier"}
 VALID_GENDERS = {"male", "female", "nonbinary", "any"}
 VALID_CREATIVITY = {"conservative", "balanced", "experimental"}
-STYLE_BASELINE_MAX = 1000
-STYLE_BASELINE_MAX_V4 = 200
-FREE_TIER_MODEL = "v4.5-all"
+STYLE_BASELINE_MAX = STYLE_PROMPT_DEFAULT_MAX
+STYLE_BASELINE_MAX_V4 = STYLE_PROMPT_LIMITS["v4 Pro"]
 MAX_GENERATION_HISTORY = 10
 
 

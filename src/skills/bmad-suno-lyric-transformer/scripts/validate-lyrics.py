@@ -29,6 +29,9 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
+from suno_constants import SUNO_LYRICS_HARD_LIMIT, SUNO_LYRICS_QUALITY_BUDGET
+
 SCRIPT_NAME = "validate-lyrics"
 VERSION = "1.0.0"
 
@@ -68,9 +71,6 @@ MIN_LYRIC_LINES = 8
 MAX_LYRIC_LINES = 80
 RECOMMENDED_MAX_SECTIONS = 12
 
-# Suno character limits (total text including metatags)
-SUNO_CHAR_LIMIT = 3000
-SUNO_CHAR_WARNING = 2700
 
 
 def parse_lyrics(text: str) -> dict:
@@ -211,19 +211,19 @@ def validate_lyrics(text: str) -> list[dict]:
 
     # Character count check (Suno counts everything including metatags)
     char_count = len(text)
-    if char_count > SUNO_CHAR_LIMIT:
+    if char_count > SUNO_LYRICS_HARD_LIMIT:
         findings.append({
             "severity": "high",
             "category": "structure",
-            "issue": f"Total character count ({char_count}) exceeds Suno's {SUNO_CHAR_LIMIT}-character limit. Suno will truncate your lyrics.",
-            "fix": "Trim lyrics to stay under 3000 characters total."
+            "issue": f"Total character count ({char_count}) exceeds Suno's {SUNO_LYRICS_HARD_LIMIT}-character limit. Suno will truncate your lyrics.",
+            "fix": "Trim lyrics to stay under 5,000 characters (hard limit). For best quality, aim for ~3,000 characters."
         })
-    elif char_count > SUNO_CHAR_WARNING:
+    elif char_count > SUNO_LYRICS_QUALITY_BUDGET:
         findings.append({
             "severity": "medium",
             "category": "structure",
-            "issue": f"Total character count ({char_count}) is approaching Suno's {SUNO_CHAR_LIMIT}-character limit.",
-            "fix": "Consider trimming to leave some headroom below 3000 characters."
+            "issue": f"Total character count ({char_count}) is approaching Suno's {SUNO_LYRICS_HARD_LIMIT}-character limit.",
+            "fix": "Consider trimming — quality degrades above ~3,000 characters. Hard limit is 5,000."
         })
 
     if lyric_count > MAX_LYRIC_LINES:

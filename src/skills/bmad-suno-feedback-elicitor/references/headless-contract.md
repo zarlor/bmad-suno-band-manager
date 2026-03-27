@@ -27,7 +27,7 @@
 |------|----------|-------------|
 | `--feedback` | Yes | Text string or JSON with feedback content |
 | `--style-prompt` | Recommended | Original style prompt used for generation |
-| `--model` | Optional | Suno model used (v4.5-all, v4 Pro, v4.5 Pro, v4.5+ Pro, v5 Pro) |
+| `--model` | Optional | Suno model used (v4.5-all, v4 Pro, v4.5 Pro, v4.5+ Pro, v5 Pro, v5.5 Pro) |
 | `--sliders` | Optional | JSON with Weirdness/StyleInfluence values |
 | `--lyrics` | Optional | File path to original lyrics |
 | `--band-profile` | Optional | Profile name for context loading |

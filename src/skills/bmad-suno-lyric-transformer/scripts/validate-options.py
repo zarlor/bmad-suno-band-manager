@@ -28,7 +28,7 @@ from pathlib import Path
 SCRIPT_NAME = "validate-options"
 VERSION = "1.0.0"
 
-VALID_CODES = {"ST", "CE", "CC", "RA", "RE", "FR", "CD", "WF"}
+VALID_CODES = {"ST", "CE", "CC", "RA", "FR", "CD", "WF"}
 
 CODE_DESCRIPTIONS = {
     "ST": "Structural Transformation",

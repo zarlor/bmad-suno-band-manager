@@ -1,11 +1,30 @@
 #!/usr/bin/env python3
-"""Generate playlist sequencing data: Camelot codes, entry/exit keys,
-energy levels, and transition compatibility for the full catalog."""
+# /// script
+# requires-python = ">=3.9"
+# dependencies = ["librosa", "numpy", "pyyaml"]
+# ///
+"""
+Generate playlist sequencing data: Camelot codes, entry/exit keys,
+energy levels, and transition compatibility for an audio catalog.
 
+When given a --playlist YAML config, uses the specified track order and
+album name. Without a config, auto-discovers all .mp3 files in the
+audio directory (sorted alphabetically).
+
+Exit codes:
+  0 = analysis completed successfully
+  1 = invalid arguments or no audio files found
+  2 = missing dependencies (librosa/numpy)
+"""
+
+import argparse
+import json
 import os
 import sys
-import librosa
-import numpy as np
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
+from audio_deps import require_audio_deps
 
 PITCH_CLASSES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
@@ -30,12 +49,14 @@ CAMELOT = {
     'Gb major': '2B',
 }
 
-MAJOR_PROFILE = np.array([6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88])
-MINOR_PROFILE = np.array([6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17])
-
 
 def detect_key(chroma_segment):
     """Detect key from a chroma segment."""
+    import numpy as np
+
+    MAJOR_PROFILE = np.array([6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88])
+    MINOR_PROFILE = np.array([6.33, 2.68, 3.52, 5.38, 2.60, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17])
+
     avg = np.mean(chroma_segment, axis=1)
     best_corr = -1
     best_key = "Unknown"
@@ -83,6 +104,9 @@ def format_time(seconds):
 
 def analyze_track(filepath):
     """Extract sequencing data for a single track."""
+    import librosa
+    import numpy as np
+
     y, sr = librosa.load(filepath, sr=22050)
     duration = librosa.get_duration(y=y, sr=sr)
 
@@ -137,118 +161,226 @@ def analyze_track(filepath):
     }
 
 
-# Playlist order mapping: track name -> audio filename
-PLAYLIST_ORDER = [
-    ("Global Boxing", "Global Boxing.mp3"),
-    ("Whatever It Is", "Whatever it Is.mp3"),
-    ("Back Woods Rushin', City Slow", "Backwoods Rushin', City Slow.mp3"),
-    ("The Mask", "The Mask.mp3"),
-    ("Mirror Image", "egamI rorriM_Mirror Image.mp3"),
-    ("Players, Inc.", "Players, Inc..mp3"),
-    ("Bloodlust", "Bloodlust.mp3"),
-    ("Distant Mourning", "Distant Mourning.mp3"),
-    ("Unseen Reality", "Unseen Reality.mp3"),
-    ("The Undeniable Rightness of Being", "The Undeniable Rightness of Being.mp3"),
-    ("On a Silent Rock", "On a silent rock.mp3"),
-    ("Science Fiction", "Science Fiction.mp3"),
-    ("Obviously", "Obviously.mp3"),
-    ("Damned If I Don't", "Damned If I Don't.mp3"),
-    ("The Grey (Version 1)", "The Grey (1).mp3"),
-    ("Eyes", "Eyes.mp3"),
-    ("From Now Until...", "From now until....mp3"),
-    ("Distant--", "Distant—.mp3"),
-    ("Breast Feeding", "Breast Feeding.mp3"),
-    ("The Fire That Never Stops", "The Fire That Never Stops.mp3"),
-    ("The Life of Walther Who?", "The Life of Walther Who_.mp3"),
-    ("Promotion of Outer Chaos", "Promotion of Outer Chaos from Inner Order.mp3"),
-    ("Sightless Black", "Sightless Black.mp3"),
-    ("Spiraling Prophecies?", "Spiraling Prophecies_.mp3"),
-    ("Always Right", "Always Right.mp3"),
-    ("Want", "Want.mp3"),
-    ("Solitary Soul Search", "Solitary Soul Search.mp3"),
-    ("Look Into the Cracks", "Look Into the Cracks.mp3"),
-    ("Contradictions", "Contradictions.mp3"),
-    ("The Grey (Version 2)", "The Grey.mp3"),
-    ("The Final Bows", "The Final Bows.mp3"),
-]
+def load_playlist(playlist_path):
+    """Load playlist config from a YAML file. Returns (album_name, track_list)."""
+    import yaml
+
+    with open(playlist_path, 'r') as f:
+        config = yaml.safe_load(f)
+
+    album = config.get('album', 'Audio Analysis')
+    tracks = [
+        (t['name'], t['file'])
+        for t in config.get('tracks', [])
+    ]
+    return album, tracks
+
+
+def discover_tracks(audio_dir):
+    """Auto-discover .mp3 files in a directory. Returns (album_name, track_list)."""
+    mp3s = sorted(f for f in os.listdir(audio_dir) if f.endswith('.mp3'))
+    tracks = [
+        (os.path.splitext(f)[0], f)
+        for f in mp3s
+    ]
+    return "Audio Analysis", tracks
+
+
+def format_json(album_name, results):
+    """Format results as standard module JSON."""
+    tracks = []
+    for i, r in enumerate(results):
+        if 'error' in r:
+            tracks.append({
+                'position': i + 1,
+                'name': r['name'],
+                'status': 'error',
+                'error': r['error'],
+            })
+            continue
+        entry = {
+            'position': i + 1,
+            'name': r['name'],
+            'duration': round(r['duration'], 1),
+            'duration_display': format_time(r['duration']),
+            'bpm': r['bpm'],
+            'key': {
+                'overall': r['overall_key'],
+                'overall_confidence': r['overall_conf'],
+                'overall_camelot': r['overall_camelot'],
+                'entry': r['entry_key'],
+                'entry_confidence': r['entry_conf'],
+                'entry_camelot': r['entry_camelot'],
+                'exit': r['exit_key'],
+                'exit_confidence': r['exit_conf'],
+                'exit_camelot': r['exit_camelot'],
+            },
+            'energy': {
+                'level': r['energy_level'],
+                'intro_pct': r['intro_energy_pct'],
+                'outro_pct': r['outro_energy_pct'],
+            },
+        }
+        # Add transition data if available
+        if 'transition' in r:
+            entry['transition_to_next'] = r['transition']
+        tracks.append(entry)
+
+    return json.dumps({
+        'script': 'playlist-sequencing-data',
+        'status': 'ok',
+        'album': album_name,
+        'track_count': len(results),
+        'tracks': tracks,
+    }, indent=2)
+
+
+def format_text(album_name, results):
+    """Format results as a Markdown report."""
+    lines = []
+    lines.append(f"# {album_name} -- Playlist Sequencing Data")
+    lines.append("# Generated via librosa analysis + Camelot wheel mapping\n")
+
+    lines.append("## Track Data (Playlist Order)\n")
+    lines.append("| # | Track | BPM | Key | Camelot | Entry Key | Exit Key | Energy | Intro% | Outro% |")
+    lines.append("|---|-------|-----|-----|---------|-----------|----------|--------|--------|--------|")
+    for i, r in enumerate(results):
+        if 'error' in r:
+            continue
+        lines.append(
+            f"| {i+1} | {r['name']} | {r['bpm']} | {r['overall_key']} "
+            f"| {r['overall_camelot']} | {r['entry_key']} ({r['entry_camelot']}) "
+            f"| {r['exit_key']} ({r['exit_camelot']}) | {r['energy_level']} "
+            f"| {r['intro_energy_pct']}% | {r['outro_energy_pct']}% |"
+        )
+
+    lines.append("\n## Transition Analysis\n")
+    lines.append("| From | To | Key Distance | BPM Change | Quality |")
+    lines.append("|------|----|-------------|------------|---------|")
+    for i in range(len(results) - 1):
+        if 'error' in results[i] or 'error' in results[i+1]:
+            continue
+        r = results[i]
+        n = results[i+1]
+        cam_dist = camelot_distance(r['exit_camelot'], n['entry_camelot'])
+        bpm_change = abs(r['bpm'] - n['bpm'])
+        bpm_pct = bpm_change / r['bpm'] * 100 if r['bpm'] > 0 else 0
+        key_q = "PERFECT" if cam_dist <= 0.5 else "GOOD" if cam_dist <= 1 else "OK" if cam_dist <= 2 else "JARRING"
+        bpm_q = "smooth" if bpm_pct < 3 else "ok" if bpm_pct < 6 else f"jump ({bpm_pct:.0f}%)"
+        lines.append(
+            f"| {r['name']} | {n['name']} | {cam_dist} "
+            f"({r['exit_camelot']}->{n['entry_camelot']}) "
+            f"| {bpm_change:.0f} ({bpm_q}) | {key_q} |"
+        )
+
+    return "\n".join(lines) + "\n"
 
 
 def main():
-    audio_dir = sys.argv[1] if len(sys.argv) > 1 else "docs/audio"
+    parser = argparse.ArgumentParser(
+        description="Playlist sequencing analysis: keys, Camelot codes, energy, transitions."
+    )
+    parser.add_argument(
+        "--playlist",
+        help="Path to YAML playlist config file (for ordered analysis with album metadata).",
+    )
+    parser.add_argument(
+        "--audio-dir", default="docs/audio",
+        help="Directory containing .mp3 files (default: docs/audio).",
+    )
+    parser.add_argument(
+        "--format", choices=["json", "text"], default="json",
+        help="Output format (default: json).",
+    )
+    parser.add_argument(
+        "-o", "--output",
+        help="Output file path (default: stdout).",
+    )
+    args = parser.parse_args()
 
-    print("Analyzing playlist sequencing data...\n")
+    require_audio_deps()
+    import librosa  # noqa: F401
+    import numpy as np  # noqa: F401
+
+    # Build track list from playlist config or auto-discovery
+    if args.playlist:
+        if not os.path.isfile(args.playlist):
+            print(json.dumps({
+                "script": "playlist-sequencing-data",
+                "status": "fail",
+                "error": f"Playlist config not found: {args.playlist}",
+            }), file=sys.stderr)
+            sys.exit(1)
+        album_name, track_list = load_playlist(args.playlist)
+    else:
+        if not os.path.isdir(args.audio_dir):
+            print(json.dumps({
+                "script": "playlist-sequencing-data",
+                "status": "fail",
+                "error": f"Audio directory not found: {args.audio_dir}",
+            }), file=sys.stderr)
+            sys.exit(1)
+        album_name, track_list = discover_tracks(args.audio_dir)
+
+    if not track_list:
+        print(json.dumps({
+            "script": "playlist-sequencing-data",
+            "status": "fail",
+            "error": "No tracks found.",
+        }), file=sys.stderr)
+        sys.exit(1)
+
+    print(f"Analyzing playlist sequencing data for: {album_name}\n", file=sys.stderr)
 
     results = []
-    for track_name, filename in PLAYLIST_ORDER:
-        filepath = os.path.join(audio_dir, filename)
+    for track_name, filename in track_list:
+        filepath = os.path.join(args.audio_dir, filename)
         if not os.path.exists(filepath):
-            print(f"  MISSING: {filename}")
+            print(f"  MISSING: {filename}", file=sys.stderr)
             results.append({'name': track_name, 'error': 'file not found'})
             continue
-        print(f"  {track_name}...", end="", flush=True)
+        print(f"  {track_name}...", end="", flush=True, file=sys.stderr)
         data = analyze_track(filepath)
         data['name'] = track_name
         results.append(data)
-        print(f" {data['bpm']} BPM | {data['overall_key']} ({data['overall_camelot']}) | Entry: {data['entry_camelot']} | Exit: {data['exit_camelot']} | E:{data['energy_level']}")
+        print(
+            f" {data['bpm']} BPM | {data['overall_key']} ({data['overall_camelot']}) "
+            f"| Entry: {data['entry_camelot']} | Exit: {data['exit_camelot']} "
+            f"| E:{data['energy_level']}",
+            file=sys.stderr,
+        )
 
-    # Sequencing report
-    print(f"\n{'='*130}")
-    print("PLAYLIST SEQUENCING ANALYSIS")
-    print(f"{'='*130}\n")
-
-    print(f"{'#':>2} {'Track':<40} {'BPM':>5} {'Key':<12} {'Cam':>4} {'Entry':>5} {'Exit':>5} {'E':>2} {'In%':>4} {'Out%':>4} {'Transition'}")
-    print("-" * 130)
-
-    for i, r in enumerate(results):
-        if 'error' in r:
-            print(f"{i+1:>2} {r['name']:<40} — MISSING —")
+    # Compute transition data for JSON output
+    for i in range(len(results) - 1):
+        if 'error' in results[i] or 'error' in results[i+1]:
             continue
+        r = results[i]
+        n = results[i+1]
+        cam_dist = camelot_distance(r['exit_camelot'], n['entry_camelot'])
+        bpm_pct = abs(r['bpm'] - n['bpm']) / r['bpm'] * 100 if r['bpm'] > 0 else 0
+        key_quality = "PERFECT" if cam_dist <= 0.5 else "GOOD" if cam_dist <= 1 else "OK" if cam_dist <= 2 else "JARRING"
+        bpm_quality = "smooth" if bpm_pct < 3 else "ok" if bpm_pct < 6 else f"jump ({bpm_pct:.0f}%)"
+        r['transition'] = {
+            'to': n['name'],
+            'camelot_distance': cam_dist,
+            'key_quality': key_quality,
+            'bpm_change': round(abs(r['bpm'] - n['bpm']), 1),
+            'bpm_quality': bpm_quality,
+        }
 
-        # Calculate transition quality to next track
-        transition = ""
-        if i < len(results) - 1 and 'error' not in results[i+1]:
-            next_r = results[i+1]
-            # Key transition (exit of current → entry of next)
-            cam_dist = camelot_distance(r['exit_camelot'], next_r['entry_camelot'])
-            bpm_pct = abs(r['bpm'] - next_r['bpm']) / r['bpm'] * 100
+    # Format output
+    if args.format == "json":
+        output = format_json(album_name, results)
+    else:
+        output = format_text(album_name, results)
 
-            key_quality = "PERFECT" if cam_dist <= 0.5 else "GOOD" if cam_dist <= 1 else "OK" if cam_dist <= 2 else "JARRING"
-            bpm_quality = "smooth" if bpm_pct < 3 else "ok" if bpm_pct < 6 else f"jump({bpm_pct:.0f}%)"
-
-            transition = f"→ Key:{key_quality}({cam_dist:.0f}) BPM:{bpm_quality}"
-
-        print(f"{i+1:>2} {r['name']:<40} {r['bpm']:>5} {r['overall_key']:<12} {r['overall_camelot']:>4} {r['entry_camelot']:>5} {r['exit_camelot']:>5} {r['energy_level']:>2} {r['intro_energy_pct']:>3}% {r['outro_energy_pct']:>3}%  {transition}")
-
-    # Save report
-    report_path = "docs/playlist-sequencing-data.md"
-    with open(report_path, 'w') as f:
-        f.write("# Solitary Fire — Playlist Sequencing Data\n")
-        f.write("# Generated via librosa analysis + Camelot wheel mapping\n\n")
-
-        f.write("## Track Data (Playlist Order)\n\n")
-        f.write("| # | Track | BPM | Key | Camelot | Entry Key | Exit Key | Energy | Intro% | Outro% |\n")
-        f.write("|---|-------|-----|-----|---------|-----------|----------|--------|--------|--------|\n")
-        for i, r in enumerate(results):
-            if 'error' in r:
-                continue
-            f.write(f"| {i+1} | {r['name']} | {r['bpm']} | {r['overall_key']} | {r['overall_camelot']} | {r['entry_key']} ({r['entry_camelot']}) | {r['exit_key']} ({r['exit_camelot']}) | {r['energy_level']} | {r['intro_energy_pct']}% | {r['outro_energy_pct']}% |\n")
-
-        f.write("\n## Transition Analysis\n\n")
-        f.write("| From | To | Key Distance | BPM Change | Quality |\n")
-        f.write("|------|----|-------------|------------|--------|\n")
-        for i in range(len(results) - 1):
-            if 'error' in results[i] or 'error' in results[i+1]:
-                continue
-            r = results[i]
-            n = results[i+1]
-            cam_dist = camelot_distance(r['exit_camelot'], n['entry_camelot'])
-            bpm_change = abs(r['bpm'] - n['bpm'])
-            bpm_pct = bpm_change / r['bpm'] * 100
-            key_q = "PERFECT" if cam_dist <= 0.5 else "GOOD" if cam_dist <= 1 else "OK" if cam_dist <= 2 else "JARRING"
-            bpm_q = "smooth" if bpm_pct < 3 else "ok" if bpm_pct < 6 else f"jump ({bpm_pct:.0f}%)"
-            f.write(f"| {r['name']} | {n['name']} | {cam_dist} ({r['exit_camelot']}→{n['entry_camelot']}) | {bpm_change:.0f} ({bpm_q}) | {key_q} |\n")
-
-    print(f"\nReport saved to: {report_path}")
+    # Write output
+    if args.output:
+        with open(args.output, 'w') as f:
+            f.write(output)
+        print(f"\nReport saved to: {args.output}", file=sys.stderr)
+    else:
+        print(output)
 
 
 if __name__ == "__main__":

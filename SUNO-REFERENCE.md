@@ -1,6 +1,6 @@
 # Suno Platform Reference
 
-Quick-reference for Suno models, plans, parameters, metatags, and common pitfalls. This is a companion to the [Usage Guide](USAGE.md) — it covers *how Suno works*, while the Usage Guide covers *how to use Mac*.
+Quick-reference for Suno models, plans, parameters, metatags, and common pitfalls. This is a companion to the [Usage Guide](USAGE.md) (how to use Mac), the [Studio & Editor Reference](STUDIO-EDITOR-REFERENCE.md) (post-generation editing tools), and covers *how Suno works* for generation.
 
 ---
 
@@ -52,7 +52,7 @@ Quick-reference for Suno models, plans, parameters, metatags, and common pitfall
 
 ## Plan Comparison
 
-| Feature | Free ($0) | Pro ($8/mo billed yearly) | Premier ($24/mo billed yearly) |
+| Feature | Free ($0) | Pro ($10/mo, $8/mo annual) | Premier ($30/mo, $24/mo annual) |
 |---------|-----------|---------------------|--------------------------|
 | **Model access** | v4.5-all only | All models incl. v5 | All models + Studio |
 | **Credits** | 50/day (~10 songs) | 2,500/mo (~500 songs) | 10,000/mo (~2,000 songs) |
@@ -196,7 +196,7 @@ This allows section-specific arrangement control directly in the tag itself, rat
 - Consistent line lengths and syllable counts improve vocal phrasing stability
 - Short repeated hooks sing better than long novel choruses
 - Commas create breath pauses; dashes create sharp breaks; ellipses create trailing delivery
-- Suno lyrics field has a hard limit of ~3,000 characters (silently truncated)
+- Suno lyrics field has a hard limit of **5,000 characters** on v4.5+/v5/v5.5 (3,000 on v4). Silently truncated beyond the limit. **Quality budget: ~3,000 chars** — beyond this, Suno may rush through sections or cut content. Treat 3,000 as the practical working ceiling.
 
 ### Formatting as Suno Controls
 

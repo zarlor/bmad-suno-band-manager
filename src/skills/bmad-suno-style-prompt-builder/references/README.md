@@ -58,6 +58,7 @@ Use this skill directly when you already have a band profile or clear musical di
 |-------|-------------|-----------------|
 | v4.5-all / v4.5 Pro / v4.5+ Pro | Conversational, flowing sentences | 1,000 |
 | v5 Pro | Crisp, 4-7 film-brief descriptors | 1,000 |
+| v5.5 Pro | Same as v5 Pro, more expressive + Voices/Custom Models | 1,000 |
 | v4 Pro | Simple, straightforward descriptors | 200 |
 
 ## Part of the BMad Suno Band Manager Module

@@ -765,7 +765,7 @@ Headless modes enable batch workflows. Example: generate style prompts for multi
 |-------|-------------|----------|
 | Mac does not recognize my band profile | Profile name mismatch or missing file | Say "list profiles" to see available names. Profiles live in `docs/band-profiles/` as YAML files. |
 | Style prompt is too long | Exceeded 1,000 characters (or 200 for v4 Pro) | Mac warns about this. Ask him to trim it. The critical zone is the first 200 characters. |
-| Lyrics exceed Suno's limit | Over 3,000 characters | Ask Mac to condense. The Lyric Transformer tracks character budgets. |
+| Lyrics exceed Suno's limit | Over 5,000 characters (hard limit) or over 3,000 (quality degrades) | Ask Mac to condense. The Lyric Transformer tracks character budgets — warns at 3,000 (quality), errors at 5,000 (hard limit). |
 | Mac asks too many questions | You are in Studio mode | Say "let's switch to Demo mode" for a faster experience. |
 | Mac does not ask enough questions | You are in Demo mode | Say "let's go Studio mode" for the full songwriter's workshop. |
 | Mac forgot my preferences | Session was not saved | Select SM (Save Memory) before ending your session. |

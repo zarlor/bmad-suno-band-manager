@@ -19,7 +19,11 @@ Exit codes:
 import argparse
 import json
 import sys
+from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
+from suno_constants import CRITICAL_ZONE, EXCLUSION_RECOMMENDED_MAX, PAID_TIERS
 
 # Adjustment lookup tables
 # Each dimension maps to a set of possible adjustments categorized by direction
@@ -281,7 +285,7 @@ def generate_adjustments(
         if "note" in adj:
             notes.append(adj["note"])
 
-    is_paid = current_tier.lower() in ["pro", "premier"] if current_tier else False
+    is_paid = current_tier.lower() in PAID_TIERS if current_tier else False
 
     result: dict[str, Any] = {
         "style_prompt": {
@@ -345,18 +349,18 @@ def check_adjustment_consistency(adjustments: dict[str, Any]) -> list[dict[str, 
 
     # Check style prompt estimated length
     total_add_chars = sum(len(d) + 2 for d in style_add)  # +2 for ", " separator
-    if total_add_chars > 200:
+    if total_add_chars > CRITICAL_ZONE:
         warnings.append({
             "type": "critical_zone_overflow",
-            "detail": f"Added descriptors total ~{total_add_chars} chars — prioritize most important for the first 200 chars of style prompt (critical zone)",
+            "detail": f"Added descriptors total ~{total_add_chars} chars — prioritize most important for the first {CRITICAL_ZONE} chars of style prompt (critical zone)",
         })
 
     # Check exclusion estimated length
     total_excl_chars = sum(len(e) + 2 for e in exclude_add)
-    if total_excl_chars > 200:
+    if total_excl_chars > EXCLUSION_RECOMMENDED_MAX:
         warnings.append({
             "type": "exclusion_overflow",
-            "detail": f"Exclusion additions total ~{total_excl_chars} chars — keep total exclusions under ~200 chars, prioritize 2-3 most important",
+            "detail": f"Exclusion additions total ~{total_excl_chars} chars — keep total exclusions under ~{EXCLUSION_RECOMMENDED_MAX} chars, prioritize 2-3 most important",
         })
 
     return warnings

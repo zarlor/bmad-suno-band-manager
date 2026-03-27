@@ -27,6 +27,9 @@ from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
+from suno_constants import SUNO_LYRICS_HARD_LIMIT, SUNO_LYRICS_QUALITY_BUDGET
+
 SCRIPT_NAME = "analyze-input"
 VERSION = "1.0.0"
 
@@ -200,12 +203,19 @@ def build_report(analysis: dict, text: str, skill_path: str = "") -> dict:
             "fix": "May need restructuring rather than initial structuring."
         })
 
-    if analysis["character_count"] > 3000:
+    if analysis["character_count"] > SUNO_LYRICS_HARD_LIMIT:
+        findings.append({
+            "severity": "high",
+            "category": "length",
+            "issue": f"Character count ({analysis['character_count']}) exceeds Suno's {SUNO_LYRICS_HARD_LIMIT}-character hard limit.",
+            "fix": f"Trim to stay under {SUNO_LYRICS_HARD_LIMIT} characters. For best quality, aim for ~{SUNO_LYRICS_QUALITY_BUDGET}."
+        })
+    elif analysis["character_count"] > SUNO_LYRICS_QUALITY_BUDGET:
         findings.append({
             "severity": "medium",
             "category": "length",
-            "issue": f"Character count ({analysis['character_count']}) exceeds typical Suno budget.",
-            "fix": "Consider trimming to stay within Suno's character limits."
+            "issue": f"Character count ({analysis['character_count']}) exceeds the ~{SUNO_LYRICS_QUALITY_BUDGET}-character quality budget.",
+            "fix": f"Consider trimming — quality degrades above ~{SUNO_LYRICS_QUALITY_BUDGET} characters. Hard limit is {SUNO_LYRICS_HARD_LIMIT}."
         })
 
     severity_counts = {"critical": 0, "high": 0, "medium": 0, "low": 0, "info": 0}

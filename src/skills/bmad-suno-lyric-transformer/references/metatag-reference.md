@@ -627,3 +627,8 @@ We were never meant to stay
 - [MusicSmith: AI Music Generation Prompts Best Practices](https://musicsmith.ai/blog/ai-music-generation-prompts-best-practices)
 - [howtopromptsuno.com: Voice Tags Guide](https://howtopromptsuno.com/making-music/voice-tags)
 - [Plain English: 10 Suno v5 Prompt Patterns That Never Miss](https://plainenglish.io/blog/i-made-10-suno-v5-prompt-patterns-that-never-miss)
+- [HookGenius: Suno v5.5 Guide — Voices, Custom Models & My Taste](https://hookgenius.app/learn/suno-v5-5-guide/)
+- [HookGenius: 300+ Suno Style Tags That Actually Work (2026)](https://hookgenius.app/learn/suno-style-tags-guide/)
+- [HookGenius: Suno Prompts Complete Guide](https://hookgenius.app/learn/suno-prompts-complete-guide/)
+- [Suno API Docs: Character Limits by Model (sunoapi.org)](https://docs.sunoapi.org/suno-api/generate-music)
+- [iFlow.bot: Suno v5 Secrets](https://iflow.bot/suno-v5-secrets-crafting-ai-generated-songs/)

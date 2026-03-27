@@ -1,6 +1,6 @@
 # Model-Specific Prompt Strategies
 
-> **Last validated:** March 26, 2026 (Suno v5.5 Pro, v5 Pro, v4.5-all, v4.5 Pro, v4.5+ Pro, v4 Pro). Updated with v5.5 features (Voices, Custom Models, My Taste), community research findings on character limits, descriptor effects, and v5/v5.5-specific behaviors. Suno updates models and prompt behavior frequently — use web search to verify strategies against current documentation when uncertain.
+> **Last validated:** March 27, 2026 (Suno v5.5 Pro, v5 Pro, v4.5-all, v4.5 Pro, v4.5+ Pro, v4 Pro). Updated with v5.5 features (Voices, Custom Models, My Taste), Voices recording best practices, era tags reference, community research findings on character limits, descriptor effects, and v5/v5.5-specific behaviors. Suno updates models and prompt behavior frequently — use web search to verify strategies against current documentation when uncertain.
 
 ## Quick Reference
 
@@ -149,6 +149,12 @@ v5.5 is an additive update over v5. It uses the same audio engine, metatags, and
 - Pairs well with delivery metatags (`[Whispered]`, `[Belted]`, `[Breathy]`, `[Raspy]` etc.) -- Voice sets *who* sings, metatags set *how*
 - Personas still work on v4.5/v5 but Voices is the v5.5 successor. Key difference: Voices is actual voice cloning, Personas was style essence capture.
 
+**Getting the best voice clone:**
+- **Clean recording matters** -- minimal background noise, no heavy reverb. The cleaner the input, the better the clone.
+- **Provide vocal range** -- include both lower and higher register in your sample. Monotone input = monotone output.
+- **Natural delivery** -- Suno captures your natural vocal tone, not a performance. Sing or speak normally.
+- **Multiple samples help** -- one clip works, but three clips across different moods works better for capturing range and character.
+
 **Custom Models:**
 - Train on 6+ original tracks, 2-5 min training time, up to 3 custom models per account
 - Pro/Premier only
@@ -249,6 +255,24 @@ Specific genre terms produce specific results. This table documents what Suno ac
 | `crushing slow heavy swamp metal` + `pounding heartbeat kick drum` | Heavy, deliberate, single-tempo weight | Stacking slow/heavy modifiers locks Suno into a plodding pace |
 | `prog rock` + `slow build then fade` | Atmospheric with proper decrescendo | One of the few reliable ways to get Suno to actually come back down |
 | `Acoustic, intimate, solo voice with gentle guitar, bluesy, swampy, sparse and warm, quiet reflection, raw clean vocals, stripped down, empty room atmosphere` | Acoustic track that retains band identity | `bluesy, swampy` keeps NOLA identity; `empty room atmosphere` = reverb/space; explicitly exclude `heavy guitars, drums` in Exclude Styles |
+
+### Era Tags as Sonic Targets
+
+Era-specific descriptors in the style prompt give Suno a production aesthetic target that single descriptors can't match. Use instead of artist names to evoke a period's sound.
+
+| Era Tag | What Suno Produces | Notes |
+|---|---|---|
+| `80s synth` | Analog synthesizers, gated reverb, drum machines | Pairs well with synthwave, new wave |
+| `90s grunge` | Distorted Seattle-sound guitars, raw production | Alternative rock territory |
+| `90s hip-hop` / `90s boom bap` | Golden age sampling, hard drums, vinyl texture | Classic hip-hop production |
+| `90s R&B` | New jack swing era production | Smooth, polished, Motown-adjacent |
+| `2000s emo` | MySpace-era emotional rock | Pop punk, confessional |
+| `2010s trap` | Atlanta trap wave, 808s, hi-hats | Modern hip-hop production |
+| `60s psychedelic` | Summer of love sound, analog warmth | Reverb-heavy, experimental |
+| `70s disco` / `70s soul` | Dance floor funk, Blaxploitation-era warmth | Groove-heavy, warm production |
+| `vintage` / `retro` | General throwback sound | Broad — pair with a decade for specificity |
+
+**Practical rule:** Era tags are stronger than individual production descriptors. `90s R&B` achieves more than listing "smooth, warm, polished, swing drums" individually. Combine era tags with genre for maximum precision: `90s boom bap, conscious rap` or `80s synth, darkwave`.
 
 ### Dangerous Words and Keyboard Triggers
 

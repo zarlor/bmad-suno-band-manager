@@ -89,12 +89,12 @@ Now that you have the feedback, gather context — but prioritize ruthlessly. St
 
 **Priority 2 (ask based on feedback dimensions):**
 - **Original lyrics** — if feedback touches structure, phrasing, or vocal delivery
-- **Band profile** — if working with a saved profile, read from `{project-root}/_bmad/band-profiles/{profile-name}.yaml`
-- **Model used** — which Suno model (v4.5-all, v4 Pro, v4.5 Pro, v4.5+ Pro, v5 Pro)
+- **Band profile** — if working with a saved profile, read from `docs/band-profiles/{profile-name}.yaml`
+- **Model used** — which Suno model (v4.5-all, v4 Pro, v4.5 Pro, v4.5+ Pro, v5 Pro, v5.5 Pro)
 - **Slider settings** — Weirdness and Style Influence values (paid tiers)
 - **Creativity mode** — Demo, Studio, or Jam (affects slider baselines)
 - **What they were going for** — brief intent description
-- **Previous iteration log** — if a band profile is active, check `{project-root}/_bmad/feedback-history/{band-profile-or-session}/` for the most recent log and auto-load it. Acknowledge what was tried: "Last time we adjusted X — you said Y. Let's build from there."
+- **Previous iteration log** — if a band profile is active, check `docs/feedback-history/{band-profile-or-session}/` for the most recent log and auto-load it. Acknowledge what was tried: "Last time we adjusted X — you said Y. Let's build from there."
 
 **Soft gate:** After getting the style prompt, pause: "That's enough to get started — anything else you want me to know before we dig in?" Then proceed to triage. Gather remaining context only if triage demands it.
 
@@ -209,7 +209,7 @@ The user reports audio quality issues, artifacts, glitches, or pronunciation pro
    - **Instrument bleed between sections:** If user reports unwanted instruments in specific sections (e.g., "brass keeps appearing in verses where I don't want it"), explain that this is a fundamental Suno limitation — style prompt instruments bleed globally. Recommend the stems workflow: "Suno can't limit instruments to specific sections via prompting alone. The fix is to generate with all instruments, then use Stems (Pro/Premier) to split into 12 tracks and remove the brass from verse sections in a DAW like Audacity. It's a one-way edit — do all your Suno editing first."
    - **Section-specific issues (Pro/Premier):** If feedback indicates some sections work and others don't:
      - **Pro users:** Recommend the Legacy Editor: "Since the verse sounds good but the chorus needs work, use the editor to select the chorus region and hit Replace — you'll get alternatives while keeping what works. The Edits Library lets you preview before committing."
-     - **Legacy Editor Replace options:** When replacing sections, use the dropdown: "Smart" (auto-selects based on length), "Classic" (better for longer selections), or "Fixed" (better for short selections, requires 26 sec or less).
+     - **Legacy Editor Replace settings:** When replacing sections, the key controls are: **Keep Duration** toggle (ON = replacement matches original length, OFF = Suno has creative flexibility — useful for solos/breaks), **Instrumental Mode** toggle (removes vocals while preserving music), and **Replace Lyrics** (edit lyrics for just the selected region). Best results with 10-30 second selections; typically requires 2-5 attempts for seamless transitions.
      - **Note:** External DAW editing (e.g., after stem extraction) is a one-way operation — the user loses Suno's editing capabilities on that version. Recommend completing all Suno edits (Replace, Extend, etc.) BEFORE exporting to a DAW.
      - **Premier users:** Recommend Studio's Replace Section for more control, plus Alternates to generate multiple versions of a section simultaneously.
      - This is the most efficient path when partial regeneration would solve the problem.
@@ -299,14 +299,26 @@ After the user approves the recommendations:
 2. **Band profile update:** If the feedback revealed a systematic preference (not just a one-song tweak), suggest updating the band profile:
    - "You've mentioned wanting rawer vocals — want me to update your band profile's vocal direction so future songs start closer to where you want them?"
 
-3. **Iteration log persistence:** If the user wants to save the iteration log for future sessions, save to `{project-root}/_bmad/feedback-history/{band-profile-or-session}/{timestamp}.json`.
+3. **Iteration log persistence:** If the user wants to save the iteration log for future sessions, save to `docs/feedback-history/{band-profile-or-session}/{timestamp}.json`.
 
 4. **Encourage iteration:** "After you try the updated version on Suno, come back and we'll refine further. Each round gets you closer."
 
 ## Scripts
 
-Available scripts in `./scripts/`:
+### Core Scripts (no external dependencies)
+
 - `parse-feedback.py` — Validates and extracts structured dimensions from feedback input (headless mode). Handles both validation and dimension extraction in a single pass. Run `./scripts/parse-feedback.py --help` for usage.
 - `map-adjustments.py` — Maps feedback dimension categories to Suno parameter adjustment recommendations. Includes consistency validation (add/exclude conflicts, character count checks). Run `./scripts/map-adjustments.py --help` for usage.
-- `analyze-audio.py` — Basic audio analysis (BPM, key, energy, section boundaries). Use in Step 2 when user provides audio file.
-- `audio-deep-analysis.py` — Extended audio analysis with detailed energy curves and tonal characteristics. Use for technical feedback cases.
+
+### Audio Analysis Scripts (optional — requires `pip install librosa numpy`)
+
+These scripts provide objective audio measurements to complement subjective feedback. If dependencies are not installed, they return structured JSON with install instructions. The core feedback workflow works fully without them.
+
+- `analyze-audio.py` — Batch analysis (BPM, key, duration) for all tracks in a directory. Use in Step 2 when comparing multiple tracks.
+- `audio-deep-analysis.py` — Deep single-track analysis (energy arc, chord progression, section boundaries, spectral balance). Use for technical feedback cases.
+- `chord-progression.py` — Beat-synchronized chord detection with Camelot wheel mapping. Use for key/harmonic analysis and playlist transition planning.
+- `tempo-detail.py` — Detailed tempo analysis with stability metrics, beat regularity, and tempo events. Use when feedback involves timing or tempo issues.
+- `batch-full-analysis.py` — Comprehensive batch analysis with energy shifts, section boundaries, and spectral balance across an entire catalog.
+- `playlist-sequencing-data.py` — Playlist sequencing analysis with Camelot transition quality. Accepts `--playlist` YAML config for ordered analysis or auto-discovers tracks alphabetically.
+
+All audio scripts support `--format json|text` (default: json) and `-o` for file output.

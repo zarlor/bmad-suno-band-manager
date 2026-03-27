@@ -1,19 +1,41 @@
 #!/usr/bin/env python3
-"""Batch full analysis — tempo stability, energy arc, section boundaries, and spectral balance
-for every track in the catalog. Outputs a summary report."""
+# /// script
+# requires-python = ">=3.9"
+# dependencies = ["librosa", "numpy"]
+# ///
+"""
+Batch full analysis -- tempo stability, energy arc, section boundaries,
+and spectral balance for every track in a catalog directory.
 
+Outputs a summary report in JSON or Markdown text format.
+
+Exit codes:
+  0 = analysis completed successfully
+  1 = invalid arguments or no audio files found
+  2 = missing dependencies (librosa/numpy)
+"""
+
+import argparse
+import json
 import os
 import sys
-import librosa
-import numpy as np
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
+from audio_deps import require_audio_deps
+
 
 def format_time(seconds):
     m = int(seconds // 60)
     s = int(seconds % 60)
     return f"{m}:{s:02d}"
 
+
 def analyze_track(filepath):
     """Full analysis of a single track. Returns a dict of results."""
+    import librosa
+    import numpy as np
+
     filename = os.path.basename(filepath)
     results = {'file': filename}
 
@@ -125,8 +147,129 @@ def analyze_track(filepath):
     return results
 
 
+def format_json(all_results):
+    """Format results as standard module JSON."""
+    tracks = []
+    for r in all_results:
+        if 'error' in r:
+            tracks.append({
+                'file': r['file'],
+                'status': 'error',
+                'error': r['error'],
+            })
+            continue
+        tracks.append({
+            'file': r['file'],
+            'duration': round(r['duration'], 1),
+            'duration_display': format_time(r['duration']),
+            'bpm': r['bpm'],
+            'bpm_stability': r['bpm_stability'],
+            'bpm_range': list(r['bpm_range']),
+            'key': r['key'],
+            'key_confidence': r['key_conf'],
+            'dynamic_character': r['dynamic_character'],
+            'energy': {
+                'min': r['energy_min'],
+                'max': r['energy_max'],
+                'range': r['energy_range'],
+                'shifts': r['energy_shifts'],
+                'profile': r['energy_profile'],
+            },
+            'spectral_balance': {
+                'low_pct': r['spectral_low'],
+                'mid_pct': r['spectral_mid'],
+                'high_pct': r['spectral_high'],
+            },
+            'sections': r['sections'],
+        })
+
+    return json.dumps({
+        'script': 'batch-full-analysis',
+        'status': 'ok',
+        'track_count': len(all_results),
+        'tracks': tracks,
+    }, indent=2)
+
+
+def format_text(all_results):
+    """Format results as a Markdown report."""
+    lines = []
+    lines.append("# Catalog Audio Analysis\n")
+    lines.append("## Summary Table\n")
+    lines.append("| Track | Duration | BPM | Stability | Key | Dyn Range | Character |")
+    lines.append("|-------|----------|-----|-----------|-----|-----------|----------|")
+    for r in all_results:
+        if 'error' in r:
+            continue
+        dur = format_time(r['duration'])
+        lines.append(
+            f"| {r['file'].replace('.mp3','')} | {dur} | {r['bpm']} "
+            f"| {r['bpm_stability']} | {r['key']} | {r['energy_range']}% "
+            f"| {r['dynamic_character']} |"
+        )
+
+    lines.append("\n## Energy Shifts (>20% jumps)\n")
+    for r in all_results:
+        if 'error' in r or not r.get('energy_shifts'):
+            continue
+        lines.append(f"### {r['file'].replace('.mp3','')}")
+        for shift in r['energy_shifts']:
+            lines.append(f"- {shift}")
+        lines.append("")
+
+    lines.append("\n## Section Boundaries\n")
+    lines.append("| Track | Sections |")
+    lines.append("|-------|----------|")
+    for r in all_results:
+        if 'error' in r:
+            continue
+        sections = r.get('sections', [])
+        lines.append(f"| {r['file'].replace('.mp3','')} | {' / '.join(sections)} |")
+
+    lines.append("\n## Spectral Balance\n")
+    lines.append("| Track | Low (<250Hz) | Mid (250-2kHz) | High (>2kHz) |")
+    lines.append("|-------|-------------|----------------|-------------|")
+    for r in all_results:
+        if 'error' in r:
+            continue
+        lines.append(
+            f"| {r['file'].replace('.mp3','')} | {r['spectral_low']}% "
+            f"| {r['spectral_mid']}% | {r['spectral_high']}% |"
+        )
+
+    return "\n".join(lines) + "\n"
+
+
 def main():
-    audio_dir = sys.argv[1] if len(sys.argv) > 1 else "docs/audio"
+    parser = argparse.ArgumentParser(
+        description="Batch audio analysis: tempo, energy, sections, spectral balance."
+    )
+    parser.add_argument(
+        "--audio-dir", default="docs/audio",
+        help="Directory containing .mp3 files (default: docs/audio)",
+    )
+    parser.add_argument(
+        "--format", choices=["json", "text"], default="json",
+        help="Output format (default: json)",
+    )
+    parser.add_argument(
+        "-o", "--output",
+        help="Output file path (default: stdout)",
+    )
+    args = parser.parse_args()
+
+    require_audio_deps()
+    import librosa  # noqa: F401
+    import numpy as np  # noqa: F401
+
+    audio_dir = args.audio_dir
+    if not os.path.isdir(audio_dir):
+        print(json.dumps({
+            "script": "batch-full-analysis",
+            "status": "fail",
+            "error": f"Audio directory not found: {audio_dir}",
+        }), file=sys.stderr)
+        sys.exit(1)
 
     mp3s = sorted([
         os.path.join(audio_dir, f)
@@ -134,106 +277,39 @@ def main():
         if f.endswith('.mp3')
     ])
 
-    print(f"Analyzing {len(mp3s)} tracks...\n")
+    if not mp3s:
+        print(json.dumps({
+            "script": "batch-full-analysis",
+            "status": "fail",
+            "error": f"No .mp3 files found in: {audio_dir}",
+        }), file=sys.stderr)
+        sys.exit(1)
+
+    print(f"Analyzing {len(mp3s)} tracks...\n", file=sys.stderr)
 
     all_results = []
     for filepath in mp3s:
-        print(f"  Processing: {os.path.basename(filepath)}...", end="", flush=True)
+        print(f"  Processing: {os.path.basename(filepath)}...", end="", flush=True, file=sys.stderr)
         result = analyze_track(filepath)
         all_results.append(result)
         if 'error' in result:
-            print(f" ERROR: {result['error']}")
+            print(f" ERROR: {result['error']}", file=sys.stderr)
         else:
-            print(f" done ({result['bpm']} BPM, {result['key']}, {result['dynamic_character']})")
+            print(f" done ({result['bpm']} BPM, {result['key']}, {result['dynamic_character']})", file=sys.stderr)
 
-    # === SUMMARY REPORT ===
-    print("\n" + "=" * 120)
-    print("CATALOG SUMMARY REPORT")
-    print("=" * 120)
+    # Format output
+    if args.format == "json":
+        output = format_json(all_results)
+    else:
+        output = format_text(all_results)
 
-    print(f"\n{'Track':<45} {'Dur':>5} {'BPM':>6} {'Stability':<18} {'Key':<12} {'Dyn Range':>9} {'Character'}")
-    print("-" * 120)
-
-    for r in all_results:
-        if 'error' in r:
-            print(f"{r['file']:<45} ERROR")
-            continue
-        dur = format_time(r['duration'])
-        print(f"{r['file']:<45} {dur:>5} {r['bpm']:>6} {r['bpm_stability']:<18} {r['key']:<12} {r['energy_range']:>7}%  {r['dynamic_character']}")
-
-    # Energy shifts detail
-    print(f"\n{'='*80}")
-    print("ENERGY SHIFTS (>20% jumps)")
-    print("=" * 80)
-    for r in all_results:
-        if 'error' in r or not r.get('energy_shifts'):
-            continue
-        print(f"\n{r['file']}:")
-        for shift in r['energy_shifts']:
-            print(f"  {shift}")
-
-    # Section boundaries
-    print(f"\n{'='*80}")
-    print("SECTION BOUNDARIES")
-    print("=" * 80)
-    for r in all_results:
-        if 'error' in r:
-            continue
-        sections = r.get('sections', [])
-        if sections:
-            print(f"{r['file']:<45} {' | '.join(sections)}")
-
-    # Spectral balance
-    print(f"\n{'='*80}")
-    print("SPECTRAL BALANCE (Low / Mid / High)")
-    print("=" * 80)
-    for r in all_results:
-        if 'error' in r:
-            continue
-        print(f"{r['file']:<45} Low:{r['spectral_low']:>3}%  Mid:{r['spectral_mid']:>3}%  High:{r['spectral_high']:>3}%")
-
-    # Write machine-readable summary
-    report_path = "docs/catalog-analysis-report.md"
-    with open(report_path, 'w') as f:
-        f.write("# Solitary Fire — Full Catalog Audio Analysis\n")
-        f.write("# Generated via librosa 0.11.0 batch analysis\n\n")
-
-        f.write("## Summary Table\n\n")
-        f.write("| Track | Duration | BPM | Stability | Key | Dyn Range | Character |\n")
-        f.write("|-------|----------|-----|-----------|-----|-----------|----------|\n")
-        for r in all_results:
-            if 'error' in r:
-                continue
-            dur = format_time(r['duration'])
-            f.write(f"| {r['file'].replace('.mp3','')} | {dur} | {r['bpm']} | {r['bpm_stability']} | {r['key']} | {r['energy_range']}% | {r['dynamic_character']} |\n")
-
-        f.write("\n## Energy Shifts (>20% jumps)\n\n")
-        for r in all_results:
-            if 'error' in r or not r.get('energy_shifts'):
-                continue
-            f.write(f"### {r['file'].replace('.mp3','')}\n")
-            for shift in r['energy_shifts']:
-                f.write(f"- {shift}\n")
-            f.write("\n")
-
-        f.write("\n## Section Boundaries\n\n")
-        f.write("| Track | Sections |\n")
-        f.write("|-------|----------|\n")
-        for r in all_results:
-            if 'error' in r:
-                continue
-            sections = r.get('sections', [])
-            f.write(f"| {r['file'].replace('.mp3','')} | {' / '.join(sections)} |\n")
-
-        f.write("\n## Spectral Balance\n\n")
-        f.write("| Track | Low (<250Hz) | Mid (250-2kHz) | High (>2kHz) |\n")
-        f.write("|-------|-------------|----------------|-------------|\n")
-        for r in all_results:
-            if 'error' in r:
-                continue
-            f.write(f"| {r['file'].replace('.mp3','')} | {r['spectral_low']}% | {r['spectral_mid']}% | {r['spectral_high']}% |\n")
-
-    print(f"\nReport saved to: {report_path}")
+    # Write output
+    if args.output:
+        with open(args.output, 'w') as f:
+            f.write(output)
+        print(f"\nReport saved to: {args.output}", file=sys.stderr)
+    else:
+        print(output)
 
 
 if __name__ == "__main__":

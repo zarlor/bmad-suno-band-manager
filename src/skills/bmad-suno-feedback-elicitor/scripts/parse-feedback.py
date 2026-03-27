@@ -19,7 +19,11 @@ Exit codes:
 import argparse
 import json
 import sys
+from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
+from suno_constants import VALID_MODELS
 
 VALID_DIMENSIONS = [
     "music",
@@ -33,15 +37,6 @@ VALID_DIMENSIONS = [
     "instrumentation",
     "length",
     "quality",
-]
-
-# Known models — used for enrichment, not hard validation
-VALID_MODELS = [
-    "v4.5-all",
-    "v4 Pro",
-    "v4.5 Pro",
-    "v4.5+ Pro",
-    "v5 Pro",
 ]
 
 VALID_FEEDBACK_TYPES = ["clear", "positive", "vague", "contradictory", "technical"]
@@ -67,7 +62,7 @@ def validate_feedback_input(data: dict[str, Any]) -> list[dict[str, Any]]:
             "severity": "info",
             "category": "consistency",
             "location": {"field": "model"},
-            "issue": f"Unrecognized model '{data['model']}' — recommendations may not be model-optimized. Known models: {', '.join(VALID_MODELS)}",
+            "issue": f"Unrecognized model '{data['model']}' — recommendations may not be model-optimized. Known models: {', '.join(sorted(VALID_MODELS))}",
             "fix": "This is informational — the model name will be passed through. Known models receive model-specific recommendations.",
         })
 
