@@ -172,7 +172,17 @@ def cleanup_directories(
             not_found.append(dirname)
             continue
 
+        # Preserve config.yaml if present (bmad-init needs per-module configs)
+        config_path = target / "config.yaml"
+        config_backup = None
+        if config_path.exists():
+            config_backup = config_path.read_bytes()
+            if verbose:
+                print(f"Preserving config.yaml in {dirname}/", file=sys.stderr)
+
         file_count = count_files(target)
+        if config_backup:
+            file_count -= 1  # Don't count the preserved file
         if verbose:
             print(
                 f"Removing {target} ({file_count} files)",
@@ -190,6 +200,13 @@ def cleanup_directories(
             }
             print(json.dumps(error_result, indent=2))
             sys.exit(2)
+
+        # Restore preserved config.yaml
+        if config_backup:
+            target.mkdir(parents=True, exist_ok=True)
+            config_path.write_bytes(config_backup)
+            if verbose:
+                print(f"Restored config.yaml in {dirname}/", file=sys.stderr)
 
         removed.append(dirname)
         total_files += file_count

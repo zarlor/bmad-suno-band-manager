@@ -118,7 +118,7 @@ To reconfigure settings or migrate legacy config to the new format, run:
 /bmad-suno-setup
 ```
 
-The setup skill detects any existing config (including from the old `npx bmad-method install` format at `_bmad/suno/config.yaml`) and uses your saved values as defaults. Your preferences, band profiles, songbook, and memory are all preserved.
+The setup skill detects any existing config (including from the old `npx bmad-method install` format) and uses your saved values as defaults. It writes both the shared config format (`_bmad/config.yaml`) and per-module config files (`_bmad/core/config.yaml`, `_bmad/suno/config.yaml`) that `bmad-init` reads at runtime. Your preferences, band profiles, songbook, and memory are all preserved.
 
 ## Suno Model Compatibility
 
@@ -134,7 +134,7 @@ src/skills/
 │   │   ├── module.yaml             # Module metadata and config variables
 │   │   └── module-help.csv         # Capability registry (v1.4.0 format)
 │   └── scripts/
-│       ├── merge-config.py         # Config file merge
+│       ├── merge-config.py         # Config file merge + init-compatible output
 │       ├── merge-help-csv.py       # Help CSV merge
 │       └── cleanup-legacy.py       # Legacy file cleanup
 ├── bmad-suno-agent-band-manager/   # Mac — orchestrating agent

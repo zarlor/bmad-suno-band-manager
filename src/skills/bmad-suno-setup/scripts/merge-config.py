@@ -339,6 +339,48 @@ def write_config(config: dict, config_path: str, verbose: bool = False) -> None:
         )
 
 
+def write_init_compatible_configs(config, user_config, module_code, bmad_dir, verbose=False):
+    """Write per-module config files in the format bmad-init expects.
+
+    bmad-init reads:
+      - _bmad/core/config.yaml (core settings as flat YAML)
+      - _bmad/{module}/config.yaml (core + module settings as flat YAML)
+
+    This bridges the setup skill's shared config format with bmad-init's
+    per-module config format used at runtime by all skills.
+    """
+    _META_KEYS = frozenset({"name", "description", "version", "default_selected"})
+    written = []
+
+    # Assemble core values from flat config root + user config
+    core_values = {}
+    for key in _CORE_KEYS:
+        if key in config:
+            core_values[key] = config[key]
+    for key in _CORE_USER_KEYS:
+        if key in user_config:
+            core_values[key] = user_config[key]
+
+    # Write _bmad/core/config.yaml
+    core_path = str(Path(bmad_dir) / "core" / "config.yaml")
+    write_config(core_values, core_path, verbose)
+    written.append(core_path)
+
+    # Assemble module values: core + module-specific (flat, no metadata)
+    module_section = config.get(module_code, {})
+    module_values = dict(core_values)
+    for key, value in module_section.items():
+        if key not in _META_KEYS:
+            module_values[key] = value
+
+    # Write _bmad/{module}/config.yaml
+    module_path = str(Path(bmad_dir) / module_code / "config.yaml")
+    write_config(module_values, module_path, verbose)
+    written.append(module_path)
+
+    return written
+
+
 def main():
     args = parse_args()
 
@@ -388,6 +430,12 @@ def main():
             args.legacy_dir, module_yaml["code"], args.verbose
         )
 
+    # Write init-compatible per-module configs for bmad-init runtime loading
+    bmad_dir = str(Path(args.config_path).parent)
+    init_configs = write_init_compatible_configs(
+        updated_config, updated_user_config, module_yaml["code"], bmad_dir, args.verbose
+    )
+
     # Output result summary as JSON
     module_code = module_yaml["code"]
     result = {
@@ -400,6 +448,7 @@ def main():
         "user_keys": list(user_settings.keys()),
         "legacy_configs_found": legacy_files_found,
         "legacy_configs_deleted": legacy_deleted,
+        "init_configs_written": init_configs,
     }
     print(json.dumps(result, indent=2))
 
