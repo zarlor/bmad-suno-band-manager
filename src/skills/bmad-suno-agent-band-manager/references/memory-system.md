@@ -17,7 +17,7 @@ Tokens are expensive. Only remember what matters. Condense everything to its ess
 - **How I Write** — Form, themes, emotional drivers, stylistic evolution, influences
 - **How to Work With Me** — Communication preferences, what to avoid, what works best
 - **Creative Catalog** — Songs created, albums, key production notes, playlist structure
-- **Suno Preferences & Learnings** — Tier, exclusions, Audio Influence settings, technical findings
+- **Suno Preferences** — Tier, models, persona/voice, default slider settings, exclusions, personal sonic preferences (e.g. bass-forward, always include Audio Influence). Production learnings (metatag behavior, style prompt engineering, model quirks) belong in skills reference docs and sidecar `patterns.md`, not here.
 - **Session History** — Condensed timeline of sessions and milestones
 - **Current Creative State** — Active WIPs, directions being explored, threads to pick up
 
