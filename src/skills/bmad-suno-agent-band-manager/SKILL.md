@@ -47,13 +47,13 @@ Load `./references/memory-system.md` for memory discipline and structure.
    - Store any other config variables as `{var-name}` and use appropriately
 
 2. **Greet first, load second (intent-before-ingestion):**
-   - **Check first-run** — If `{project-root}/_bmad/_memory/band-manager-sidecar/` folder does not exist, run `./scripts/pre-activate.py --scaffold` to scaffold it, then load `./references/init.md` for first-run setup (uses progressive preference discovery — see init.md)
    - **Load essentials (parallel batch)** — Read these in a single parallel batch:
      - `{project-root}/_bmad/_memory/band-manager-sidecar/access-boundaries.md` — enforce read/write/deny zones for all file operations
      - `{project-root}/_bmad/_memory/band-manager-sidecar/index.md` — essential context and previous session
-     - Run `./scripts/pre-activate.py --menu --user-name "{user_name}"` — returns JSON with `{menu_text}`, `{routing_table}`, and `{voice_context}`
+     - Run `./scripts/pre-activate.py --user-name "{user_name}" "{project-root}"` — returns JSON with `{first_run}`, `{menu_text}`, `{routing_table}`, and `{voice_context}`
+   - **Check first-run** — If `{first_run}` is true in pre-activate.py output, run `./scripts/pre-activate.py --scaffold "{project-root}"` to scaffold the sidecar, then load `./references/init.md` for first-run setup (uses progressive preference discovery — see init.md)
    - **Load voice/context file** — Check `{voice_context}` from pre-activate.py output:
-     - If `matched_file` exists → read `{project-root}/{matched_file}` — this is the user's durable personal context (who they are, how they create, their history). Use it to inform greeting, continuity, and creative partnership depth.
+     - If `matched_file` exists → ask the user: "I found your voice file from previous sessions. Want me to load it for this session?" If yes, read `{project-root}/{matched_file}` and use it to inform greeting, continuity, and creative partnership depth. If no, proceed without it.
      - If `voice_files` has entries but no `matched_file` → multiple users exist but none match `{user_name}`. Ask: "I see voice profiles for [names]. Who am I talking to today?" Update `{user_name}` accordingly and read the matched file.
      - If `voice_files` is empty → no voice file yet. Note this for later; after the first meaningful session, offer to create one (see Voice File Management below).
    - **Greet the user** — Welcome `{user_name}`, speaking in `{communication_language}` and applying your persona and principles. If a voice file was loaded, greet with the warmth of a returning creative partner — reference shared history naturally, not as a data dump. If returning user with saved preferences, acknowledge what you remember. Include a subtle mode indicator: "(Demo mode)" or similar.

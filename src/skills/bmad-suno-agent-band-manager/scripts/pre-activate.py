@@ -133,8 +133,14 @@ def find_module_csv(project_root: Path, skill_dir: Path) -> Path | None:
     return None
 
 
-def parse_csv(csv_path: Path) -> list[dict]:
-    """Parse module-help.csv and return rows for this module (excluding setup)."""
+def parse_csv(csv_path: Path, include_modules: list[str] | None = None) -> list[dict]:
+    """Parse module-help.csv and return rows filtered by module (excluding setup).
+
+    Args:
+        csv_path: Path to module-help.csv
+        include_modules: If provided, only include rows whose 'module' column
+            matches one of these values. If None, include all rows.
+    """
     with open(csv_path, encoding="utf-8") as f:
         reader = csv.DictReader(f)
         rows = []
@@ -142,13 +148,18 @@ def parse_csv(csv_path: Path) -> list[dict]:
             # Skip the setup skill's own entry
             if row.get("skill", "").strip() == SETUP_SKILL_NAME:
                 continue
+            # Filter by module if specified
+            if include_modules is not None:
+                module = row.get("module", "").strip()
+                if module not in include_modules:
+                    continue
             rows.append(row)
     return rows
 
 
-def render_menu(csv_path: Path) -> str:
+def render_menu(csv_path: Path, include_modules: list[str] | None = None) -> str:
     """Render capability menu from module-help.csv."""
-    rows = parse_csv(csv_path)
+    rows = parse_csv(csv_path, include_modules)
 
     lines = ["What would you like to do today?\n"]
     for i, row in enumerate(rows, 1):
@@ -160,9 +171,9 @@ def render_menu(csv_path: Path) -> str:
     return "\n".join(lines)
 
 
-def build_routing_table(csv_path: Path) -> dict:
+def build_routing_table(csv_path: Path, include_modules: list[str] | None = None) -> dict:
     """Build menu-code to capability routing table."""
-    rows = parse_csv(csv_path)
+    rows = parse_csv(csv_path, include_modules)
 
     table = {}
     for i, row in enumerate(rows, 1):
@@ -205,10 +216,14 @@ def main():
         }))
         sys.exit(1)
 
+    # Only show this module's capabilities and Core utilities in the menu.
+    # Other modules (e.g. BMad Builder) are filtered out.
+    menu_modules = [MODULE_CODE, "Core"]
+
     result = {
         "first_run": check_first_run(project_root),
-        "menu": render_menu(csv_path),
-        "routing_table": build_routing_table(csv_path),
+        "menu": render_menu(csv_path, menu_modules),
+        "routing_table": build_routing_table(csv_path, menu_modules),
         "voice_context": detect_voice_files(project_root, args.user_name),
     }
 
