@@ -216,9 +216,8 @@ def main():
         }))
         sys.exit(1)
 
-    # Only show this module's capabilities and Core utilities in the menu.
-    # Other modules (e.g. BMad Builder) are filtered out.
-    menu_modules = [MODULE_CODE, "Core"]
+    # Only show this module's own capabilities in the menu.
+    menu_modules = [MODULE_CODE]
 
     result = {
         "first_run": check_first_run(project_root),
