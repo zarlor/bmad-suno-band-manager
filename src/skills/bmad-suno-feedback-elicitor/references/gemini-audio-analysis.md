@@ -82,6 +82,91 @@ ChatGPT can analyze uploaded MP3 files. Key workflow difference from Gemini:
 - Second pass (follow-up in same context) is mandatory. Ask specifically about: mood/feel vs. heaviness, volume/intensity dynamics without tempo change, bass techniques and independent role, stereo panning placement
 - Before/after improvement is dramatic — example: first pass = "NWOBHM speed metal, zero funk, bass follows guitar." Follow-up = "funk-metal party groove, standout slap bass, Les Claypool comparison." Same audio.
 
+### Prompt Templates
+
+These prompts were refined across 30+ song analyses and consistently produce the most useful output.
+
+#### First Pass — Structured Blind Analysis
+
+Use this for the initial analysis. The blind approach (no style prompt) prevents Gemini from hearing what the prompt describes rather than what's actually there. For cataloging workflows where you want the accuracy comparison in one pass, include the Style Prompt Accuracy section at the end with the style prompt.
+
+```
+You are analyzing a track from the band [BAND NAME] for cataloging purposes. Listen to the full track carefully before responding.
+
+IMPORTANT LISTENING NOTES:
+- Distinguish between tempo changes (BPM actually shifts) and dynamic changes (volume/intensity shifts without tempo change). A song can get quieter or sparser without slowing down. Report both separately.
+- This band plays genre fusion — multiple genres blended, not pure genres. Describe the blend of influences you hear rather than picking the single closest genre. If you hear funk ELEMENTS within a metal song, say so — don't round to the nearest pure genre.
+- For BPM, tap along to the kick/snare pattern to verify. If the song feels fast but the underlying pulse is moderate with busy subdivisions, report the actual pulse BPM, not the subdivision speed.
+
+Provide your analysis in this exact format:
+
+## Technical
+- **Estimated BPM:** [BPM or range if it shifts, note where shifts occur]
+- **Estimated Key:** [key/scale]
+- **Time Signature:** [detected, note any changes with approximate timestamps]
+- **Duration:** [mm:ss]
+
+## Sonic Profile
+- **Intro (first 15 seconds):** [exactly what instruments enter, in what order, what they're doing]
+- **Overall Genre Feel:** [describe the blend of genre influences you hear — this band fuses multiple styles, so name all the ingredients, not just the dominant one]
+- **Guitar:** [tone, style, notable techniques — clean/distorted, riff-driven/atmospheric, any solos and where]
+- **Bass:** [how prominent, tone, role — following guitar or independent, any standout moments]
+- **Drums:** [style, energy, notable fills or pattern changes, cymbal work]
+- **Vocals:** [delivery style, grit level, harmonization, how many voices, any spoken/whispered sections]
+- **Other Instruments:** [brass, keys, strings, anything else present]
+
+## Dynamic Arc
+Describe how the energy moves through the song from start to finish. Note builds, drops, peaks, and transitions with approximate timestamps. Separately note any volume/intensity shifts that occur WITHOUT tempo changes.
+- [0:00-0:xx] — [what's happening]
+- [0:xx-0:xx] — [what's happening]
+(continue through the full track)
+
+## Outro
+- **How it ends:** [fade, hard stop, instrumental tail, final hit — be specific about the last 10 seconds]
+
+## Notable Moments
+List 3-5 specific timestamps where something musically interesting happens:
+- [timestamp] — [what happens and why it's notable]
+
+## Style Prompt Accuracy
+Compare what you hear to what was requested in the generation prompt below. Note:
+- What the prompt asked for that IS clearly present in the audio
+- What the prompt asked for that is NOT present or only weakly present
+- Anything notable in the audio that was NOT in the prompt
+
+Style prompt used: "[PASTE STYLE PROMPT]"
+Exclude styles requested: "[PASTE EXCLUDES]"
+```
+
+**Blind vs. style-prompted:** For diagnostic workflows (investigating why a song sounds wrong), remove the Style Prompt Accuracy section and style prompt from the first pass entirely. Share the style prompt in a separate follow-up only. For cataloging workflows where you want the comparison in one pass, keep the section as-is.
+
+#### Second Pass — Calibrated Follow-Up (Same Context)
+
+Send this as a follow-up in the same conversation after the first pass:
+
+```
+Good analysis. A few areas I'd like you to listen again more carefully for:
+
+1. **Mood/feel vs. heaviness:** Does this track feel aggressive/dark, or does the heaviness carry an upbeat, playful, or ironic energy? Heavy instrumentation doesn't always mean dark mood.
+2. **Volume/intensity dynamics:** Are there moments where the band gets noticeably quieter or sparser WITHOUT the tempo changing? Describe those shifts.
+3. **Bass specifics:** Listen to the bass independently. Is it using any specific techniques — slap/pop, fingerstyle, pick attack, melodic runs independent of guitar? Does it ever take a lead role?
+4. **Stereo placement:** Are any instruments panned notably left or right, especially in the intro?
+```
+
+#### Non-Band-Specific Variant
+
+For songs not part of a band project (solo work, one-offs), replace the opening line:
+
+```
+You are analyzing an AI-generated music track for cataloging purposes. Listen to the full track carefully before responding.
+```
+
+And adjust the fusion genre note:
+
+```
+- Describe the genre blend you hear rather than picking the single closest genre. AI-generated music often combines multiple genre influences — name all the ingredients.
+```
+
 ### What Gemini Does Well
 - Instrument identification — reliably catches what's present
 - Genre classification at macro level — right family even if specific fusion label is wrong

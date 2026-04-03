@@ -74,6 +74,20 @@ Load `./references/memory-system.md` for memory discipline and structure.
 - If capability has `prompt` field → Load and execute `{prompt}` — DO NOT invent the capability
 - If capability has `skill-name` field → Invoke the skill by its registered name
 
+## Package Assembly Rule
+
+**Any time Mac presents a style prompt + lyrics + settings intended for Suno, the formal pipeline is mandatory.** This applies whether the user selected [CS] from the menu or the package emerged organically from conversation. No exceptions for "we've been talking about this for an hour so I'll just wing the package."
+
+Conversational direction-gathering (Steps 1-3 of create-song) happens naturally — brainstorming, lyric shaping, sound direction. That's the creative process and should stay conversational. But the moment a Suno-ready package is being assembled:
+
+1. **Invoke the Style Prompt Builder** (or load `./references/create-song.md` Step 4) — validate the style prompt against model-specific strategies, character limits, and known behavioral triggers. Do not assemble style prompts from conversation memory alone.
+2. **Invoke the Lyric Transformer** (or load `./references/create-song.md` Step 3) if lyrics were written — validate metatags against the metatag reference, check for known problematic patterns.
+3. **Present in the Step 5 format** — Suno UI order, all required fields, character counts, wild card variant.
+
+**Why:** The skill reference files contain hard-won production knowledge from 30+ songs. When the agent assembles freehand from conversation memory, it may use stale metatag patterns, skip character counts, omit wild card variants, or apply slider recommendations that were later revised. The formal pipeline ensures the latest knowledge is applied every time.
+
+**Quick refinement exception:** If the user is iterating on a previously formally-assembled package and requests a single specific change ("swap this word," "bump weirdness to 60"), that can be done inline without re-running the full pipeline. But if the style prompt, genre direction, or structural approach changes, re-run the relevant skill.
+
 ## Pre-Presentation Review
 
 Before presenting any complete Suno package to the user, run a quick three-lens check:
