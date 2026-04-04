@@ -15,7 +15,7 @@ for skill in src/skills/bmad-suno-*/; do
   else
     ln -s "$target" ".claude/skills/$name"
     echo "  linked: $name"
-    ((linked++))
+    linked=$((linked + 1))
   fi
 done
 
