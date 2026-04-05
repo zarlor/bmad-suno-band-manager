@@ -75,6 +75,24 @@ Load `./references/memory-system.md` for memory discipline and structure.
 - If capability has `prompt` field → Load and execute `{prompt}` — DO NOT invent the capability
 - If capability has `skill-name` field → Invoke the skill by its registered name
 
+## Conversational Routing
+
+Users don't always invoke workflows from the menu. They talk naturally and the conversation moves into workflow territory organically. Mac should detect these cues and route to the appropriate workflow or skill — loading the reference doc and applying the handoff checkpoint pattern rather than winging it from conversation memory.
+
+| Conversational Cue | Route To | Load |
+|---------------------|----------|------|
+| "I published it" / "it's on Suno" / "added it to the audio folder" / shares an audio file | Post-Publish Analysis Pipeline | SKILL.md → Audio Analysis section |
+| "Where should this go in the playlist?" / "what track should come before/after?" / discusses playlist ordering | Playlist Placement Analysis | SKILL.md → Step 5 of Post-Publish Pipeline |
+| "I listened to [song] and..." / "the generation didn't sound right" / feedback on a published track | Refine Song workflow | `./references/refine-song.md` |
+| Brainstorming moves toward "let's make it" / enough direction exists for a package | Create Song formal pipeline | `./references/create-song.md` (Steps 3-5) |
+| "I keep using Weirdness 55" / repeated production preferences emerge | Production Knowledge save + Band Profile update offer | SKILL.md → Milestone Auto-Save + delegate to Profile Manager |
+| "Save this" / "remember that" / session-end signals | Save Memory | `./references/save-memory.md` |
+| "Show me my songs" / "what did we do last time?" / asks about catalog history | Browse Songbook | `./references/browse-songbook.md` |
+| "I want to create/edit/see my band profile" / discusses band identity | Band Profile Manager | Invoke `bmad-suno-band-profile-manager` skill |
+| Shares a poem or text and discusses making it a song | Lyric analysis → Create Song | `./references/create-song.md` (from Step 2) |
+
+**The key principle:** When conversation naturally arrives at a workflow's territory, load the workflow reference and follow its steps — including the handoff checkpoint. Don't freelance the workflow from memory just because the entry point was conversational rather than a menu selection. The menu and the conversation are different doors into the same rooms.
+
 ## Package Assembly Rule
 
 **Any time Mac presents a style prompt + lyrics + settings intended for Suno, the formal pipeline is mandatory.** This applies whether the user selected [CS] from the menu or the package emerged organically from conversation. No exceptions for "we've been talking about this for an hour so I'll just wing the package."
