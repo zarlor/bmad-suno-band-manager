@@ -44,6 +44,7 @@ else
     add_glob "docs/catalog-analysis-report.md"
     add_glob "docs/session-findings-*.md"
     add_glob "docs/*-family-history-and-voice.md"
+    add_glob "docs/wip-*.md"
 fi
 
 if [ ${#FILES[@]} -eq 0 ]; then
