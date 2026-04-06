@@ -171,6 +171,24 @@ v5.5 is an additive update over v5. It uses the same audio engine, metatags, and
 - Drop generic production descriptors your model already knows -- if your Custom Model was trained on lo-fi indie tracks, you don't need "lo-fi warmth" in every prompt
 - Think of Custom Model as "producer" and the prompt as "songwriter" -- the model brings the sonic palette, the prompt brings the creative direction
 - Train separate models for separate styles -- mixing genres in training data confuses the model
+
+**Training Data Best Practices:**
+- **Format:** WAV at 44.1kHz preferred. Heavily compressed MP3 at low bitrates introduces artifacts that interfere with feature extraction.
+- **Loudness:** System auto-normalizes (RMS leveling, DC offset removal, spectral masking, onset detection, key/scale estimation). Dynamic range preservation matters more than loudness — streaming-standard ~-14 LUFS is a reasonable baseline. Over-limited/brick-wall-mastered tracks may lose the dynamic character the model is trying to learn.
+- **Quantity:** Minimum 6 tracks. 8-12 stylistically consistent tracks is the inferred sweet spot. No documented upper limit. Emphasis from all sources is on stylistic consistency over quantity.
+- **Length:** Full-length tracks (3-5 minutes) provide richer training data for arrangement pattern learning. Short clips may not contain enough structural variety.
+- **Quality:** Clean, well-mixed audio with minimal background noise and no heavy reverb. The system isolates vocals from mixed audio automatically, but acapella recordings may yield higher quality vocal style capture.
+
+**Overfitting Mitigation:**
+- Training data too narrow/homogeneous causes repetitive output with reduced variety
+- Include variety within your chosen style lane — different tempos, moods, arrangements, instrumentation variations
+- Overly detailed prompts + tightly-trained Custom Model = 'narrow and repetitive as if the AI has fewer options'
+- Keep prompts shorter/simpler when using a well-trained Custom Model — it already knows your baseline
+
+**Retraining (documentation gap):** No sources provide clear guidance on updating existing models, deletion workflow, or whether retraining from scratch produces different results. The 3-model limit serves as both a practical constraint and a platform retention mechanism.
+
+Sources: [Custom Models — Suno Help](https://help.suno.com/en/articles/11362497) | [Blake Crosley: Suno Definitive Reference](https://blakecrosley.com/guides/suno) | [AudioNewsRoom: Suno v5.5](https://audionewsroom.net/2026/03/suno-v5-5-what-you-give-up-to-make-it-yours.html)
+
 - **Voice + Custom Model is the most powerful combo:** who sings (Voice) + what style (Custom Model) + detailed prompt (creative direction)
 - **Privacy/consent note (AudioNewsRoom):** The consent required to use Voices and Custom Models grants Suno permission to use your data for training their global models. This is NOT optional and NOT a private silo — you are uploading your creative fingerprint to their infrastructure.
 
@@ -440,6 +458,14 @@ Custom Models let you train Suno on your own tracks to establish a production DN
 - **Drop generic production descriptors your model already knows** — if your Custom Model was trained on lo-fi indie tracks, "lo-fi warmth" is redundant in every prompt. Use those characters for song-specific direction instead.
 - **Train separate models for separate styles** — mixing genres in training data confuses the model. A "dark electronic" model and an "acoustic folk" model will each outperform a single model trained on both.
 - **Voice + Custom Model is the most powerful combo** — who sings (Voice) + what style (Custom Model) + detailed prompt (creative direction). This is the full v5.5 personalization stack in action.
+
+**Prompt strategy shift with Custom Models:**
+When a Custom Model is active, the priority order changes from genre-first to **mood/production-first** since genre is already encoded in the model. Simpler, more natural-language prompts may produce better results than highly detailed tag-heavy prompts because the model already handles foundational style characteristics.
+
+**Optimal formula with Custom Models:** MOOD + PRODUCTION TEXTURE + ENERGY/TEMPO + SPECIFIC INSTRUMENTS + VOCAL DIRECTION
+
+**What becomes redundant:** Base genre tags, broad stylistic descriptors matching training data, foundation-level production characteristics. Use that freed prompt budget for mood modifiers, production specifications, and contextual modifiers like 'cinematic', 'anthemic', 'intimate'.
+
 - **Privacy/consent note:** Voices and Custom Models consent grants Suno permission to use your data for training their global models. Not optional, not a private silo.
 
 ## Cover Feature

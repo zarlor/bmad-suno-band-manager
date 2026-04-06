@@ -474,3 +474,26 @@ Genre drift is one of the most common issues — 62% of extended Suno tracks dev
 | "Voice/Persona shifted during Replace Section" | Keep Weirdness conservative during Replace operations — high Weirdness can cause Persona/Voice identity shifts |
 
 **Prevention tips:** Front-load genre identity in the first 200 chars of style prompt. Use per-section metatags. Generate 3-5 versions and cherry-pick. For extensions, match the style prompt exactly, keep extensions short (30s-1min increments), and **keep Weirdness lower during Extend than during initial generation**. Use callback phrasing ("continue same chorus energy", "maintain verse mood") to anchor the extension to the existing material.
+
+### Extend Anti-Drift Toolkit
+
+Techniques for maintaining consistency during Extend operations, ordered by effectiveness:
+
+1. **Anchor note restating** — restate genre, mood, key, and instrument palette with each extension in 1-2 sentences. Example: 'Keep the exact current groove, instrument palette, key, and tempo.'
+2. **Forbidden element phrasing** — 'No new hooks,' 'No new drums,' 'No new riffs,' 'no risers.' Negative constraints are more effective than positive instruction alone during Extend.
+3. **Structural metatag at start** — include `[Chorus]`, `[Bridge]`, `[Outro]` etc. at the beginning of every extension prompt to guide section type.
+4. **Energy alignment** — specify energy relative to existing material: 'Bridge energy: 80% of chorus; lower drums...'
+5. **Short blocks (30 seconds preferred)** — catch drift before it compounds. Limit to 2-3 extensions maximum per song.
+6. **Cover as signal cleaner** — if quality degrades after multiple extensions, use Cover to re-synthesize the audio from scratch, resetting the signal path.
+7. **Custom Extend over Quick Extend** — always use Custom Extend for anything you care about. Quick Extend is for rapid prototyping only.
+
+**Verification:** Loop playback at 2x speed to confirm join seams and style consistency.
+
+**Genre-specific outro templates:**
+- Gospel/Worship: soft organ and distant choir pad
+- Rock/Anthem: final guitar sustain and cymbal swell
+- Lo-fi: soft piano motif and vinyl texture
+- EDM: filtered synth tail
+- Reggae: softening skank guitar
+
+Sources: [Suno 4.5 Plus Extend — Jack Righteous](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/suno-45-plus-extend-tool) | [Outro Prompts — Jack Righteous](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/suno-ai-outro-prompt-guide) | [End Prompts — Jack Righteous](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/suno-ai-end-prompt-guide) | [Fade Out Prompts — Jack Righteous](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/suno-ai-fade-out-prompt-guide)

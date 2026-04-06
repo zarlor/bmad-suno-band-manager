@@ -39,6 +39,9 @@ Quick-reference for Suno models, plans, parameters, metatags, and common pitfall
 - v5.5-optimized prompts can be more specific: "deep sub 808s, glitchy hi-hat rolls, pitched vocal chops" where v5 would use simpler "808s, hi-hats"
 - **Voices** (replaces Personas): actual voice cloning with anti-deepfake verification, 15s-4min audio sample required. Pro/Premier only. **Skill Level dropdown** (Beginner/Intermediate/Advanced/Professional) actively reshapes how the model interprets your voice — always select **Professional** regardless of actual ability for the most stable, usable results.
 - **Custom Models**: train on 6+ original tracks, 2-5 min training time, up to 3 custom models. Pro/Premier only. **Privacy/consent note (AudioNewsRoom):** consent grants Suno permission to use your data for training their global models — not optional, not a private silo.
+  - **Training data:** WAV at 44.1kHz preferred (Suno auto-normalizes with RMS leveling, DC offset removal, spectral masking, onset detection, key/scale estimation). 8-12 stylistically consistent tracks is the inferred sweet spot. Dynamic range preservation matters more than loudness since the system normalizes internally.
+  - **Overfitting risk:** Training data too narrow/homogeneous produces repetitive output. Include variety within your style lane — different tempos, moods, arrangements.
+  - **Prompt strategy shift with Custom Models:** Priority order changes from genre-first to **mood/production-first** since genre is already encoded in the model. Simpler natural-language prompts may outperform tag-heavy prompts because the model handles the foundational style. Core formula: MOOD + PRODUCTION TEXTURE + ENERGY/TEMPO + INSTRUMENTS + VOCAL DIRECTION.
 - **My Taste**: passive personalization that shapes generation defaults based on your listening/generation history. All tiers. Takes 20-30 generations to settle. **Magic wand icon** next to the style input triggers Style Augmentation — auto-generates a personalized style description based on your My Taste profile. Detailed manual prompts always override it. Can be viewed, edited, or disabled from avatar menu > "My Taste." No documented reset mechanism beyond disable/re-enable.
 - **Workflow paradigm shift:** v5.5 encourages generate -> inspect -> replace sections -> refine (not regenerate from scratch)
 
@@ -147,6 +150,10 @@ Where each component of Mac's output package goes in Suno's Custom Mode:
 - **Conflicting tags produce bland compromise, not interesting hybrids** — "aggressive, peaceful" or similar contradictions cause Suno to default to a generic middle ground. Opposing descriptors cancel out rather than creating creative tension.
 - **Three-phase dynamic arc needs double-stating** -- songs that go quiet → massive → quiet need the arc stated TWICE in the style prompt: once as a narrative description (`building from gentle to crushing then returning to gentle`) and once as a shorthand (`dynamic arc quiet to massive to quiet`). A single mention is not enough — Suno tends to flatten or ignore the return to quiet without the reinforcement.
 - **Suno adds unscripted guitar solos regularly** -- three of four analyzed tracks had solos not in the lyrics. Plan for this or use [End] tags to prevent post-vocal noodling.
+- **Anchor note restating during Extend** — always restate genre, mood, key, and instrument palette in a 1-2 sentence anchor note with each extension. Example: 'Keep the exact current groove, instrument palette, key, and tempo. Do not introduce new drums or leads.'
+- **Forbidden element phrasing** — stating what NOT to add during Extend is more effective than positive instruction alone: 'No new hooks,' 'No new drums,' 'No new riffs,' 'no risers'
+- **Limit extension chains to 2-3 maximum** — beyond that, audio quality degrades ('muddy' or 'lo-fi' artifacts). If quality degrades, use the **Cover feature** to re-synthesize the audio from scratch, effectively 'cleaning' the signal path.
+- **Personas historically cannot be used reliably with Extend** — using Extend to keep generating with the same Persona has been unstable. Reuse exact vocal descriptor tags from the original prompt alongside the Persona to reinforce consistency.
 - **Section-by-section instructions in style prompts are largely ignored** -- Suno delivered consistently fast, dense tracks despite detailed per-section directions (slow intro, tempo drops, sparse bridge). Style prompt sets overall mood; metatags handle sections (imperfectly).
 
 ### Exclude Styles (Pro/Premier)
@@ -189,6 +196,7 @@ The Exclude Styles field is a dedicated exclusion input separate from the style 
 | `[Hook]` | Short catchy phrase or motif |
 | `[Post-Chorus]` | Extends or cools down chorus energy |
 | `[Fade Out]` | Gradual volume decrease |
+| `[End]` | Signal to stop the song |
 
 ### Parameterized Section Tags
 
@@ -224,6 +232,9 @@ This allows section-specific arrangement control directly in the tag itself, rat
 - Half-time / double-time drum feel via metatags (`[Heavy: halftime]`, `[Double Time]`) creates perceived tempo shifts without actual BPM change
 - **BPM tags are confirmed ineffective** — do not use `[Verse: 65 BPM]` or similar tags. They have zero effect on output (librosa-confirmed).
 - `[Instrument: ...]` before a section specifies instruments for that section -- use to crowd out unwanted instruments rather than trying to exclude them
+- `[Soft End]`, `[Dramatic End]`, `[Instrumental End]` — ending style variants
+- `[Slow Fade Out]`, `[Fast Fade Out]`, `[Instrumental Fade Out]`, `[Cinematic Fade Out]` — fade style variants (genre-specific: Slow for ambient/cinematic, Fast for dance/shortform, Instrumental for pop, Cinematic for orchestral)
+- **Noodling-prevention combo**: `[Outro] long instrumental outro, soft keys, slow fade [End]` — stacking both 'winding down' and 'stop here' signals is more effective than either alone
 
 ---
 

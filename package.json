@@ -1,6 +1,6 @@
 {
   "name": "suno-band-manager",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "AI-powered music production assistant for creating Suno-ready song packages — a BMad Method module",
   "main": "src/module.yaml",
   "keywords": ["bmad", "bmad-method", "suno", "ai-music", "music-production", "song-creation"],

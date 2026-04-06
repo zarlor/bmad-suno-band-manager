@@ -1,6 +1,6 @@
 # Suno Metatag Reference
 
-Metatags are keywords in square brackets `[ ]` placed in the lyrics field to guide Suno's generation. This reference covers all known working tags as of March 2026. Suno evolves frequently — when uncertain about a tag's effectiveness, use web search to verify against current documentation.
+Metatags are keywords in square brackets `[ ]` placed in the lyrics field to guide Suno's generation. This reference covers all known working tags as of April 2026. Suno evolves frequently — when uncertain about a tag's effectiveness, use web search to verify against current documentation.
 
 **Confidence Levels:** Tags are marked HIGH (multiple sources confirm), MEDIUM/Experimental (1-2 sources, may not work consistently), or unmarked (established/proven). HIGH-confidence new additions from March 2026 research are integrated into existing sections. MEDIUM-confidence tags are marked with "(Experimental)" throughout.
 
@@ -56,6 +56,18 @@ Tags that create instrumental moments with no lyrics. These add duration to the 
 
 Control how Suno's vocal engine performs specific sections. Place right before the section tag or between the section tag and the first lyric line. Use one primary delivery cue per section — stacking reduces effectiveness.
 
+**Three-layer vocal specification** (HookGenius technique) — for maximum vocal control, specify across three layers:
+1. **Character**: 'raspy female vocals', 'smooth baritone', 'deep female alto'
+2. **Delivery**: 'breathy', 'powerful belt', 'whispered', 'falsetto', 'aggressive'
+3. **Effects**: 'reverb-drenched', 'dry close-mic', 'doubled harmonies', 'lo-fi filtered'
+
+'Just saying male vocals gives Suno no direction' — specificity across all three layers dramatically improves consistency.
+
+**Vocal delivery reliability tiers** (HookGenius 300+ tag testing):
+- **HIGH**: `[Raspy]`, `[Breathy]`, `[Powerful]`, `[Spoken Word]`, `[Choir]`, gender tags
+- **MEDIUM**: `[Operatic]`, `[Whispered]` (reliable but reduces overall track energy), `[Melodic Rap]`, `[AutoTune]`, `[Harmonies]`
+- **LOW**: `[Falsetto]`, `[Growling]`, `[Yodeling]` (rarely produces actual yodeling)
+
 ### Volume & Intensity
 | Tag | Effect |
 |-----|--------|
@@ -73,7 +85,7 @@ Control how Suno's vocal engine performs specific sections. Place right before t
 ### Vocal Style & Technique
 | Tag | Effect |
 |-----|--------|
-| `[Falsetto]` / `[Head Voice]` | High, airy vocal register |
+| `[Falsetto]` / `[Head Voice]` | High, airy vocal register — **LOW reliability** (HookGenius testing: 'sometimes Suno delivers it, sometimes ignores it entirely'). Try 'natural falsetto, airy high register, effortless' in the style prompt instead for more consistent results. |
 | `[Chest Voice]` | Full, resonant lower register |
 | `[Breathy]` | Airy, breath-heavy vocal |
 | `[Raspy]` | Rough, textured vocal |
@@ -165,7 +177,7 @@ These follow the same `[Category: value]` pattern as the core descriptors above:
 |-----|---------|-------|
 | `[Atmosphere: ...]` | `[Atmosphere: Dreamy]`, `[Atmosphere: Cyberpunk]`, `[Atmosphere: Medieval]` | Sets environmental/spatial context |
 | `[Texture: ...]` | `[Texture: Grainy]`, `[Texture: Velvet]` | Controls sonic texture quality |
-| `[Effect: ...]` | `[Effect: Lo-fi]`, `[Effect: Reverb: Hall]`, `[Effect: Delay: Ping-pong]`, `[Effect: Distortion]`, `[Effect: Sidechain]`, `[Effect: Radio Filter]` | Production effects — supports nested colon syntax for specificity |
+| `[Effect: ...]` | `[Effect: Lo-fi]`, `[Effect: Reverb: Hall]`, `[Effect: Delay: Ping-pong]`, `[Effect: Distortion]`, `[Effect: Sidechain]`, `[Effect: Radio Filter]`, `[Effect: Bitcrusher]` (digital degradation/8-bit sound), `[Effect: Autopan]` (sound panning left to right), `[Effect: Sidechain]` (pumping volume effect, common in House) | Production effects — supports nested colon syntax for specificity |
 | `[Harmony: ...]` | `[Harmony: High]` | Harmony register/style guidance |
 | `[Voice: ...]` | `[Voice: Auto-tune]` | Vocal processing direction |
 | `[Vibe: ...]` | `[Vibe: Cinematic]` | Overall vibe/feel — similar to Mood but more production-oriented |
@@ -230,11 +242,18 @@ Tags that control energy flow and transitions within the song.
 | `[Soft End]` | Gentle ending variation (HIGH) |
 | `[Dramatic End]` | Dramatic ending variation (HIGH) |
 | `[Big Finish]` | Grand climactic ending (HIGH) — also works as a section tag |
+| `[Instrumental End]` | Finish with instrumentation only, no vocals (HIGH) |
+| `[Slow Fade Out]` | Longer, gentler fade — best for ambient/cinematic (HIGH) |
+| `[Fast Fade Out]` | Quick fade — best for dance/shortform (HIGH) |
+| `[Instrumental Fade Out]` | Vocals end, instruments continue briefly then fade (HIGH) |
+| `[Cinematic Fade Out]` | Strings/pads fade first, rhythm fades last (HIGH) |
 | `[Unresolved tension]` | Avoids tonic resolution, ends on suspended chord (HIGH) |
 | `[Key Change]` / `[Key Modulation]` | Signal a key change, usually upward for a lift (HIGH) |
 | `[Metric Modulation]` | Rhythmic shift changing perceived tempo (HIGH) |
 | `[Accelerando]` | Gradually speed up tempo (HIGH) |
 | `[Ritardando]` | Gradually slow down tempo (HIGH) |
+
+**Grid-loss warning:** When using `[Accelerando]` or `[Ritardando]`, the AI can lose the rhythmic grid for the remainder of the track. Always provide a 'return to home' command — if you speed up for a Bridge, make the first line of your final Chorus or Outro include a stabilizing tag like `[Tempo: 120 BPM]` or a strong structural tag like `[Chorus]` to force recalibration. BPM tags are normally ineffective for setting tempo, but may serve as 'recalibration anchors' after dynamic tempo disruptions — this warrants further testing.
 
 ## Sound Effect Tags
 
@@ -248,6 +267,19 @@ Environmental and ambient sounds Suno can generate. Use sparingly — these work
 | **Music** | `[Record Scratch]`, `[Bell Dings]`, `[Fire Crackling]` |
 | **Animals** | `[Barking]`, `[Squawking]`, `[Howling]` |
 | **Meta** | `[Censored]` (bleep sound) |
+
+### Asterisk Inline Sound Effects
+
+Suno also recognizes `*text*` as inline sound effect cues within lyrics. Confirmed working examples:
+- `*rainfall*`, `*wind sounds*`, `*ocean waves*`, `*vinyl crackle*`, `*radio static*`
+- `*distant thunder*`, `*soft whispers*`, `*crowd cheering*`, `*cafe ambience*`
+- Can stack multiple effects in one line
+
+**Limitations:** Overuse clutters tracks; effects may overpower vocals; results are unpredictable — requires experimentation. Use sparingly.
+
+**Note:** This is the ONE exception to the 'no asterisks in lyrics' rule documented elsewhere. Asterisk-wrapped text is interpreted as sound effect cues, not formatting.
+
+Source: [Suno AI Sound Effects with Asterisks — Jack Righteous](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/suno-ai-sound-effects-asterisks)
 
 ## Production & Mix Tags (HIGH)
 
@@ -379,7 +411,7 @@ These are partially supported and may not work consistently across all models.
 | Tag Syntax | Purpose | Notes |
 |-----------|---------|-------|
 | `[Verse 1: 7/8]` / `[Chorus: 4/4]` | Time signature hint per section | Inconsistently respected but worth attempting for prog/experimental work. Studio 1.2's time signature picker does NOT yet send to generative models — in-lyric tags are currently the only way to attempt this |
-| `[Callback: ...]` | During Extend/Replace, references a prior section's feel (Experimental) | e.g., `[Callback: Verse 1 energy]` — useful for maintaining continuity across generations |
+| `[Callback: ...]` | During Extend/Replace, references a prior section's feel | HIGH reliability for Extend/Replace workflows — 'Callback phrasing is respected reliably across Extend chains' (community-validated). Experimental for standard generation. e.g., `[Callback: Verse 1 energy]` — useful for maintaining continuity across generations |
 
 ### BPM Tags — Confirmed Ineffective
 
@@ -390,6 +422,20 @@ These are partially supported and may not work consistently across all models.
 Tags like `[Verse: 65 BPM]` or `[Chorus: 130 BPM]` are ignored by the generative model. Suno picks its own tempo based on genre, style prompt, and arrangement context. **Do not use BPM tags in lyrics — they waste character budget and create false expectations.**
 
 For actual tempo/pacing control, see "Line Density as Tempo Control" and "Half-Time / Double-Time Drum Feel" below.
+
+## Tags Confirmed NOT Working
+
+These tags are commonly recommended online but have been tested and found to have no reliable effect on Suno's output:
+
+| Tag | Finding | Source |
+|-----|---------|--------|
+| BPM tags (`[Verse: 65 BPM]`) | Zero effect on output — confirmed by librosa analysis | Production testing |
+| `[Bilingual]` / `[Spanglish]` | Placeholders with no evidence of special model behavior | Community testing |
+| `[Live Version]` | Not reliably parsed; may subtly influence mixing but no strong evidence | Community testing |
+| `[Mono]` / `[Wide Stereo]` | Subtle and inconsistent — Suno v5 does not reliably obey them | Community testing |
+| `[Clean Lyrics]` / `[Explicit]` | Do not override the content filter | Community testing |
+| `[Key Change]` (for precise control) | May nudge toward modulation but does NOT guarantee a specific key change — for precise transposition, export to a DAW | Community testing |
+| Time signature tags in lyrics | Inconsistently respected; Studio 1.2 picker also not sent to generative models | Production + official docs |
 
 ## Lyric Formatting as Suno Controls
 
@@ -546,7 +592,7 @@ Instrumental tags without clear boundaries cause Suno to generate excessive inst
 
 - Blank line between every section (including between tag and previous section)
 - No style descriptions inside lyrics text (those go in the style prompt)
-- No asterisks or markdown formatting in lyrics
+- No asterisks or markdown formatting in lyrics (exception: `*text*` for inline sound effects — see Asterisk Inline Sound Effects)
 - Commas create breath pauses, dashes create connected delivery, ellipses create micro-pauses — use intentionally
 - **Exclamation points trigger bark/attack delivery** — avoid in clean sections
 - **ALL CAPS sets the loudness ceiling** — save for peak moments only
@@ -631,3 +677,17 @@ We were never meant to stay
 - [HookGenius: Suno Prompts Complete Guide](https://hookgenius.app/learn/suno-prompts-complete-guide/)
 - [Suno API Docs: Character Limits by Model (sunoapi.org)](https://docs.sunoapi.org/suno-api/generate-music)
 - [iFlow.bot: Suno v5 Secrets](https://iflow.bot/suno-v5-secrets-crafting-ai-generated-songs/)
+
+## Community Research Sources
+
+> Last updated: April 6, 2026.
+
+- [HookGenius: All Suno Metatags Complete List (2026)](https://hookgenius.app/learn/suno-metatags-complete-list/)
+- [HookGenius: 300+ Suno Style Tags That Actually Work](https://hookgenius.app/learn/suno-style-tags-guide/)
+- [HookGenius: Suno Vocal Effects — Harmonies, Layers & More](https://hookgenius.app/learn/suno-vocal-effects/)
+- [Jack Righteous: Suno AI Meta Tags Guide](https://jackrighteous.com/en-us/pages/suno-ai-meta-tags-guide)
+- [Jack Righteous: Add Sound Effects Using Asterisks](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/suno-ai-sound-effects-asterisks)
+- [Jack Righteous: Mastering Suno V5 Meta Tags — 2nd Edition](https://jackrighteous.com/en-us/blogs/jack-righteous-updates/mastering-suno-v5-meta-tags-2nd-edition-update-how-to-use)
+- [BlakeCrosley: Suno AI Definitive Technical Reference](https://blakecrosley.com/guides/suno)
+- [OpenMusicPrompt: 500+ Pro Tags & Templates](https://openmusicprompt.com/blog/suno-ai-metatags-guide)
+- [James 99/Medium: Ultimate Guide to Suno AI Metatags](https://james-palm.medium.com/stop-wasting-your-credits-the-ultimate-guide-to-suno-ai-metatags-verse-chorus-and-drop-57e209a0e5d8)
