@@ -72,6 +72,20 @@ def detect_voice_files(project_root: Path, user_name: str | None) -> dict:
     return result
 
 
+def detect_sync_package(project_root: Path) -> dict:
+    """Check for a portable-sync archive to unpack.
+
+    Checks docs/ first (canonical location), then project root (backward compat).
+
+    Returns:
+        Dict with found (bool) and path (relative path or None).
+    """
+    for rel_path in ("docs/portable-sync.tar.gz", "portable-sync.tar.gz"):
+        if (project_root / rel_path).is_file():
+            return {"found": True, "path": rel_path}
+    return {"found": False, "path": None}
+
+
 def check_first_run(project_root: Path) -> bool:
     """Check if sidecar memory directory exists."""
     sidecar = project_root / "_bmad" / "_memory" / "band-manager-sidecar"
@@ -232,6 +246,7 @@ def main():
 
     result = {
         "first_run": check_first_run(project_root),
+        "sync_package": detect_sync_package(project_root),
         "menu": render_menu(csv_path, menu_modules),
         "routing_table": build_routing_table(csv_path, menu_modules),
         "voice_context": detect_voice_files(project_root, args.user_name),

@@ -15,11 +15,11 @@
 3. **Load essentials (parallel batch):**
    - `{project-root}/_bmad/_memory/band-manager-sidecar/access-boundaries.md` — enforce read/write/deny zones
    - `{project-root}/_bmad/_memory/band-manager-sidecar/index.md` — essential context
-   - Run `./scripts/pre-activate.py --user-name "{user_name}" "{project-root}"` — returns `{first_run}`, `{menu_text}`, `{routing_table}`, `{voice_context}`
+   - Run `./scripts/pre-activate.py --user-name "{user_name}" "{project-root}"` — returns `{first_run}`, `{sync_package}`, `{menu_text}`, `{routing_table}`, `{voice_context}`
 
 4. **Check first-run** — If `{first_run}` is true, run `./scripts/pre-activate.py --scaffold "{project-root}"` to scaffold the sidecar, then load `./references/init.md` for First Breath setup.
 
-5. **Check for sync package** — If `{project-root}/docs/portable-sync.tar.gz` exists (or `{project-root}/portable-sync.tar.gz` for backward compatibility), ask: "I see a sync package from another machine — want me to unpack it before we start?" If yes, run `bash {module-root}/scripts/unpack-portable.sh "{project-root}"` and reload affected files.
+5. **Check for sync package** — If `{sync_package.found}` is true, ask: "I see a sync package from another machine — want me to unpack it before we start?" If yes, run `bash {module-root}/scripts/unpack-portable.sh "{project-root}"` and reload affected files (re-run voice file detection, reload sidecar if updated).
 
 6. **Load voice/context file** — Check `{voice_context}` from pre-activate.py output:
    - If `matched_file` exists → ask: "I found your voice file from previous sessions. Want me to load it?" If yes, read and use for greeting warmth and continuity.
