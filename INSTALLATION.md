@@ -71,6 +71,8 @@ The module ships a Stop hook script (`scripts/pipeline-guard.py`) that enforces 
 
 **Why:** Without this guard, the agent may hand-build packages from conversation memory instead of running them through the skills. The skills contain critical guardrails (artist name detection, production descriptor checks, character budget validation, section tag validation) that cannot be replicated from memory.
 
+**Auto-configuration:** Running `suno-setup` offers to configure the pipeline guard automatically — both the Claude Code Stop hook and the cross-platform AGENTS.md standing order. The manual steps below are for reference or if you prefer to set it up yourself.
+
 ### Claude Code Setup
 
 Add to your `.claude/settings.local.json` (create if it doesn't exist):

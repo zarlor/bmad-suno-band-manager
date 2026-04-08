@@ -71,6 +71,40 @@ The script verifies that every skill in the legacy directories exists at `.claud
 
 Check `directories_removed` and `files_removed_count` in the JSON output for the confirmation step. Run `./scripts/cleanup-legacy.py --help` for full usage.
 
+## Configure Pipeline Guard (Optional)
+
+After config and cleanup are complete, offer to configure the pipeline guard. The guard enforces Mac's mandatory production pipeline — it prevents hand-building Suno packages without running the formal skill pipeline (Style Prompt Builder + Lyric Transformer).
+
+Ask: "Want me to set up the pipeline guard? It ensures Mac always runs the production skills before presenting a Suno package. I can configure it for your coding tool."
+
+If the user declines, skip to Confirm.
+
+If the user accepts, configure both layers:
+
+### Claude Code Stop Hook
+
+If the project has a `.claude/` directory (indicating Claude Code usage), configure the deterministic Stop hook:
+
+```bash
+python3 ./scripts/configure-guard.py --settings-path "{project-root}/.claude/settings.local.json" --guard-script-path "scripts/pipeline-guard.py"
+```
+
+The script merges the hook into existing settings without overwriting other configuration. It's idempotent — skips if already configured. Check the JSON output for `status` ("configured", "already_configured", or "error").
+
+**Path note:** The hook command uses `$CLAUDE_PROJECT_DIR` (a Claude Code environment variable) so it works regardless of where the project lives on disk.
+
+### Standing Order (All Platforms)
+
+Configure the cross-platform standing order in `AGENTS.md` — readable by Codex CLI, Cursor, GitHub Copilot, Windsurf, Amp, and Gemini CLI (when configured to read AGENTS.md):
+
+```bash
+python3 ./scripts/configure-guard.py --agents-md-path "{project-root}/AGENTS.md"
+```
+
+The script appends the standing order section to AGENTS.md (creates the file if it doesn't exist). Idempotent — skips if the section already exists.
+
+**Both commands can run in parallel** since they write to different files. Report what was configured in the Confirm step.
+
 ## Confirm
 
 Use the script JSON output to display what was written — config values set (written to `config.yaml` at root for core, module section for module values), user settings written to `config.user.yaml` (`user_keys` in result), init-compatible per-module configs written (`init_configs_written`), help entries added, fresh install vs update. If legacy files were deleted, mention the migration. If legacy directories were removed, report the count and list (e.g. "Cleaned up 106 installer package files from bmb/, core/, \_config/ — skills are installed at .claude/skills/"). Then display the `module_greeting` from `./assets/module.yaml` to the user.

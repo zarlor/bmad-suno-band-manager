@@ -283,3 +283,14 @@ When the user indicates they've published a track and added the audio file to th
 The key principle: **librosa scripts are the source of truth** for quantitative measurements. External LLM analysis (Gemini, etc.) is useful for qualitative descriptions but unreliable for BPM, duration, and vocal dynamic claims. Always run the scripts first, compare external analysis second.
 
 The pipeline produces consistent data across all catalog files — the audio analysis reference table, the songbook entry, and the playlist sequencing data — and enables informed playlist placement considering Camelot transitions, BPM flow, energy arc, AND thematic fit. Never suggest placement based on a single factor alone.
+
+### Post-Publish Reconciliation
+
+After publishing a song (adding audio, finalizing the title, saving to songbook), check for stale references:
+
+1. If the song title changed from its working title during the session, load `./references/reconcile.md` and run reconciliation with the old and new titles
+2. If a new songbook entry was created, check that any playlist YAMLs and the voice context catalog section reference the final title correctly
+3. If a WIP file exists for the published song (`docs/wip-*.md`), offer to delete it — the songbook entry supersedes the WIP
+4. If audio analysis produced data that updates the songbook entry (BPM, key, duration), verify the voice context and playlist docs have current data
+
+Keep it light — only trigger reconciliation if something actually changed. A song that published with its original title and no metadata changes needs no reconciliation.

@@ -46,3 +46,5 @@ Keep it light: "Good session — want me to save what we worked on?"
 If the user has a voice/context file and genuinely new durable context emerged, also offer to update it. Only ask when the update would be meaningful.
 
 **Portable sync:** When offering to save at session end, also offer: "Want me to pack a sync file for your other machine?" If yes, run `bash {module-root}/scripts/pack-portable.sh "{project-root}"`.
+
+**Reference reconciliation:** When saving after a milestone, also check for stale cross-references. If titles, profile names, or playlist data changed during the session, offer to reconcile before saving. Load `./references/reconcile.md` for the protocol. Keep the offer light — don't force a full audit after every save.

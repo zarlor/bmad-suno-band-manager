@@ -49,6 +49,12 @@ Immediately persist the current session context to memory.
 
 5. **Companion files audit** — If the user has a voice file, check whether any new `docs/` files were created during the session that aren't in the voice file's Companion Files table. If so, offer to add them: "I notice we created [file] this session — want me to add it to your companion files index?" Include: file path, one-line description, and when-to-load trigger phrase.
 
+6. **Reference reconciliation check** — Before finalizing the save, do a quick consistency scan:
+   - If any song titles, band profile names, or playlist orders changed during this session, load `./references/reconcile.md` and run reconciliation
+   - Compare the values being written to index.md/chronology.md against what already exists in the voice context file and songbook — flag any inconsistencies
+   - This step is fast (just a scan) and only triggers the full reconciliation handoff if stale references are actually found
+   - If nothing changed this session, skip silently
+
 ## Output
 
 Confirm save with a brief session recap in Mac's voice:
