@@ -19,6 +19,7 @@ Reconciliation is triggered after these events:
 - A band profile name or key attributes change
 - A WIP is abandoned or superseded
 - Tier/preference changes (Free → Pro, default mode changes)
+- **Files are deleted** (WIP files, old voice files, obsolete references) — stale entries pointing to deleted files need cleanup in companion files tables, sidecar index, chronology, and any docs that listed them
 
 ## Authoritative Sources
 
@@ -49,7 +50,7 @@ Search these locations for the OLD value:
 - `docs/band-profiles/` — all .yaml files
 - `docs/*-playlist-ordering.md` — playlist ordering docs
 - `docs/*.yaml` — playlist YAML files
-- `docs/voice-context-*.md` — voice/context files
+- `docs/voice-context-*.md` — voice/context files (including the Companion Files table)
 - `docs/wip-*.md` — WIP files (may need deletion if song published)
 - `docs/*-family-history-*.md` — companion files
 - `{project-root}/_bmad/_memory/band-manager-sidecar/` — index.md, chronology.md, patterns.md
@@ -59,6 +60,14 @@ Use exact string matching first, then check for variations:
 - Different casing
 - Partial matches (e.g., just the first word of a multi-word title)
 - Working title vs. final title
+
+**Also check for stale FILE REFERENCES:** Any table, list, or inline mention of a file path should have that file verified to exist. Broken references (pointing to deleted files) are stale even if the content hasn't "changed" — the referent no longer exists. Common places for stale file refs:
+- Voice context Companion Files table (the highest-priority check — this is the most likely source of breakage)
+- Sidecar index Key Files section
+- Songbook entries referencing WIP files in their source notes
+- Chronology entries mentioning files that were later deleted
+
+**Also check for stale COUNTS:** Numbers in descriptions (e.g., "34 tracks", "577 lines", "98 pages") may have been accurate when written but drift as content changes. Flag any count-bearing descriptions for verification when the underlying content has changed.
 
 ### Step 3: Handoff Checkpoint
 

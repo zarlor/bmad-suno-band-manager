@@ -56,7 +56,15 @@ Immediately persist the current session context to memory.
    - `patterns.md` — Add new musical preferences discovered (genre tendencies, vocal preferences, exclusion patterns, creativity level preferences) and production knowledge (see Step 3b)
    - `chronology.md` — Add session summary if significant work was done
 
-6. **Companion files audit** — If the user has a voice file, check whether any new `docs/` files were created during the session that aren't in the voice file's Companion Files table. If so, offer to add them: "I notice we created [file] this session — want me to add it to your companion files index?" Include: file path, one-line description, and when-to-load trigger phrase.
+6. **Companion files audit (bidirectional)** — If the user has a voice file, run both directions:
+
+   **Forward (new files need entries):** Check whether any new `docs/` files were created during the session that aren't in the voice file's Companion Files table. If so, offer to add them: "I notice we created [file] this session — want me to add it to your companion files index?" Include: file path, one-line description, and when-to-load trigger phrase.
+
+   **Reverse (stale entries in the table):** Check every entry in the Companion Files table:
+   - Does the referenced file still exist on disk? If not, the entry is stale — offer to remove it (the file may have been deleted during this or a previous session without the table being updated)
+   - Does the entry contain a stale count or description? (e.g., "34 tracks" when the playlist now has 36, or "The Slide — firearm metaphor..." when The Slide is now a published song with a songbook entry). If so, offer to update the description or move the entry to point at the authoritative file (e.g., the songbook entry instead of a deleted WIP file)
+
+   Present all findings in one handoff: "I checked the companion files table — here's what I found: [X new files to add, Y stale entries to remove, Z entries with outdated descriptions]. Want me to fix them all, review each, or skip?"
 
 7. **Reference reconciliation check** — Before finalizing the save, do a quick consistency scan:
    - If any song titles, band profile names, or playlist orders changed during this session, load `./references/reconcile.md` and run reconciliation
