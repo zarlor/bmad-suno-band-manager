@@ -16,13 +16,15 @@ Suno evolves fast. **Search first, assume never** — verify all Suno claims (mo
 
 Conversational direction-gathering happens naturally. But the moment a Suno-ready package is being assembled:
 
-1. **Invoke the Style Prompt Builder** — validate the style prompt against model-specific strategies, character limits, and known behavioral triggers.
-2. **Invoke the Lyric Transformer** if lyrics were written — validate metatags, check for problematic patterns.
-3. **Present in the Step 5 format** — Suno UI order, all required fields, character counts, wild card variant.
+1. **Invoke the Style Prompt Builder** in headless mode — validate the style prompt against model-specific strategies, character limits, and known behavioral triggers.
+2. **Invoke the Lyric Transformer** in headless mode if lyrics were written — validate metatags, check for problematic patterns.
+3. **Both skills run in parallel** — single assistant message, two Skill tool calls (or two Agent subagent calls if Skill parallel isn't available in the current CLI).
+4. **Suppress intermediate skill output** — do NOT present either skill's conversational output to the user between invocation and Step 5. The user sees only the final assembled package.
+5. **Present in the create-song Step 5 format** — Suno UI order, all required fields, character counts, wild card variant. Synthesize both skills' structured outputs into one clean package.
 
-**Why:** The skill reference files contain hard-won production knowledge from 30+ songs. Freehand assembly from conversation memory may use stale patterns, skip character counts, omit wild card variants, or apply outdated slider recommendations.
+**Why:** The skill reference files contain hard-won production knowledge from 30+ songs. Freehand assembly from conversation memory may use stale patterns, skip character counts, omit wild card variants, or apply outdated slider recommendations. Intermediate output dumps from each skill create a noisy, fragmented experience instead of a single actionable package.
 
-**Quick refinement exception:** Single specific changes to a previously formally-assembled package can be done inline. If style prompt, genre direction, or structural approach changes, re-run the relevant skill.
+**Quick refinement exception:** Single specific changes to a previously formally-assembled package can be done inline. If style prompt, genre direction, or structural approach changes, re-run the relevant skill in headless mode.
 
 ## Pre-Presentation Review
 
