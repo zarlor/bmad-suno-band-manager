@@ -49,6 +49,34 @@ def detect_suno_package(message: str) -> bool:
     return any(re.search(p, message, re.IGNORECASE | re.MULTILINE) for p in patterns)
 
 
+def _extract_tool_uses(entry: dict) -> list[dict]:
+    """Walk the transcript entry structure to find all tool_use items.
+
+    Claude Code transcripts nest tool_use items inside
+    entry.message.content[] for assistant messages. Older structures
+    may place them at the top level. This helper handles both.
+    """
+    tool_uses = []
+    # Top-level shapes (defensive)
+    if entry.get("type") == "tool_use":
+        tool_uses.append(entry)
+    if "tool_name" in entry and entry.get("tool_name"):
+        # Legacy/flattened shape: tool_name + tool_input
+        tool_uses.append({
+            "name": entry.get("tool_name"),
+            "input": entry.get("tool_input", {}),
+        })
+    # Nested shape: entry.message.content[] with items of type "tool_use"
+    message = entry.get("message", {})
+    if isinstance(message, dict):
+        content = message.get("content", [])
+        if isinstance(content, list):
+            for item in content:
+                if isinstance(item, dict) and item.get("type") == "tool_use":
+                    tool_uses.append(item)
+    return tool_uses
+
+
 def check_skill_invocations(transcript_path: str) -> set[str]:
     """Read the transcript and find which skills were invoked.
 
@@ -75,27 +103,20 @@ def check_skill_invocations(transcript_path: str) -> set[str]:
                     entry = json.loads(line)
                 except json.JSONDecodeError:
                     continue
-                # Direct Skill tool invocations
-                if entry.get("type") == "tool_use" and entry.get("name") == "Skill":
-                    skill_name = entry.get("input", {}).get("skill", "")
-                    if skill_name:
-                        skills.add(skill_name)
-                if entry.get("tool_name") == "Skill":
-                    skill_name = entry.get("tool_input", {}).get("skill", "")
-                    if skill_name:
-                        skills.add(skill_name)
-                # Agent subagent invocations that reference skill names
-                # (parallel skill execution via Agent tool)
-                if entry.get("type") == "tool_use" and entry.get("name") == "Agent":
-                    prompt = entry.get("input", {}).get("prompt", "")
-                    for sn in skill_names_to_detect:
-                        if sn in prompt:
-                            skills.add(sn)
-                if entry.get("tool_name") == "Agent":
-                    prompt = entry.get("tool_input", {}).get("prompt", "")
-                    for sn in skill_names_to_detect:
-                        if sn in prompt:
-                            skills.add(sn)
+                for tool_use in _extract_tool_uses(entry):
+                    name = tool_use.get("name", "")
+                    tool_input = tool_use.get("input", {}) or {}
+                    if name == "Skill":
+                        skill_name = tool_input.get("skill", "")
+                        if skill_name:
+                            skills.add(skill_name)
+                    elif name == "Agent":
+                        # Agent subagent invocations that reference skill
+                        # names (parallel skill execution pattern)
+                        prompt = tool_input.get("prompt", "")
+                        for sn in skill_names_to_detect:
+                            if sn in prompt:
+                                skills.add(sn)
         return skills
     except (OSError, PermissionError):
         return skills
