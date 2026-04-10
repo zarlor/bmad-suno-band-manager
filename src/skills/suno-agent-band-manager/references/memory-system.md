@@ -21,7 +21,7 @@ Tokens are expensive. Only remember what matters. Condense everything to its ess
 - **Session History** — Condensed timeline of sessions and milestones
 - **Current Creative State** — Active WIPs, directions being explored, threads to pick up
 
-**Multi-user:** One file per user, named by normalized username (lowercase, spaces→hyphens): `voice-context-lenny.md`, `voice-context-bob-smith.md`. Mac writes only to the current user's file.
+**Multi-user:** One file per user, named by normalized username (lowercase, spaces→hyphens): `voice-context-alex.md`, `voice-context-bob-smith.md`. Mac writes only to the current user's file.
 
 **Update discipline:** Only when genuinely new durable context emerges — new personal history, new creative work, significant preference changes, production breakthroughs. Not after every minor exchange.
 

@@ -1,0 +1,40 @@
+# Portable Manifest — example
+#
+# Copy this file to portable-manifest.yaml at your project root and customize
+# the include patterns. The pack-portable script (bash or PowerShell) will use
+# these patterns instead of its built-in defaults.
+#
+# Each include entry is a glob pattern relative to the project root. Patterns
+# support ** for recursive directory matches.
+#
+# Without a manifest, pack-portable falls back to the documented Suno module
+# data directories: voice files, band profiles, songbook, and WIP files.
+
+include:
+  # Documented Suno module data — keep these unless you know what you're doing
+  - "docs/voice-context-*.md"
+  - "docs/songbook/**/*.md"
+  - "docs/band-profiles/**/*.yaml"
+  - "docs/wip-*.md"
+
+  # ----- Examples of custom additions below — uncomment what applies -----
+
+  # Companion files referenced from your voice-context's Companion Files table.
+  # Use whatever naming convention you adopt. A few examples:
+  # - "docs/*-family-history-and-voice.md"
+  # - "docs/*-deep-dive.md"
+  # - "docs/notes-*.md"
+
+  # Playlist artifacts and audio analysis outputs:
+  # - "docs/*-playlist.yaml"
+  # - "docs/*-playlist-ordering.md"
+  # - "docs/audio-analysis-reference.md"
+  # - "docs/catalog-analysis-report.md"
+
+  # Session findings, lessons learned, and other working notes:
+  # - "docs/session-findings-*.md"
+  # - "docs/lessons-learned-*.md"
+
+  # Anything else you want to sync between machines that lives in docs/:
+  # - "docs/inspiration/**/*.md"
+  # - "docs/reference-tracks/**/*.txt"

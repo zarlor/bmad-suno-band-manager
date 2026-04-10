@@ -247,8 +247,8 @@ Straightforward genre + mood + basic production notes. Less nuanced than v4.5+ m
 
 ## Universal Rules (All Models)
 
-1. **Character limits** — v4 Pro: 200-char hard limit. v4.5+/v5: 1,000-char technical limit (API confirmed). All silently truncated at their respective limits.
-2. **Critical zone (first 200 chars)** — community testing suggests content beyond ~200 characters may have diminished influence on generation, even for v4.5+/v5. Front-load all essential genre, mood, and vocal descriptors within the first 200 characters. A concise 100-char prompt can outperform a cluttered 200-char one. Content beyond ~200 is supplementary and may introduce competing instructions.
+1. **Character limits** — v4 Pro: 200-char hard limit. v4.5+/v5/v5.5: 1,000-char hard limit (API confirmed). All silently truncated at their respective limits.
+2. **Critical zone (first ~200 chars)** — front-loaded terms have the strongest influence on generation. Front-load all essential genre, mood, and vocal descriptors within the first ~200 characters. Content beyond ~200 chars is supplementary but not wasted — it adds nuance and specificity. v5.5's improved descriptor interpretation may extend the effective window beyond 200 chars. A concise 100-char prompt can outperform a cluttered 200-char one, but a well-crafted 250-char prompt with specific descriptors can outperform a generic 150-char one. This is a priority guide, not a character limit.
 3. **Word order is weighted** — front-loaded terms dominate generation. Priority order: Genre → Mood/Energy → Instruments → Vocals → Production. Whatever appears first sets the primary sound; everything after is progressively more "flavoring."
 4. **5-8 descriptors is the sweet spot** (HookGenius 1000+ prompt analysis, April 2026) — fewer than 4 produces generic results; exceeding 10 causes conflicting signals and quality degradation. Each descriptor should earn its place.
 5. **Hyper-specific beats generic** — "1980s synth-pop" not "pop"; "distorted electric guitar, power chords" not "guitar." Era descriptors instead of artist names: "late 70s disco" not an artist name.

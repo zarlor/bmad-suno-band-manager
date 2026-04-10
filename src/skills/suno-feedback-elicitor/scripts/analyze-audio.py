@@ -3,7 +3,7 @@
 # requires-python = ">=3.10"
 # dependencies = ["librosa>=0.10", "numpy>=1.24"]
 # ///
-"""Batch audio analysis for Solitary Fire catalog.
+"""Batch audio analysis for a song catalog.
 
 Extracts BPM (librosa + aubio), estimated key, and duration for all MP3s
 in a directory.

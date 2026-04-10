@@ -4,6 +4,69 @@ All notable changes to the Suno Band Manager module are documented here.
 
 ---
 
+## [1.6.0] - 2026-04-09
+
+### BMad Plugins Marketplace Submission
+
+This release packages the module for submission to the [BMad Plugins Marketplace](https://github.com/bmad-code-org/bmad-plugins-marketplace) as a community module under `design-and-creative` / `audio`. Version `1.6.0` consolidates the unreleased v1.5.0/v1.5.1/v1.5.2 work plus marketplace-prep cleanup.
+
+### Marketplace Packaging
+
+- **Added `.claude-plugin/marketplace.json`** at repo root, registering all six skills (suno-agent-band-manager, suno-band-profile-manager, suno-style-prompt-builder, suno-lyric-transformer, suno-feedback-elicitor, suno-setup) under the BMad Builder distribution format.
+- **Module quality validation pass** — Re-ran `bmad-module-builder` Validate Module against `src/skills`. All structural checks pass; CSV registration audited against actual skill behavior.
+
+### Privacy & Repo Hygiene
+
+- **Expanded `.gitignore`** — `docs/`, `.claude/`, `.gemini/`, `.agents/`, `_bmad/`, `_bmad-output/`, and `portable-manifest.yaml` are now properly excluded so personal user content (voice files, songbook, band profiles, audio, WIP files) stays out of the repo.
+- **Removed `docs/solitary-fire-playlist.yaml`** from tracked files. Personal album content should never have been tracked.
+- **Genericized personal references** in source: `analyze-audio.py` docstring, `memory-system.md` example name, `reconcile.md` companion-file pattern guidance now uses dynamic discovery via the voice file's Companion Files table rather than hardcoded family-history wildcards.
+
+### Cross-Platform Support
+
+- **PowerShell counterparts** for all three shell utilities:
+  - `link-skills.ps1` — Windows symlink installer (uses Developer Mode or elevation)
+  - `scripts/pack-portable.ps1` — Windows portable archive creator
+  - `scripts/unpack-portable.ps1` — Windows portable archive extractor
+- **`INSTALLATION.md` Windows guidance** — bash and PowerShell command pairs for Standalone, BMad Method, and Update flows. Updated Windows symlink troubleshooting note.
+
+### Portable Sync Improvements
+
+- **`pack-portable.sh` defaults trimmed** to documented module conventions only (`docs/voice-context-*.md`, `docs/songbook/**/*.md`, `docs/band-profiles/**/*.yaml`, `docs/wip-*.md`). User-specific patterns moved to manifest examples.
+- **New `portable-manifest.example.yaml`** at repo root — copy to `portable-manifest.yaml` and customize. Clearly documents the manifest format with commented examples for companion files, playlist artifacts, session findings, and other custom patterns.
+- **New "Multi-Machine Sync" section** in `INSTALLATION.md` explaining the pack/unpack workflow and manifest customization.
+
+### CSV Registration Fixes
+
+- **`suno-feedback-elicitor`** — cleared the `before` column. Previously it duplicated the `after` column (`suno-style-prompt-builder:build-style-prompt,suno-lyric-transformer:transform-lyrics`), creating a logical cycle. Feedback elicitor runs *after* the builders; the iteration loop back during refinement is implicit in the refine flow, not a CSV ordering relationship.
+- **`suno-lyric-transformer`** — removed `analyze` from the Transform Lyrics (TL) headless args list. The dedicated Analyze Lyrics (AL) row is the canonical analyze entry; TL now cleanly maps to `transform|refine`.
+- **`suno-style-prompt-builder`** — enriched description to surface wild card variants, exclusion prompts, and creativity modes (previously a generic "model-aware Suno style prompts" line that hid these capabilities).
+
+### Version Drift Resolved
+
+Three different version values were floating across the module before this release:
+
+- `module.yaml` was at `1.4.0`
+- `package.json` was at `1.4.1`
+- Latest git tag was `v1.5.2`
+
+All four locations now sync to `1.6.0`: `module.yaml`, `package.json`, `.claude-plugin/marketplace.json`, and the `INSTALLATION.md` config example.
+
+### Includes Unreleased Work from v1.5.0 / v1.5.1 / v1.5.2
+
+The intermediate v1.5.x tags shipped without changelog entries. Notable work folded into this release:
+
+- **Pipeline guard hook (v1.5.1)** — Stop hook script `scripts/pipeline-guard.py` enforces mandatory skill invocation; blocks responses containing a Suno package when `suno-style-prompt-builder` and `suno-lyric-transformer` weren't run during the session.
+- **State reconciliation (v1.5.2)** — `reconcile.md` workflow for detecting and fixing stale references across docs and sidecar files when authoritative data changes.
+- **Cross-platform pipeline guard setup (v1.5.2)** — `suno-setup` offers to configure the Stop hook and AGENTS.md standing order automatically.
+- **NOLA voice / section tag guidance / cross-skill references (v1.5.0)** — Reference doc updates for vocal direction patterns and metatag conventions.
+- **Dual-voice limitation documentation** — Suno v5/v5.5 cannot reliably produce two distinct same-gender voices; documented workarounds (Persona OFF + Replace Section, gender contrast, nu-metal/metalcore framing).
+- **Bidirectional companion files audit** — Stale file reference detection in `reconcile.md`.
+- **Pipeline guard transcript parsing fix** — Now correctly parses nested `tool_use` entries.
+- **Package assembly headless mode** — Parallel execution and suppression of intermediate output when running the full pipeline non-interactively.
+- **Refinement presentation cleanup** — Show only what changed in refinement output, not the full package.
+
+---
+
 ## [1.4.1] - 2026-04-06
 
 ### Suno v5.5 Community Research Update

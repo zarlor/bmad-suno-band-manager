@@ -2,8 +2,19 @@
 # Pack portable session files for multi-machine sync.
 # Creates portable-sync.tar.gz in docs/ under the project root.
 #
+# This bundles the user-generated content that lives in docs/ — voice files,
+# band profiles, songbook, WIP files — so it can move between machines
+# without going through git.
+#
 # Usage: bash scripts/pack-portable.sh [project-root]
 #   project-root defaults to current directory
+#
+# Customization:
+#   Create portable-manifest.yaml at the project root to control which files
+#   get packed. See portable-manifest.example.yaml for the format. Without a
+#   manifest, the defaults below pack the documented Suno module data dirs.
+#
+# Windows: see scripts/pack-portable.ps1 for the PowerShell equivalent.
 
 set -euo pipefail
 
@@ -34,16 +45,12 @@ if [ -f "$MANIFEST" ]; then
         add_glob "$pattern"
     done < <(sed -n '/^include:/,/^[^ -]/{ /^  *- /p }' "$MANIFEST")
 else
-    # Default portable file patterns
+    # Default patterns: documented Suno module data conventions only.
+    # Anything outside these (custom companion files, session findings, etc.)
+    # belongs in portable-manifest.yaml — see portable-manifest.example.yaml.
     add_glob "docs/voice-context-*.md"
     add_glob "docs/songbook/**/*.md"
     add_glob "docs/band-profiles/**/*.yaml"
-    add_glob "docs/*-playlist-ordering.md"
-    add_glob "docs/*-playlist.yaml"
-    add_glob "docs/audio-analysis-reference.md"
-    add_glob "docs/catalog-analysis-report.md"
-    add_glob "docs/session-findings-*.md"
-    add_glob "docs/*-family-history-and-voice.md"
     add_glob "docs/wip-*.md"
 fi
 

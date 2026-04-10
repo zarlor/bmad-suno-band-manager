@@ -15,11 +15,19 @@ cd bmad-suno-band-manager
 
 ### 2. Link skills
 
+**macOS / Linux / WSL:**
 ```bash
 ./link-skills.sh
 ```
 
+**Windows (PowerShell):**
+```powershell
+./link-skills.ps1
+```
+
 This creates symlinks in both `.claude/skills/` and `.agents/skills/`. The `.agents/skills/` path is the portable standard scanned by most LLM CLI tools.
+
+> **Windows note:** Symlinks require either Developer Mode (Settings → Update & Security → For developers → Developer Mode) or running PowerShell as Administrator. The script will print a clear error if neither is enabled.
 
 ### 3. First-run setup
 
@@ -56,8 +64,15 @@ npx bmad-method@next install
 
 ### 2. Link skills and run setup
 
+**macOS / Linux / WSL:**
 ```bash
 ./link-skills.sh
+/bmad-suno-setup
+```
+
+**Windows (PowerShell):**
+```powershell
+./link-skills.ps1
 /bmad-suno-setup
 ```
 
@@ -203,7 +218,7 @@ document_output_language: English
 output_folder: '{project-root}/_bmad-output'
 suno:
   name: BMad Suno Band Manager
-  version: 1.3.0
+  version: 1.6.0
   suno_tier: pro          # free, pro, or premier
   default_mode: studio    # demo, studio, or jam
   band_profiles_folder: '{project-root}/docs/band-profiles'
@@ -229,12 +244,54 @@ Symlinks point into `src/skills/`, so changes are picked up immediately. If the 
 ### After a BMad Method upgrade
 
 BMad upgrades may replace `.claude/skills/` contents. Re-run:
+
+**macOS / Linux / WSL:**
 ```bash
 ./link-skills.sh
 /bmad-suno-setup
 ```
 
+**Windows (PowerShell):**
+```powershell
+./link-skills.ps1
+/bmad-suno-setup
+```
+
 Your `.agents/skills/` symlinks, config, profiles, songbook, and memory are unaffected.
+
+---
+
+## Multi-Machine Sync (Optional)
+
+Mac stores user-generated content (voice files, band profiles, songbook, WIP files) under `docs/`, which is gitignored so personal content stays out of the repo. To move that content between machines without git, use the bundled pack/unpack scripts.
+
+**Pack on the source machine:**
+
+```bash
+# macOS / Linux / WSL
+bash scripts/pack-portable.sh
+
+# Windows (PowerShell)
+./scripts/pack-portable.ps1
+```
+
+This creates `docs/portable-sync.tar.gz` containing the documented module data:
+- `docs/voice-context-*.md` — your voice/identity files
+- `docs/songbook/**/*.md` — your songs
+- `docs/band-profiles/**/*.yaml` — your band identities
+- `docs/wip-*.md` — work in progress
+
+Move the tar.gz to your other machine (any way you like — USB, scp, cloud sync, etc.) and unpack:
+
+```bash
+# macOS / Linux / WSL
+bash scripts/unpack-portable.sh
+
+# Windows (PowerShell)
+./scripts/unpack-portable.ps1
+```
+
+**Customizing what gets packed:** Copy `portable-manifest.example.yaml` to `portable-manifest.yaml` at your project root and edit it. The manifest takes precedence over the defaults — useful if you've added companion files (e.g. detailed background docs referenced from your voice file's Companion Files table) that you also want synced. The example file shows commented patterns for common cases.
 
 ---
 
@@ -260,4 +317,4 @@ Mac will offer to help install these if you try to use audio analysis features w
 
 **Config not found warnings:** Safe to ignore on standalone installs. Mac uses defaults and discovers preferences through conversation.
 
-**Symlinks not working (Windows):** On Windows without WSL, symlinks may require developer mode or admin privileges. Consider copying skills directly instead of symlinking.
+**Symlinks not working (Windows):** Run `link-skills.ps1` from an elevated PowerShell, or enable Developer Mode (Settings → Update & Security → For developers → Developer Mode) and re-run from a normal PowerShell. As a last resort, copy `src/skills/suno-*` directories into `.agents/skills/` manually — but you'll need to re-copy after every `git pull`.

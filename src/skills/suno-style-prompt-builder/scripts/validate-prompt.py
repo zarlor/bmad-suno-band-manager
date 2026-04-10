@@ -81,8 +81,8 @@ def validate_style_prompt(text: str, model: str = "") -> list[dict]:
             findings.append({
                 "severity": "low",
                 "category": "consistency",
-                "issue": f"Style prompt has {len(remaining.strip())} chars beyond the critical zone (first {CRITICAL_ZONE} chars). Community testing suggests content beyond ~200 chars may have diminished influence on generation.",
-                "fix": "Ensure all essential genre, mood, and vocal descriptors appear within the first 200 characters. Content beyond this zone is supplementary.",
+                "issue": f"Style prompt has {len(remaining.strip())} chars beyond the critical zone (first {CRITICAL_ZONE} chars). Front-loaded terms have strongest influence on generation. Content beyond ~200 chars is supplementary but not wasted — v5.5 may interpret more of the prompt effectively.",
+                "fix": "Ensure essential genre, mood, and vocal descriptors appear within the first 200 characters. Content beyond this zone adds nuance. This is a priority guide, not a character limit.",
                 "data": {"critical_zone": CRITICAL_ZONE, "beyond_zone_chars": len(remaining.strip())}
             })
 

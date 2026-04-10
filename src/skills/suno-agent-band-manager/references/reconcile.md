@@ -52,7 +52,7 @@ Search these locations for the OLD value:
 - `docs/*.yaml` — playlist YAML files
 - `docs/voice-context-*.md` — voice/context files (including the Companion Files table)
 - `docs/wip-*.md` — WIP files (may need deletion if song published)
-- `docs/*-family-history-*.md` — companion files
+- Any companion files listed in the voice file's Companion Files table — discover dynamically from that table rather than guessing patterns
 - `{project-root}/_bmad/_memory/band-manager-sidecar/` — index.md, chronology.md, patterns.md
 
 Use exact string matching first, then check for variations:

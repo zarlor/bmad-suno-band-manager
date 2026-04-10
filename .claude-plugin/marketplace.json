@@ -1,0 +1,32 @@
+{
+  "name": "suno-band-manager",
+  "owner": { "name": "Lenny Zimmermann" },
+  "license": "MIT",
+  "homepage": "https://github.com/zarlor/suno-band-manager",
+  "repository": "https://github.com/zarlor/suno-band-manager",
+  "keywords": [
+    "bmad",
+    "bmad-method",
+    "suno",
+    "ai-music",
+    "music-production",
+    "song-creation"
+  ],
+  "plugins": [
+    {
+      "name": "suno-band-manager",
+      "source": "./",
+      "description": "AI-powered music production assistant for creating Suno-ready song packages.",
+      "version": "1.6.0",
+      "author": { "name": "Lenny Zimmermann" },
+      "skills": [
+        "./src/skills/suno-agent-band-manager",
+        "./src/skills/suno-band-profile-manager",
+        "./src/skills/suno-style-prompt-builder",
+        "./src/skills/suno-lyric-transformer",
+        "./src/skills/suno-feedback-elicitor",
+        "./src/skills/suno-setup"
+      ]
+    }
+  ]
+}

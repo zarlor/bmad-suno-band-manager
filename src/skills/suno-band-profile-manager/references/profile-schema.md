@@ -23,7 +23,7 @@ reference_tracks:
 model_preference: "v4.5-all"  # v4.5-all | v4 Pro (legacy) | v4.5 Pro | v4.5+ Pro | v5 Pro | v5.5
 tier: "free"                   # free | pro | premier
 
-# Style Prompt — front-load essentials in first 200 chars (critical zone)
+# Style Prompt — 1,000 char limit (v4.5+/v5/v5.5; 200 for v4 Pro). Front-load essentials in first ~200 chars (critical zone).
 style_baseline: >
   Indie folk-rock with electronic textures, atmospheric and layered.
   Warm analog synths underneath acoustic guitar, subtle ambient pads.
@@ -128,7 +128,7 @@ generation_history: []
 | `reference_tracks` | No | list of strings | Free-form "sounds like" descriptions |
 | `model_preference` | Yes | string | One of: v4.5-all, v4 Pro (legacy), v4.5 Pro, v4.5+ Pro, v5 Pro, v5.5 |
 | `tier` | Yes | string | One of: free, pro, premier |
-| `style_baseline` | Yes | string | Max 1000 chars (v4.5+/v5). Max 200 chars for v4 Pro. Front-load essentials in first 200 chars |
+| `style_baseline` | Yes | string | Max 1000 chars (v4.5+/v5/v5.5). Max 200 chars for v4 Pro. Front-load essentials in first ~200 chars (critical zone — strongest influence). Content beyond 200 is supplementary, not wasted. |
 | `exclusion_defaults` | No | list of strings | Keep each entry concise and specific. Max 5 entries recommended |
 | `vocal.gender` | Yes* | string | One of: male, female, nonbinary, any. *Optional if `instrumental: true` |
 | `vocal.tone` | Yes* | string | Non-empty. *Optional if `instrumental: true` |

@@ -113,7 +113,7 @@ Load `./references/model-prompt-strategies.md` for model-specific construction r
 - **Pro/Premier:** Output as comma-separated list for Suno's dedicated Exclude Styles field. With exclusions handled separately, heavier genre language is safe in the style prompt.
 - **Free tier:** No Exclude Styles field. Translate exclusion intentions into positive style prompt language.
 - Sources: profile `exclusion_defaults`, user "no X" requests, genre-inferred exclusions
-- Rules: under ~200 characters, be specific, prioritize 2-3 most important, add positive reinforcement alongside negatives
+- Rules: keep concise (under ~200 characters for the exclusion field), be specific, prioritize 2-3 most important, add positive reinforcement alongside negatives
 - **Belt-and-suspenders:** Translate negative phrases to positive style prompt language AND put originals in Exclude Styles
 
 ### Step 3: Slider & Parameter Recommendations
@@ -159,7 +159,7 @@ Rules: twist one or two major elements along the chosen direction, keep it music
 {style_prompt}
 
 ## Exclude Styles
-{character_count}/~200 characters
+{character_count}/~200 characters (target for Exclude Styles field)
 
 {exclusion_prompt}
 

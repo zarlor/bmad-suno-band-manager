@@ -85,7 +85,7 @@ Gather the information needed for a complete profile through natural dialogue. T
 - **Model & tier**: Which Suno model/plan. Run `./scripts/tier-features.py` to show available features.
 - **Vocal direction** (skip if instrumental): Gender, tone, delivery, energy, diction — push for evocative specifics ("warm, breathy female vocal with indie folk phrasing" not "female vocals"). Capture Voice (v5.5, `voice_id`) or Persona (v4.5/v5, name + source song). When a Voice is set, flag that gender descriptors should be omitted from style baseline.
 - **Voices & Custom Models** (Pro/Premier only): Capture `voice_id` (v5.5 voice cloning) and/or `custom_model_id` with `custom_model_notes`.
-- **Style baseline**: Build default style prompt from collected answers. Front-load essentials in first 200 characters. Show draft: "Read this like a recipe for your sound — does every ingredient belong?"
+- **Style baseline**: Build default style prompt from collected answers. Front-load essentials in the first ~200 characters (critical zone — strongest influence on generation). 1,000 char hard limit for v4.5+/v5/v5.5 (200 for v4 Pro). Show draft: "Read this like a recipe for your sound — does every ingredient belong?"
 - **Exclusions**: What should never appear (max 5, concise). Note internally: Suno doesn't reliably process negatives — Style Prompt Builder translates these into positive language.
 - **Creative settings**: Creativity mode (conservative/balanced/experimental). Paid tiers: Weirdness and Style Influence slider preferences (0-100).
 - **Writer voice** (optional): Offer to analyze now or skip for later.

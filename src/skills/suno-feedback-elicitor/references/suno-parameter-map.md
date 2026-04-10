@@ -369,10 +369,10 @@ v5 Studio enables per-section regeneration. Different slider values can be appli
 ## Model-Specific Feedback Patterns
 
 ### v4 Pro
-- Hard 200-character style prompt limit — all adjustment text must be extremely concise
+- Hard 200-character style prompt limit (silently truncated) — all adjustment text must be extremely concise
 - Simpler model — broad genre/mood descriptors work better than nuanced ones
 - No slider control, no Persona support
-- If feedback requires more nuance than 200 chars allow, suggest upgrading model tier
+- If feedback requires more nuance than 200 chars allow, suggest upgrading to v4.5+ or higher (1,000-char limit)
 
 ### v4.5-all (Free Tier)
 - Limited vocal control — voice issues are harder to fix without Persona

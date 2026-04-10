@@ -176,7 +176,7 @@ Synthesize feedback into concrete Suno parameter adjustments.
 **Weirdness ceiling warning:** At 85+, Suno loses structural metatag adherence -- `[End]` ignored, songs continue with gibberish. **75 is the practical ceiling** for structured songs. 80+ only for experimental/jam mode. Always pair high Weirdness with `[Fade Out]` + `[End]` combo.
 
 **Generate recommendations across all relevant dimensions:**
-- **Style Prompt:** Add (prioritize first 200 chars critical zone), remove, reorder. Validates against 1,000-char limit.
+- **Style Prompt:** Add (prioritize first ~200 chars critical zone for strongest influence), remove, reorder. Validates against 1,000-char limit (200 for v4 Pro). Content beyond ~200 is supplementary, not wasted.
 - **Exclusion Prompt:** Add (2-3 specific), remove. Validates against ~200 char target.
 - **Sliders (paid tiers):** Weirdness/Style Influence direction + magnitude. Per-section values for section-specific feedback (v5 Studio).
 - **Lyric Adjustments** -- structure as Lyric Transformer adjustment spec:

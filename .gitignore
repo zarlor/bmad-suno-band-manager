@@ -4,3 +4,18 @@ __pycache__/
 .venv/
 portable-sync.tar.gz
 *:Zone.Identifier
+
+# User-generated content (voice files, songbook, band profiles, audio, WIPs, etc.)
+docs/
+
+# LLM CLI tool directories (populated by link-skills, BMad install)
+.agents/
+.claude/
+.gemini/
+
+# BMad runtime state (per-machine config and Mac's memory)
+_bmad/
+_bmad-output/
+
+# User customization for pack-portable
+portable-manifest.yaml

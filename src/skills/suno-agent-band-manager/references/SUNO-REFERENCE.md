@@ -17,7 +17,7 @@ Quick-reference for Suno models, plans, parameters, metatags, and common pitfall
 
 **Character limit details:**
 - **v4 Pro:** 200 chars (hard limit, silently truncated)
-- **v4.5+ / v5:** 1,000 chars (API confirmed), but the effective window is still ~200 chars -- front-loaded terms dominate, and content beyond ~200 chars has diminishing returns. 4-7 descriptors is the sweet spot.
+- **v4.5+ / v5 / v5.5:** 1,000 chars (API confirmed). Front-loaded terms dominate -- the first ~200 chars are the "critical zone" with strongest influence on generation. Content beyond ~200 chars is supplementary but not wasted; v5.5's improved descriptor interpretation may extend the effective window. 5-8 descriptors is the sweet spot.
 
 **Key differences:**
 - **v4.5-all** wants flowing, conversational sentences. Example: "Create a melodic, emotional deep house song with organic textures and hypnotic rhythms."
@@ -125,7 +125,7 @@ Where each component of Mac's output package goes in Suno's Custom Mode:
 
 ## Style Prompt Best Practices
 
-- **1,000-character limit** (200 for v4 Pro) -- content beyond this is silently truncated. Effective window is ~200 chars; **5-8 descriptors is the sweet spot** (HookGenius 1000+ prompt analysis, April 2026 — fewer than 4 produces generic results; exceeding 10 causes conflicting signals and quality degradation).
+- **1,000-character limit** (200 for v4 Pro) -- content beyond this is silently truncated. The first ~200 chars are the "critical zone" where front-loaded terms have strongest influence. Content beyond ~200 is supplementary, not wasted — v5.5 may interpret more effectively. **5-8 descriptors is the sweet spot** (HookGenius 1000+ prompt analysis, April 2026 — fewer than 4 produces generic results; exceeding 10 causes conflicting signals and quality degradation).
 - **Word order is weighted** -- front-loaded terms dominate. Priority order: Genre > Mood/Energy > Instruments > Vocals > Production. Treat the first ~200 characters as the "critical zone."
 - **Hyper-specific beats generic** -- "1980s synth-pop" not "pop"; "distorted electric guitar, power chords" not "guitar"
 - **BPM and key in style prompt (v5)** -- may work better in v5 than in lyric tags: `deep house, 122 BPM, A minor, hypnotic groove`. Still ineffective in v4/v4.5.
