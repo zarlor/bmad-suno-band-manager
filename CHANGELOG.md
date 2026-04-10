@@ -4,6 +4,40 @@ All notable changes to the Suno Band Manager module are documented here.
 
 ---
 
+## [1.6.2] - 2026-04-10
+
+### Reference File Consolidation & Broken Link Cleanup
+
+A small architectural cleanup that addresses the v1.6.1 known follow-up. The marketplace PR ([bmad-code-org/bmad-plugins-marketplace#7](https://github.com/bmad-code-org/bmad-plugins-marketplace/pull/7)) is being updated to point at this release.
+
+### Removed
+
+- **Three root-level reference duplicates** — `SUNO-REFERENCE.md`, `USAGE.md`, and `STUDIO-EDITOR-REFERENCE.md` previously existed both at the repo root and inside `src/skills/suno-agent-band-manager/references/`. They had silently drifted out of sync between releases (the v1.6.0 wording fix only landed in some copies, requiring the v1.6.1 sync). The `src/skills/suno-agent-band-manager/references/` versions are now the **only** canonical copies, eliminating the drift class entirely.
+
+### Updated
+
+- **`README.md`** — Markdown links to the reference docs now point at the canonical `src/skills/suno-agent-band-manager/references/...` paths. Added `USAGE.md` to the references directory tree (it was already there on disk; the diagram just hadn't listed it).
+- **`INSTALLATION.md`** — Aider command updated to read the canonical paths:
+  ```bash
+  aider \
+    --read src/skills/suno-agent-band-manager/references/SUNO-REFERENCE.md \
+    --read src/skills/suno-agent-band-manager/references/USAGE.md
+  ```
+- **`CLAUDE.md` / `GEMINI.md` / `AGENTS.md`** — cross-reference list updated to use the canonical USAGE.md path.
+
+### Fixed (pre-existing broken links discovered during the audit)
+
+- **`src/skills/suno-feedback-elicitor/references/suno-parameter-map.md`** — `[STUDIO-EDITOR-REFERENCE.md](../../STUDIO-EDITOR-REFERENCE.md)` resolved to `src/skills/STUDIO-EDITOR-REFERENCE.md`, which has never existed at that path. Now points at `../../suno-agent-band-manager/references/STUDIO-EDITOR-REFERENCE.md`.
+- **`src/skills/suno-band-profile-manager/references/tier-features.md`** — Same broken pattern, same fix.
+
+These had been broken since the references/ folder layout, but were never noticed because nothing automatic exercised the markdown links.
+
+### Marketplace Submission
+
+The community module PR will be rebased to point at the v1.6.2 commit SHA so reviewers see the consolidated version with no drift risk.
+
+---
+
 ## [1.6.1] - 2026-04-10
 
 ### Cross-Platform Hardening & Stale Reference Cleanup

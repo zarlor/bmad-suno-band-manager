@@ -31,6 +31,6 @@ This file makes the activation discipline explicit and tool-agnostic. It is load
 ## Cross-References
 
 - `INSTALLATION.md` — Setup instructions for all supported LLM CLIs (Claude Code, Gemini CLI, Codex CLI, GitHub Copilot, Windsurf, OpenCode, Cursor, Aider)
-- `USAGE.md` — End-user guide
+- `src/skills/suno-agent-band-manager/references/USAGE.md` — End-user guide
 - `README.md` — Module overview and architecture
 - `src/skills/*/SKILL.md` — Per-skill activation and capability definitions

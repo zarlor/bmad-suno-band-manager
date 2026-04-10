@@ -117,4 +117,4 @@
 
 **Replace Section Best Practices (Pro/Premier):** Key controls: Keep Duration toggle (ON = match length, OFF = creative flexibility), Instrumental Mode toggle (removes vocals), Replace Lyrics (edit lyrics for just the selected region). Best results with 10-30 second selections; typically requires 2-5 attempts for seamless transitions.
 
-**v5.5 Editing Paradigm:** v5.5 favors generate → inspect → section replace → refine (not regenerate from scratch). This preserves good material and spends fewer credits. For complete Studio and Editor workflows, see [STUDIO-EDITOR-REFERENCE.md](../../STUDIO-EDITOR-REFERENCE.md).
+**v5.5 Editing Paradigm:** v5.5 favors generate → inspect → section replace → refine (not regenerate from scratch). This preserves good material and spends fewer credits. For complete Studio and Editor workflows, see [STUDIO-EDITOR-REFERENCE.md](../../suno-agent-band-manager/references/STUDIO-EDITOR-REFERENCE.md).

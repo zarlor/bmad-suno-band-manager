@@ -33,7 +33,7 @@ After you try the output on Suno, Mac helps you refine through a structured feed
 4. **Try it on Suno** — Paste into Suno's Custom Mode fields
 5. **Come back and refine** — Tell Mac what worked and what didn't
 
-For detailed documentation on all features, interaction modes, band profiles, the feedback loop, direct skill access, and headless/automation modes, see the [Usage Guide](USAGE.md).
+For detailed documentation on all features, interaction modes, band profiles, the feedback loop, direct skill access, and headless/automation modes, see the [Usage Guide](src/skills/suno-agent-band-manager/references/USAGE.md).
 
 ## Architecture
 
@@ -163,7 +163,7 @@ Mac was developed and tested primarily on Claude Code. Other LLM CLIs should wor
 
 ## Suno Model Compatibility
 
-Mac supports Suno models from v4 through v5.5 Pro, with model-specific prompt optimization and character limit enforcement. See the [Suno Reference](SUNO-REFERENCE.md) for models, plans, and prompting, and the [Studio & Editor Reference](STUDIO-EDITOR-REFERENCE.md) for post-generation editing (Legacy Editor, Studio, Stems, Warp Markers, and more).
+Mac supports Suno models from v4 through v5.5 Pro, with model-specific prompt optimization and character limit enforcement. See the [Suno Reference](src/skills/suno-agent-band-manager/references/SUNO-REFERENCE.md) for models, plans, and prompting, and the [Studio & Editor Reference](src/skills/suno-agent-band-manager/references/STUDIO-EDITOR-REFERENCE.md) for post-generation editing (Legacy Editor, Studio, Stems, Warp Markers, and more).
 
 ## File Structure
 
@@ -189,7 +189,8 @@ src/skills/
 │   │   ├── init.md                 # First-run setup
 │   │   ├── memory-system.md        # Memory discipline and structure
 │   │   ├── SUNO-REFERENCE.md       # Suno platform reference
-│   │   └── STUDIO-EDITOR-REFERENCE.md
+│   │   ├── STUDIO-EDITOR-REFERENCE.md
+│   │   └── USAGE.md                # End-user guide (canonical location)
 │   └── scripts/
 │       ├── pre-activate.py         # First-run detection, scaffolding, menu rendering
 │       ├── validate-path.py        # Access boundary enforcement

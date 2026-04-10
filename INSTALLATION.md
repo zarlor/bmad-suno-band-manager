@@ -46,7 +46,7 @@ Skills in `.agents/skills/` are auto-discovered at session start. Invoke by name
 
 ### 4. Start creating
 
-Tell Mac what kind of song you want. See the [Usage Guide](USAGE.md) for all features.
+Tell Mac what kind of song you want. See the [Usage Guide](src/skills/suno-agent-band-manager/references/USAGE.md) for all features.
 
 ---
 
@@ -195,7 +195,9 @@ Note: Copying means `git pull` won't auto-update Cursor's copies. Re-copy after 
 
 Aider does not support the Agent Skills format. You can load reference documents manually:
 ```bash
-aider --read SUNO-REFERENCE.md --read USAGE.md
+aider \
+  --read src/skills/suno-agent-band-manager/references/SUNO-REFERENCE.md \
+  --read src/skills/suno-agent-band-manager/references/USAGE.md
 ```
 
 This provides Suno context but not the interactive Mac workflow.
@@ -220,7 +222,7 @@ document_output_language: English
 output_folder: '{project-root}/_bmad-output'
 suno:
   name: BMad Suno Band Manager
-  version: 1.6.1
+  version: 1.6.2
   suno_tier: pro          # free, pro, or premier
   default_mode: studio    # demo, studio, or jam
   band_profiles_folder: '{project-root}/docs/band-profiles'
