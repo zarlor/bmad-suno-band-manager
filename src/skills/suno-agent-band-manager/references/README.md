@@ -95,7 +95,7 @@ To reconfigure after a module update, run `/suno-setup` again. Existing settings
 | v4 Pro | Paid | 200 chars | Simple descriptors |
 | v4.5 Pro | Paid | 1,000 chars | Intelligent prompts |
 | v4.5+ Pro | Paid | 1,000 chars | Advanced creation |
-| v5 Pro | Paid | 1,000 chars | Crisp 4-7 descriptors, natural vocals |
+| v5 Pro | Paid | 1,000 chars | Crisp 5-8 descriptors, natural vocals |
 | v5.5 Pro | Paid | 1,000 chars | Most expressive, Voices, Custom Models, My Taste |
 
 ## File Structure

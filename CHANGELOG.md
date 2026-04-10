@@ -4,6 +4,34 @@ All notable changes to the Suno Band Manager module are documented here.
 
 ---
 
+## [1.6.1] - 2026-04-10
+
+### Cross-Platform Hardening & Stale Reference Cleanup
+
+A follow-up release to v1.6.0 closing two open issues that surfaced after the marketplace submission. The marketplace PR ([bmad-code-org/bmad-plugins-marketplace#7](https://github.com/bmad-code-org/bmad-plugins-marketplace/pull/7)) is being updated to point at this release.
+
+### Fixes
+
+- **Fixes #21** — **Gemini CLI: skills not discoverable and activation protocol not followed.** Two layered fixes:
+  - **`link-skills.sh` and `link-skills.ps1`** now create symlinks in `.gemini/skills/` in addition to `.claude/skills/` and `.agents/skills/`. Gemini CLI's glob does not always follow symlinks under `.agents/skills/`, so a native scan path is required for reliable skill discovery.
+  - **New standing-order files at the repo root** — `CLAUDE.md`, `GEMINI.md`, `AGENTS.md` (identical content) — make the skill activation discipline explicit and tool-agnostic. They mandate: running pre-activate scripts, reading persona/creed/capabilities/activation/memory-system reference files, presenting the dynamic menu from script output (not improvising from `SKILL.md` text), loading voice context before greeting, and the Suno Pipeline Rule. Previously, this discipline lived only inside individual `SKILL.md` files in a declarative style that Claude Code's harness compensated for but Gemini CLI / Codex CLI / OpenCode interpret more literally. The standing-order files are auto-loaded by each respective LLM CLI on every session.
+  - The deeper imperative-style refactor of individual `SKILL.md` files (a recommendation in the issue) is intentionally deferred to a future release — the standing-order approach addresses the symptom directly with much less surface area to maintain.
+
+- **Fixes #22** — **Inconsistent character limit guidance and stale research findings across module.** Comprehensive sweep of remaining stale references after the v1.6.0 wording fixes:
+  - **Synced three duplicate file pairs** — `SUNO-REFERENCE.md`, `USAGE.md`, and `STUDIO-EDITOR-REFERENCE.md` exist as both top-level files (read by Aider via `--read`) and inside `src/skills/suno-agent-band-manager/references/`. They had drifted out of sync, causing the v1.6.0 wording fix to land in only one copy of each pair. All three pairs are now identical and reflect the canonical v5.5 critical-zone wording.
+  - **Updated three stale "4-7 descriptors" references** to "5-8 descriptors" — the v1.4.1 HookGenius update changed the sweet spot but didn't propagate to `src/skills/suno-style-prompt-builder/SKILL.md`, `src/skills/suno-style-prompt-builder/references/README.md`, or `src/skills/suno-agent-band-manager/references/README.md`.
+  - The two specific complaints in issue #22 about `suno-parameter-map.md` lines 372/375 and `SKILL.md` lines 116/162 were verified as **false alarms** — those lines are correctly scoped to v4 Pro (which DOES have a 200-char hard limit) and the Exclude Styles input field (separate constraint), respectively. No edits needed.
+
+### Known Follow-Ups
+
+- **Duplicate file pairs** between root and `src/skills/suno-agent-band-manager/references/` (`SUNO-REFERENCE.md`, `USAGE.md`, `STUDIO-EDITOR-REFERENCE.md`) are kept in sync manually as of v1.6.1. A future release should consolidate to a single canonical location and update Aider documentation accordingly.
+
+### Marketplace Submission
+
+The community module PR ([bmad-code-org/bmad-plugins-marketplace#7](https://github.com/bmad-code-org/bmad-plugins-marketplace/pull/7)) will be rebased to point at the v1.6.1 commit SHA so reviewers see the cross-platform-hardened version.
+
+---
+
 ## [1.6.0] - 2026-04-09
 
 ### BMad Plugins Marketplace Submission

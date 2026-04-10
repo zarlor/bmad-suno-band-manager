@@ -12,8 +12,10 @@ set -e
 cd "$(dirname "$0")"
 
 # Skill discovery directories — .claude/ for Claude Code backward compat,
-# .agents/ for the portable Agent Skills standard
-SKILL_DIRS=(".claude/skills" ".agents/skills")
+# .agents/ for the portable Agent Skills standard, .gemini/ for Gemini CLI
+# (Gemini's glob does not always follow symlinks in .agents/skills/, so it
+# needs its own native scan path).
+SKILL_DIRS=(".claude/skills" ".agents/skills" ".gemini/skills")
 
 for dir in "${SKILL_DIRS[@]}"; do
   mkdir -p "$dir"

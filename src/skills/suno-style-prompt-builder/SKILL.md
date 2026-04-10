@@ -93,7 +93,7 @@ Load `./references/model-prompt-strategies.md` for model-specific construction r
 
 **Outcome:** A model-formatted style prompt that front-loads genre/mood/vocals in the critical zone, uses genre-safe terminology, and respects character limits. The prompt should:
 
-- Follow the model's formatting style (v4.5: conversational sentences; v5/v5.5: crisp 4-7 descriptor film-brief; v4 Pro: simple descriptors within 200 chars)
+- Follow the model's formatting style (v4.5: conversational sentences; v5/v5.5: crisp 5-8 descriptor film-brief; v4 Pro: simple descriptors within 200 chars)
 - Translate reference tracks into concrete descriptors (show decomposition to user for confirmation before building)
 - Apply the selected creativity mode
 - Use genre-safe word choices per the Genre Term Behavior Table and Dangerous Words list in the strategies reference

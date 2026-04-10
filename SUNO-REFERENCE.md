@@ -1,6 +1,6 @@
 # Suno Platform Reference
 
-Quick-reference for Suno models, plans, parameters, metatags, and common pitfalls. This is a companion to the [Usage Guide](USAGE.md) (how to use Mac), the [Studio & Editor Reference](STUDIO-EDITOR-REFERENCE.md) (post-generation editing tools), and covers *how Suno works* for generation.
+Quick-reference for Suno models, plans, parameters, metatags, and common pitfalls. This is a companion to the [Usage Guide](./USAGE.md) (how to use Mac), the [Studio & Editor Reference](./STUDIO-EDITOR-REFERENCE.md) (post-generation editing tools), and covers *how Suno works* for generation.
 
 ---
 
@@ -12,12 +12,12 @@ Quick-reference for Suno models, plans, parameters, metatags, and common pitfall
 | **v4 Pro** | Simple descriptors | 200 | Straightforward, shorter prompts | Paid |
 | **v4.5 Pro** | Conversational descriptions | 1,000 | Intelligent prompts, narrative style | Paid |
 | **v4.5+ Pro** | Conversational descriptions | 1,000 | Advanced creation methods | Paid |
-| **v5 Pro** | Crisp film-brief (4-7 descriptors) | 1,000 | Authentic vocals, superior audio quality, section editing | Paid |
-| **v5.5 Pro** | Crisp film-brief (4-7 descriptors) | 1,000 | Most expressive model, better subtle descriptor handling, Voices, Custom Models, My Taste | Paid |
+| **v5 Pro** | Crisp film-brief (5-8 descriptors) | 1,000 | Authentic vocals, superior audio quality, section editing | Paid |
+| **v5.5 Pro** | Crisp film-brief (5-8 descriptors) | 1,000 | Most expressive model, better subtle descriptor handling, Voices, Custom Models, My Taste | Paid |
 
 **Character limit details:**
 - **v4 Pro:** 200 chars (hard limit, silently truncated)
-- **v4.5+ / v5:** 1,000 chars (API confirmed), but the effective window is still ~200 chars -- front-loaded terms dominate, and content beyond ~200 chars has diminishing returns. 4-7 descriptors is the sweet spot.
+- **v4.5+ / v5 / v5.5:** 1,000 chars (API confirmed). Front-loaded terms dominate -- the first ~200 chars are the "critical zone" with strongest influence on generation. Content beyond ~200 chars is supplementary but not wasted; v5.5's improved descriptor interpretation may extend the effective window. 5-8 descriptors is the sweet spot.
 
 **Key differences:**
 - **v4.5-all** wants flowing, conversational sentences. Example: "Create a melodic, emotional deep house song with organic textures and hypnotic rhythms."
@@ -33,13 +33,16 @@ Quick-reference for Suno models, plans, parameters, metatags, and common pitfall
 
 **v5.5-specific behaviors (additive update over v5):**
 - Same audio engine, metatags, and character limits as v5 -- all v5 prompts work identically, often with better results
-- 48kHz sample rate, up to 8 min generation, internal codename "chirp-crow"
+- 48kHz sample rate, up to 8 min generation, internal codename "chirp-fenix" (v5 was "chirp-crow")
 - Most expressive model yet -- better at interpreting subtle and nuanced descriptors
 - More varied output per generation -- generate 3-5 versions and pick the standout
 - v5.5-optimized prompts can be more specific: "deep sub 808s, glitchy hi-hat rolls, pitched vocal chops" where v5 would use simpler "808s, hi-hats"
-- **Voices** (replaces Personas): actual voice cloning with anti-deepfake verification, 15s-4min audio sample required. Pro/Premier only.
-- **Custom Models**: train on 6+ original tracks, 2-5 min training time, up to 3 custom models. Pro/Premier only.
-- **My Taste**: passive personalization that shapes generation defaults based on your listening/generation history. All tiers. Takes 20-30 generations to settle.
+- **Voices** (replaces Personas): actual voice cloning with anti-deepfake verification, 15s-4min audio sample required. Pro/Premier only. **Skill Level dropdown** (Beginner/Intermediate/Advanced/Professional) actively reshapes how the model interprets your voice — always select **Professional** regardless of actual ability for the most stable, usable results.
+- **Custom Models**: train on 6+ original tracks, 2-5 min training time, up to 3 custom models. Pro/Premier only. **Privacy/consent note (AudioNewsRoom):** consent grants Suno permission to use your data for training their global models — not optional, not a private silo.
+  - **Training data:** WAV at 44.1kHz preferred (Suno auto-normalizes with RMS leveling, DC offset removal, spectral masking, onset detection, key/scale estimation). 8-12 stylistically consistent tracks is the inferred sweet spot. Dynamic range preservation matters more than loudness since the system normalizes internally.
+  - **Overfitting risk:** Training data too narrow/homogeneous produces repetitive output. Include variety within your style lane — different tempos, moods, arrangements.
+  - **Prompt strategy shift with Custom Models:** Priority order changes from genre-first to **mood/production-first** since genre is already encoded in the model. Simpler natural-language prompts may outperform tag-heavy prompts because the model handles the foundational style. Core formula: MOOD + PRODUCTION TEXTURE + ENERGY/TEMPO + INSTRUMENTS + VOCAL DIRECTION.
+- **My Taste**: passive personalization that shapes generation defaults based on your listening/generation history. All tiers. Takes 20-30 generations to settle. **Magic wand icon** next to the style input triggers Style Augmentation — auto-generates a personalized style description based on your My Taste profile. Detailed manual prompts always override it. Can be viewed, edited, or disabled from avatar menu > "My Taste." No documented reset mechanism beyond disable/re-enable.
 - **Workflow paradigm shift:** v5.5 encourages generate -> inspect -> replace sections -> refine (not regenerate from scratch)
 
 **v5.5 Personalization Stack** (layers from broadest to most specific):
@@ -64,7 +67,7 @@ Quick-reference for Suno models, plans, parameters, metatags, and common pitfall
 | **Inspo** | No | Yes (v4.5+ Pro) | Yes |
 | **Legacy Editor** | No | Yes (section replace, rearrange, crop, fade) | Yes |
 | **Personas** | No | Yes (v4.5/v5) | Yes (v4.5/v5) |
-| **Voices** | No | Yes (v5.5, replaces Personas) | Yes (v5.5, replaces Personas) |
+| **Voices** | No | Yes (v5.5, succeeds Personas — both coexist in Voices tab) | Yes (v5.5, succeeds Personas — both coexist in Voices tab) |
 | **Custom Models** | No | Yes (up to 3) | Yes (up to 3) |
 | **My Taste** | Yes (passive) | Yes (passive) | Yes (passive) |
 | **Stems** | No | Up to 12 | Up to 12 |
@@ -80,9 +83,22 @@ Pro/Premier "More Options" additionally includes: Weirdness slider, Style Influe
 
 **Vocal consistency across songs:** Suno interprets the same style prompt differently on every generation. Descriptive prompt language (e.g., "breathy female vocal with indie folk phrasing") gets you in the right neighborhood but not an exact match. The **Persona** feature (Pro/Premier) is the only reliable way to lock in a consistent vocal identity across songs -- it reuses the vocal character from a source generation. If you are working on an album or project where songs need to sound like the same singer, Personas are essential.
 
-**Voices (v5.5, replaces Personas):** In v5.5, the **Voices** feature replaces Personas for vocal consistency. Key differences: Voices is actual voice cloning (from a 15s-4min audio sample with anti-deepfake verification), while Personas was style essence capture from a source generation. Personas still work on v4.5/v5, but Voices is the v5.5 successor and provides more precise vocal identity matching. Pro/Premier only.
+**Voices (v5.5, replaces Personas):** In v5.5, the **Voices** feature succeeds Personas for vocal consistency. Key differences: Voices is actual voice cloning (from a 15s-4min audio sample with anti-deepfake verification), while Personas was style essence capture from a source generation. **Style Personas are NOT gone** — they are integrated into the Voices tab in v5.5; the button changed but both features coexist. Personas still work on v4.5/v5/v5.5. Pro/Premier only.
 
-**Audio Influence with Voices:** Unlike Personas (15-25% effective range), Voices uses a wider range depending on the goal: 35-45% for voice as subtle flavor, 55-70% as the default balanced starting point, 75-85% for identity-focused work, 85-95% for maximum fidelity. The sweet spot is personal — adjust up if voice is unrecognizable, down if quality suffers.
+**Voices Skill Level dropdown:** When setting up a Voice, you select Beginner, Intermediate, Advanced, or Professional. This is **NOT cosmetic** — it actively reshapes how the model interprets your voice. Testing found Professional produced the most stable, consistent, most usable results across every test. **Always set to Professional** regardless of actual singing ability.
+
+**Voices limitations:** Voices is directional influence, not true vocal reproduction — the output drifts across generations and lacks true identity consistency (JG BeatsLab testing). Realistic for demo vocals, pre-production emotional direction, and hearing yourself in new compositions. **Not suitable for** final release vocal identity branding, or spoken word/narration (Voices drifts toward singing patterns, inconsistent tone between sections, unnatural pacing in longer spoken passages — Suno remains music-first).
+
+**Audio Influence with Voices:** Unlike Personas (15-25% effective range), Voices uses a wider range — but independent testing (JG BeatsLab, March 2026) found the practical ceiling is lower than initially documented. At 85% Audio Influence, voice resemblance only reached ~70% with increasing artifacts. The instinct to maximize is counterproductive.
+
+| Goal | Range | Notes |
+|------|-------|-------|
+| Voice as subtle flavor | 30-40% | Gentle influence, maximum generation polish |
+| Balanced voice + quality | 40-60% | **Recommended starting point** — recognizable voice with manageable artifacts |
+| Identity-focused | 60-70% | Noticeable quality trade-off begins here |
+| Maximum fidelity (use with caution) | 70-80% | Diminishing returns; artifacts increase faster than resemblance |
+
+Start at 50% and iterate in 5-10% increments. Pushing above 70% produces worse professional quality, not better.
 
 ---
 
@@ -109,7 +125,7 @@ Where each component of Mac's output package goes in Suno's Custom Mode:
 
 ## Style Prompt Best Practices
 
-- **1,000-character limit** (200 for v4 Pro) -- content beyond this is silently truncated. Effective window is ~200 chars; 4-7 descriptors is the sweet spot.
+- **1,000-character limit** (200 for v4 Pro) -- content beyond this is silently truncated. The first ~200 chars are the "critical zone" where front-loaded terms have strongest influence. Content beyond ~200 is supplementary, not wasted — v5.5 may interpret more effectively. **5-8 descriptors is the sweet spot** (HookGenius 1000+ prompt analysis, April 2026 — fewer than 4 produces generic results; exceeding 10 causes conflicting signals and quality degradation).
 - **Word order is weighted** -- front-loaded terms dominate. Priority order: Genre > Mood/Energy > Instruments > Vocals > Production. Treat the first ~200 characters as the "critical zone."
 - **Hyper-specific beats generic** -- "1980s synth-pop" not "pop"; "distorted electric guitar, power chords" not "guitar"
 - **BPM and key in style prompt (v5)** -- may work better in v5 than in lyric tags: `deep house, 122 BPM, A minor, hypnotic groove`. Still ineffective in v4/v4.5.
@@ -129,9 +145,15 @@ Where each component of Mac's output package goes in Suno's Custom Mode:
 - **Bass-forward rock/metal is a known limitation** -- Suno cannot reliably produce bass-led sound in rock/metal context. Even "bass and drums only, no guitar" with guitar in excludes still produces guitar. "Funk metal" triggers slap/pop bass (Flea), not overdriven fingerstyle (Geddy Lee).
 - **Personas anchor to their source era** -- a persona sourced from a modern song will pull "late 1970s" prompts toward a modern sound. Reduce Audio Influence to 10-15% or generate without a persona for era-specific pieces.
 - **"Baroque" triggers Disney** -- do NOT use the word "baroque" in style prompts. Suno maps it to light, Disney-esque orchestration. Describe the qualities instead: `intricate interlocking guitar and bass melodies`, `dark minor key, precise and ornate`. Specify heavy orchestral instruments by name (`cello, heavy strings, kettle drums`) -- the word `orchestral` alone defaults to light/cinematic.
-- **"Rock Opera" and "Cinematic" are keyboard triggers** -- both terms pull keyboard/synth arrangements into the mix. Use `power ballad`, `dynamic shifts` instead when you want drama without keyboards.
+- **"Rock Opera" and "Cinematic" are keyboard triggers** -- both terms pull keyboard/synth arrangements into the mix. Use `power ballad`, `dynamic shifts` instead when you want drama without keyboards. **Exception:** "cinematic" is also a **universal quality modifier** — HookGenius's 1000+ prompt analysis found it consistently elevates production quality results across every tested genre. If keyboards aren't a concern, it's the single most versatile tag for enhancing output.
+- **Production tags are the most underused category** — HookGenius analysis found that adding even one production descriptor ("radio-ready mix", "punchy drums", "wide stereo") meaningfully improves output distinctiveness. Most users rely only on genre + mood.
+- **Conflicting tags produce bland compromise, not interesting hybrids** — "aggressive, peaceful" or similar contradictions cause Suno to default to a generic middle ground. Opposing descriptors cancel out rather than creating creative tension.
 - **Three-phase dynamic arc needs double-stating** -- songs that go quiet → massive → quiet need the arc stated TWICE in the style prompt: once as a narrative description (`building from gentle to crushing then returning to gentle`) and once as a shorthand (`dynamic arc quiet to massive to quiet`). A single mention is not enough — Suno tends to flatten or ignore the return to quiet without the reinforcement.
 - **Suno adds unscripted guitar solos regularly** -- three of four analyzed tracks had solos not in the lyrics. Plan for this or use [End] tags to prevent post-vocal noodling.
+- **Anchor note restating during Extend** — always restate genre, mood, key, and instrument palette in a 1-2 sentence anchor note with each extension. Example: 'Keep the exact current groove, instrument palette, key, and tempo. Do not introduce new drums or leads.'
+- **Forbidden element phrasing** — stating what NOT to add during Extend is more effective than positive instruction alone: 'No new hooks,' 'No new drums,' 'No new riffs,' 'no risers'
+- **Limit extension chains to 2-3 maximum** — beyond that, audio quality degrades ('muddy' or 'lo-fi' artifacts). If quality degrades, use the **Cover feature** to re-synthesize the audio from scratch, effectively 'cleaning' the signal path.
+- **Personas historically cannot be used reliably with Extend** — using Extend to keep generating with the same Persona has been unstable. Reuse exact vocal descriptor tags from the original prompt alongside the Persona to reinforce consistency.
 - **Section-by-section instructions in style prompts are largely ignored** -- Suno delivered consistently fast, dense tracks despite detailed per-section directions (slow intro, tempo drops, sparse bridge). Style prompt sets overall mood; metatags handle sections (imperfectly).
 
 ### Exclude Styles (Pro/Premier)
@@ -152,28 +174,51 @@ The Exclude Styles field is a dedicated exclusion input separate from the style 
 
 ## Metatag Reference
 
+> This is Mac's quick reference. For comprehensive metatag documentation, consult the Lyric Transformer's detailed references — invoke `suno-lyric-transformer` or read its reference files directly:
+> - **Full metatag catalog:** `suno-lyric-transformer/references/metatag-reference.md` — all known tags with confidence levels, production findings, and detailed usage notes
+> - **Section job framework:** `suno-lyric-transformer/references/section-jobs.md` — what each section does emotionally, poem-to-song mapping guide, structural metaphor techniques
+
 ### Section Tags
+
+**Only use recognized tags.** Custom tags like `[The Questions]` or `[Reflection]` are ignored or **sung as lyrics**. Map non-standard sections to recognized tags and use parameterized syntax to shape the feel.
 
 | Tag | Job |
 |-----|-----|
 | `[Intro]` | Opening (unreliable -- may need regeneration) |
 | `[Verse]` | Setup -- establishes story, scene, or emotion |
-| `[Pre-Chorus]` | Lift -- builds tension before the payoff |
+| `[Pre-Chorus]` | Lift -- builds tension/anticipation before chorus (2-4 lines). Creates a distinct musical moment with added percussion and vocal intensity |
 | `[Chorus]` | Payoff -- the hook, the memorable part |
-| `[Bridge]` | Contrast -- new perspective, musical shift |
-| `[Breakdown]` | Strip-down -- reduces instrumentation |
-| `[Build-Up]` | Escalation -- increases energy toward a peak |
+| `[Post-Chorus]` | Extension or cooldown after chorus. Best in pop/EDM; may blend with chorus in rock/metal |
+| `[Bridge]` | Something NEW -- new chords, new melody, new perspective. Introduces harmonic content the song hasn't heard yet |
+| `[Breakdown]` | Something LESS -- strips instruments, spotlights vocals or a motif. In metal, forces tempo drop and heavy rhythm. Creates maximum contrast before a high-energy section |
+| `[Build-Up]` / `[Build]` | Escalation -- increases energy toward a peak |
 | `[Final Chorus]` | Closing payoff -- often bigger than earlier choruses |
 | `[Outro]` | Resolution -- brings the song to a close |
 | `[Instrumental]` | Instrumental section -- no vocals |
-| `[Interlude]` | Musical bridge between sections |
+| `[Interlude]` | Transitional palette cleanser -- defaults instrumental, lighter treatment if lyrics provided |
 | `[Solo]` / `[Guitar Solo]` | Instrumental solo section |
-| `[Break]` | Brief pause or stripped-back moment |
+| `[Break]` | Brief pause or stripped-back moment. Useful as energy-bleed buffer between aggressive and clean sections |
 | `[Drop]` | Sudden energy release (EDM/electronic) |
-| `[Build]` / `[Build-Up]` | Escalation toward a peak |
 | `[Hook]` | Short catchy phrase or motif |
-| `[Post-Chorus]` | Extends or cools down chorus energy |
 | `[Fade Out]` | Gradual volume decrease |
+| `[End]` | Signal to stop the song |
+
+**Bridge vs Breakdown:** Bridge gives you something NEW (new chords, perspective). Breakdown gives you LESS (strips arrangement). Need both? Use `[Bridge | Half-Time]` + `[Energy: stripped, minimal]`.
+
+### Dual Voices — Known Limitation
+
+Suno v5/v5.5 cannot reliably produce two genuinely distinct male voices trading lines in a single generation. `[Duet]`, voice numbering tags (`[Voice 1]`/`[Voice 2]`), and descriptive "dual male vocals trading" in the style prompt all fail to produce true voice separation — you get doubling, harmonizing, or one voice averaged from the descriptors. Personas actively lock single-voice consistency (that's their design purpose).
+
+**Workarounds for songs that need distinct dual voices:**
+1. **Persona OFF is mandatory** — rebuild the band sound from scratch in the style prompt
+2. **Multi-stage Studio Replace Section** — generate with main voice only, Replace Section each intrusive part with different vocal character prompts (most reliable)
+3. **Nu-metal/rapcore framing** — Mr. Bungle / System of a Down / Mike Patton territory tolerates rapid vocal-character shifts. Best aesthetic match for "manic/unhinged" intrusive characters
+4. **Metalcore clean/harsh** — `[Clean Vocal]` / `[Harsh Vocal]` contrast works but produces scream not manic speech
+5. **Lead + Adlibs** — main voice dominant, intrusive voice as 3-6 word interjections max with `[adlibs: ...]` tags
+
+**Gender contrast is the easiest path** — `[Male]`/`[Female]` per-line is the only reliably working duet technique. Same-gender dual voicing is the hardest case. For songs that genuinely need male/male dual distinct voices, plan for multi-stage Studio workflow from the start.
+
+See `suno-lyric-transformer/references/metatag-reference.md` "Dual Vocals" section for full workarounds and ranked reliability.
 
 ### Parameterized Section Tags
 
@@ -209,12 +254,15 @@ This allows section-specific arrangement control directly in the tag itself, rat
 - Half-time / double-time drum feel via metatags (`[Heavy: halftime]`, `[Double Time]`) creates perceived tempo shifts without actual BPM change
 - **BPM tags are confirmed ineffective** — do not use `[Verse: 65 BPM]` or similar tags. They have zero effect on output (librosa-confirmed).
 - `[Instrument: ...]` before a section specifies instruments for that section -- use to crowd out unwanted instruments rather than trying to exclude them
+- `[Soft End]`, `[Dramatic End]`, `[Instrumental End]` — ending style variants
+- `[Slow Fade Out]`, `[Fast Fade Out]`, `[Instrumental Fade Out]`, `[Cinematic Fade Out]` — fade style variants (genre-specific: Slow for ambient/cinematic, Fast for dance/shortform, Instrumental for pop, Cinematic for orchestral)
+- **Noodling-prevention combo**: `[Outro] long instrumental outro, soft keys, slow fade [End]` — stacking both 'winding down' and 'stop here' signals is more effective than either alone
 
 ---
 
 ## Troubleshooting Suno Issues
 
-This table covers problems with Suno's output. For issues with Mac itself (wrong mode, missing profiles, skill errors), see the [Usage Guide Troubleshooting](USAGE.md#9-troubleshooting).
+This table covers problems with Suno's output. For issues with Mac itself (wrong mode, missing profiles, skill errors), see the [Usage Guide Troubleshooting](./USAGE.md#9-troubleshooting).
 
 ### Prompt and Formatting Issues
 
@@ -241,6 +289,8 @@ This table covers problems with Suno's output. For issues with Mac itself (wrong
 | **Pronunciation issues** | Words sung incorrectly | Add phonetic hints in lyrics or use the `[Spoken Word]` metatag |
 | **Timing feels wrong** | Rhythm or pacing issues | Use Warp Markers (v5 Studio, Premier tier) |
 | **Long song degradation** | Quality drops in extended generations | Generate shorter segments and use Extend carefully |
+| **Voices spoken word/narration** | Voice drifts toward singing, inconsistent tone between sections, unnatural pacing | Suno remains music-first. Voices is not suitable for spoken word or narration — consider narration as a separate recording edited in via DAW |
+| **Voices vocal artifacts at high Audio Influence** | Shimmer, warble, or robotic quality above 70% | Reduce Audio Influence to 40-60% range. Higher is not better — see Voices Audio Influence table |
 
 ### Creative Issues
 
@@ -281,3 +331,31 @@ This table covers problems with Suno's output. For issues with Mac itself (wrong
 | Cover | "Play this same song in a different style" | Re-performs with new style, keeps melody/lyrics/structure |
 | Remix (general) | "Tweak/transform this song" | Various transformations within same song identity |
 | Inspo | "Make something NEW inspired by these" | Analyzes a playlist, generates entirely new material |
+
+---
+
+## Community Research Sources & Further Reading
+
+> **Last updated:** April 6, 2026. These sources informed the v5.5-specific findings in this reference. Suno evolves fast — verify claims against current platform behavior.
+
+### Official Suno Documentation
+- [What's New in v5.5](https://help.suno.com/en/articles/11362305)
+- [Voices: Use Your Voice in Suno](https://help.suno.com/en/articles/11362369)
+- [Voices FAQ](https://help.suno.com/en/articles/11362433)
+- [Custom Models in v5.5](https://help.suno.com/en/articles/11362497)
+- [My Taste](https://help.suno.com/en/articles/11362561)
+- [Creative Sliders](https://help.suno.com/en/articles/6141377)
+
+### Independent Testing & Analysis
+- [JG BeatsLab: Voices Day One Testing](https://www.jgbeatslab.com/ai-music-lab-blog/suno-v5-5-voices-tested) — Voices Audio Influence real-world ranges, Skill Level dropdown impact, vocal resemblance ceiling findings
+- [HookGenius: Suno v5.5 Guide](https://hookgenius.app/learn/suno-v5-5-guide/) — Comprehensive v5.5 feature walkthrough
+- [HookGenius: 1000+ Prompt Analysis](https://hookgenius.app/learn/suno-style-tag-research/) — Data-driven findings on tag count sweet spots, "cinematic" as universal modifier, production tag underuse, conflicting tag behavior
+- [AudioNewsRoom: What You Give Up to Make It Yours](https://audionewsroom.net/2026/03/suno-v5-5-what-you-give-up-to-make-it-yours.html) — Privacy/consent analysis for Voices and Custom Models
+- [JackRighteous: How Has v5.5 Gone For You](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/how-has-suno-v5-5-update-gone-for-you) — Genre-specific slider ranges, section-specific strategy
+- [JackRighteous: Creative Control Sliders in v5](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/creative-control-sliders-suno-v5) — Detailed slider behavior analysis
+- [JackRighteous: v5.5 Features Explained](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/suno-v5-5-features-explained-workflow-changes-studio-editing-creator-guide) — Workflow paradigm shift documentation
+- [JackRighteous: Spoken Narration Workflow](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/suno-ai-spoken-narration-workflow) — Spoken word limitations with Voices
+- [Suno v5 vs v5.5 Comparison](https://suno-v5.com/blog/suno-v5-5-vs-v5-what-actually-changed) — What actually changed between versions
+
+### API Reference
+- [CometAPI: v5.5 API Guide](https://www.cometapi.com/suno-v5-5-what-is-new-and-how-to-use-it-via-api--studio/) — API model parameter `mv: "chirp-fenix"` for v5.5

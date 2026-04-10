@@ -2,7 +2,7 @@
 
 Comprehensive reference for Suno's post-generation editing tools. This covers **Suno Studio** (Premier-only full DAW), the **Legacy Song Editor** (Pro/Premier section-level editor), and all related features. Companion to the [Suno Reference](SUNO-REFERENCE.md) (which covers prompting, models, and generation) and the [Usage Guide](USAGE.md) (which covers Mac's workflows).
 
-> **Last validated:** March 27, 2026 (Suno Studio v1.2, Legacy Editor, v5.5 Pro). Suno updates Studio features frequently — use web search to verify capabilities against current documentation when uncertain.
+> **Last validated:** April 6, 2026 (Suno Studio v1.2, Legacy Editor, v5.5 Pro). Updated with community workflow findings for Replace Section, Heal Edits, Remaster, Remove FX, Warp Markers, EQ, and credit waste prevention. Suno updates Studio features frequently — use web search to verify capabilities against current documentation when uncertain.
 
 ---
 
@@ -30,7 +30,7 @@ From Library or Create view, click the three-dot menu (...) on any song → sele
 The most important editing feature. Regenerates a selected portion while preserving the rest. Suno uses surrounding audio context to blend new content seamlessly.
 
 **How to use:**
-1. Highlight a region on the waveform (10-30 seconds is the sweet spot)
+1. Highlight a region on the waveform (**15-20 seconds** is the sweet spot for section length — under 5 seconds produces disjointed transitions, over 30 seconds and the model loses the melodic thread. 10-30 seconds works, but 15-20 is optimal (community consensus).)
 2. Optionally modify lyrics in the Replace Lyrics box
 3. Click "Replace Section" / "Recreate Section"
 4. Two alternate versions appear in the Edits Library
@@ -43,7 +43,7 @@ The most important editing feature. Regenerates a selected portion while preserv
 - **Replace Lyrics**: Edit the lyrics for just the selected region.
 
 **Tips:**
-- **10-30 seconds** is the sweet spot for section length — smaller sections produce better AI accuracy
+- **15-20 seconds** is the sweet spot for section length — under 5 seconds produces disjointed transitions, over 30 seconds and the model loses the melodic thread. 10-30 seconds works, but 15-20 is optimal (community consensus).
 - Replace typically requires **2-5 attempts** for seamless transitions — generate multiple alternates
 - Replaced sections may feel tonally mismatched; fine-tune by adjusting boundary lines
 - Produces **higher vocal clarity** than Extensions due to enhanced internal blending
@@ -187,6 +187,17 @@ Enables timing adjustments on audio clips with minimal distortion via time-stret
 - Start conservative and audition before exporting
 - If corrections are extreme, regeneration is better than warping
 
+**Genre-specific quantize guidance:**
+
+| Genre | Tightness | Approach |
+|-------|-----------|----------|
+| EDM | Very tight | Medium-to-strong quantize OK |
+| Trap | Medium | Maintain bounce; avoid full lock |
+| Afrobeat | Light-medium | Small warp edits; preserve groove |
+| Soul/R&B | Light | Prioritize feel; minimal changes |
+
+Source: [Fix Timing with Warp + Quantize — Jack Righteous](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/fix-timing-warp-quantize-suno-studio-1-2)
+
 **Decision rule:** Edit timing if the musical idea works but the execution fails. Regenerate if the concept itself is wrong.
 
 **Troubleshooting:** "After quantize, sounds weird" → Undo, re-quantize lighter, target only the worst region, use manual markers for specific hits, or regenerate and audition alternates.
@@ -227,6 +238,8 @@ Strips reverb and delay effects from audio clips, generating a dry version place
 - Results vary — heavily "printed" character from generation may partially persist
 - Sometimes sounds thinner (spatial effects add perceived body)
 - Works best on clips where effects were added during generation rather than being baked into the performance character
+- **Can increase loudness by up to 5 LUFS** — check clip levels after applying to avoid clipping
+- **Recommended workflow**: 'Prompt moderately dry, Remove FX only where needed, export multitrack, rebuild FX chain intentionally' (Jack Righteous)
 
 **Troubleshooting:** "Remove FX sounds thinner" → Expected sometimes. Export and rebuild with EQ, compression, and custom reverb in your DAW. Or blend the original (wet) with the cleaned (dry) clip.
 
@@ -254,6 +267,7 @@ Strips reverb and delay effects from audio clips, generating a dry version place
 - Start with subtle adjustments (+/-3dB)
 - Prefer cuts over boosts for natural results
 - Common moves: cut 200-400Hz for mud, boost 2-5kHz for presence, cut 3-4kHz for harshness, boost >10kHz for air
+- **AI shimmer artifacts**: Roll off ultra-highs on stems where noticeable — Suno's generation can produce high-frequency shimmer that EQ can tame
 - Use the Vocal preset as a starting point for vocal clarity, then fine-tune
 
 ### Time Signature (Studio v1.2, Premier)
@@ -275,6 +289,10 @@ Smooths transitions at edit/cut points where audio clips meet.
 **How to use:** Right-click a region → **"Heal Edits"**
 
 **When to use:** After cropping, rearranging, or replacing sections where the transition sounds rough or has artifacts at the cut point.
+
+**Technique:** After committing a Replace Section, apply Heal Edits on the **following** section (not just the edit point) to blend tonal shifts and timbre changes between edited and original audio. If the voice timbre shifts, run Heal Edits and trim its range to target just the boundary area.
+
+**Limitations:** Subtle effect — some users report not noticing a difference. Works best on regions where two different takes/generations meet. Can be targeted to specific parts of regions rather than whole sections.
 
 ### Recording (Premier)
 
@@ -333,6 +351,8 @@ Takes any clip in Studio and covers it into a different sound/instrument while r
 | **Selected Time Range** | Only the chosen timeline section |
 | **Multitrack** | All tracks as separate stems within the Studio mix context |
 | **Individual Clip** | Right-click any clip → "Download .WAV" |
+| **Wave Tempo Locked** | Stems set to average BPM for DAW alignment |
+| **WAV + MIDI bundle** | Audio + MIDI data together |
 
 All exports are high-quality WAV files.
 
@@ -395,6 +415,8 @@ When a song needs different instruments in different sections and prompting alon
 
 **IMPORTANT:** External DAW editing is a one-way operation. Once you edit outside Suno, you lose Suno's editing capabilities (Replace Section, Extend, etc.) on that version. Complete all Suno edits BEFORE exporting to a DAW. Always keep the original Suno generation as a source of truth.
 
+**Mastering note:** Suno applies an aggressive mastering limiter. For professional release, export raw stems and mix in a dedicated DAW for proper EQ, compression, and spatial processing.
+
 ---
 
 ## Remaster (Pro + Premier)
@@ -421,6 +443,16 @@ Click three-dot menu on any clip → Create → **Remaster**.
 - Drastically alter musical style
 - Replace the vocalist (use Cover instead)
 - Modify timing or arrangement
+
+### Community Observations
+
+- Remaster is a **full regeneration** using the current model — NOT an EQ pass or filter. Creates 2 new versions and consumes standard credits.
+- **'Improved fidelity with reduced soul'** — instrumentals benefit more than vocal tracks. Vocals can lose emotional intensity or edge.
+- **Stacking** (remastering remastered tracks): Helpful for instrumentals and ambient/cinematic music. Hurts lead vocal clarity, emotional phrasing, and lyrical intelligibility.
+- **Genre softening**: Aggressive styles (metal, punk) may lose their edge after remastering. Minor tonal drift after multiple passes.
+- **One pass is usually sufficient.** 'Always trust the version that resonates' — don't chase fidelity at the expense of emotional feel.
+
+Sources: [Suno Remaster Guide — Jack Righteous](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/suno-ai-remaster-guide-v4)
 
 ### Remaster vs. Cover
 
@@ -536,6 +568,17 @@ Before spending credits on regeneration:
 - **Is the melody usable?** A good melody with flawed production is worth refining. A bad melody needs regeneration.
 - **Does the emotional direction justify more credits?** If heading the right way, refine. If the emotional core is wrong, regenerate.
 
+### Credit Waste Prevention
+
+Track your credit spend per song to avoid diminishing returns:
+- **0-50 credits**: Learning and experimentation phase — explore freely
+- **50-80 credits**: Apply discipline — target specific problems, stop perfection-chasing
+- **80+ credits**: Stop editing and export — you're past the point of meaningful improvement
+
+'Prompt for identity, edit for reality' — use generation for genre/emotion/structure, use Studio tools for execution problems (timing, wetness, take selection, arrangement).
+
+Source: [Cut Credit Waste — Jack Righteous](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/suno-studio-1-2-reduce-credit-waste)
+
 ---
 
 ## Tier Summary
@@ -577,6 +620,8 @@ Before spending credits on regeneration:
 | MIDI export doesn't match audio | MIDI extraction is approximate | Use as a starting point; hand-edit in your DAW |
 | Time signature doesn't affect generation | Not yet sent to generative models | Set for grid/editing alignment only; prompt for desired meter |
 | Studio generation ignores earlier sections | Context Window too narrow | Expand the Context Window to include the sections you want Suno to reference |
+| 'Scratched CD' effect — track loops/skips | v5 bug: repetitive loop in first 20 seconds | Regenerate — no known fix beyond regeneration |
+| Replace Section lyrics don't update | 'Lyric Cache' bug on subsequent attempts | Use Cover on original source track with Persona selected to reinforce vocal identity, then generate new material |
 
 ---
 
@@ -603,3 +648,9 @@ Before spending credits on regeneration:
 - [Suno Studio 1.2 Master Guide — Jack Righteous](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/suno-studio-1-2-master-guide)
 - [Suno Studio v5 Complete Guide — Jack Righteous](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/suno-studio-v5-complete-guide)
 - [HookGenius: Suno Studio Tutorial](https://hookgenius.app/learn/suno-studio-tutorial/)
+- [Fix Timing with Warp + Quantize — Jack Righteous](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/fix-timing-warp-quantize-suno-studio-1-2)
+- [Cut Credit Waste in Studio 1.2 — Jack Righteous](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/suno-studio-1-2-reduce-credit-waste)
+- [Suno AI Remaster Guide — Jack Righteous](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/suno-ai-remaster-guide-v4)
+- [Suno Studio 1.2 — GenxNotes](https://blog.genxnotes.com/en/suno-studio-1-2-update/)
+- [MIDI Export from Studio — GenxNotes](https://blog.genxnotes.com/en/suno-studio-audio-to-midi-function/)
+- [How to Actually Use Replace Section — AIDIY](https://www.aidiy.tech/post/how-to-actually-use-suno-s-new-replace-section-feature-instructions-plus-bonus-the-arrow-song)

@@ -16,7 +16,10 @@ $ErrorActionPreference = 'Stop'
 # Run from the repo root (script's own directory)
 Set-Location -Path $PSScriptRoot
 
-$SkillDirs = @('.claude/skills', '.agents/skills')
+# Skill discovery directories — .claude/ for Claude Code, .agents/ for the
+# portable Agent Skills standard, .gemini/ for Gemini CLI (whose glob does
+# not always follow symlinks in .agents/skills/, so it needs its own scan path).
+$SkillDirs = @('.claude/skills', '.agents/skills', '.gemini/skills')
 
 foreach ($dir in $SkillDirs) {
     New-Item -ItemType Directory -Path $dir -Force | Out-Null

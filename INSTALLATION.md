@@ -112,15 +112,17 @@ Add to your `.claude/settings.local.json` (create if it doesn't exist):
 
 Adjust the path to match where you cloned the module. If using a standalone install, the path would be relative to your project root.
 
-### Standing Order (All Platforms)
+### Standing Orders (All Platforms)
 
-For additional reinforcement, add this to your project instruction file (`CLAUDE.md`, `AGENTS.md`, or `GEMINI.md`):
+The module ships three standing-order files at the repo root with identical content:
 
-```markdown
-## Suno Pipeline Rule (MANDATORY)
+- **`CLAUDE.md`** — auto-loaded by Claude Code
+- **`GEMINI.md`** — auto-loaded by Gemini CLI
+- **`AGENTS.md`** — auto-loaded by Codex CLI and OpenCode
 
-When the suno-agent-band-manager skill is active, NEVER hand-build a Suno package. ALWAYS invoke suno-style-prompt-builder and suno-lyric-transformer via the Skill tool before presenting any style prompt + lyrics + settings package.
-```
+These files contain mandatory skill activation discipline (run pre-activate scripts, read persona/creed/capabilities, present the dynamic menu, load voice context) and the Suno Pipeline Rule (never hand-build packages — always invoke `suno-style-prompt-builder` and `suno-lyric-transformer`). They exist because some LLM CLIs (notably Gemini) interpret the declarative `SKILL.md` activation style more literally than Claude Code does, so cross-platform robustness requires explicit standing orders outside the skill files themselves.
+
+If you have your own `CLAUDE.md`/`GEMINI.md`/`AGENTS.md` in the project root that you don't want overwritten, merge the Suno rules into it manually rather than letting the module's copies replace yours. The module's rules are scoped to the Suno skills, so they should compose cleanly with project-level instructions for unrelated work.
 
 ---
 
@@ -218,7 +220,7 @@ document_output_language: English
 output_folder: '{project-root}/_bmad-output'
 suno:
   name: BMad Suno Band Manager
-  version: 1.6.0
+  version: 1.6.1
   suno_tier: pro          # free, pro, or premier
   default_mode: studio    # demo, studio, or jam
   band_profiles_folder: '{project-root}/docs/band-profiles'
