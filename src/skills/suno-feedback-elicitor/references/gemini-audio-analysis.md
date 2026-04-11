@@ -9,6 +9,27 @@ Three complementary audio analysis approaches, each with different strengths:
 - **Gemini 3.1 Pro** — AI audio analysis: upload MP3, get instrument identification, genre classification, dynamic arc description, style prompt accuracy feedback. Best with two-pass workflow for fusion genres.
 - **ChatGPT (with audio upload)** — AI audio analysis: upload MP3 for "blind" analysis without providing the style prompt. Useful for unbiased genre/instrument identification. May correctly identify sounds that Gemini hallucinates from seeing the style prompt text.
 
+### Trust Hierarchy and Cross-Verification
+
+When using multiple analysis sources, you'll often get different answers for the same field. Resolve disagreements by source authority for the field type:
+
+**For measurable fields (BPM, key, energy levels, section boundaries, spectral balance):**
+- **librosa is primary** — it measures actual audio properties from raw waveforms. Its quirks (halftime detection on slow songs, key major/minor disputes) are predictable and correctable, but it does NOT hallucinate content that isn't there.
+- **Gemini and ChatGPT are secondary** — useful as cross-verification but not authoritative on measurable fields.
+- **When they disagree on BPM:** default to librosa with the halftime correction for slow contemplative songs (raw 150-160 → felt 75-80). Verify with manual hi-hat counting if it matters.
+- **When they disagree on key:** consider both readings, use lyric/emotional context as tiebreaker, or accept that key is uncertain. There is a documented pattern of Gemini consistently picking minor where librosa consistently picks major on the same track — without ground truth verification, neither source is automatically right.
+
+**For instrument identification:**
+- **Basic rhythm section + lead vocal (guitar, bass, drums, vocals):** Both Gemini and ChatGPT are reasonably reliable. The AI tools tend to catch what's actually present in the basic stack.
+- **Anything beyond the basic stack (brass, strings, synths, atmospheric pads, additional percussion):** Hold the AI's claim loose. Verify against the actual audio before filing as fact.
+- **Reverb/delay/atmospheric effects:** AI tools can misidentify these as instruments. Atmospheric production framing in the style prompt (e.g., "cathedral roominess," "intimate studio room ambience," "wide analog stereo with shimmer") increases the hallucination risk — the AI may hear "brass section" or "string pads" that are actually just reverb tails on guitars or vocals. Verify before trusting.
+
+**For subjective fields (mood, vibe, "what works," whether a track "lands"):**
+- **Human ear is primary.** AI tools can describe what they hear, but their mood/vibe interpretations are heavily influenced by prompt framing and shouldn't be trusted as the final word.
+- **Avoid leading language in your AI prompts** that biases the tool toward specific moods or genre fusions. Let it describe what it actually perceives without suggestive framing.
+
+**Don't burn cycles asking which tool to trust on settled fields.** For BPM/key/section boundaries, default to librosa. For instrument ID beyond the basic rhythm section, verify before filing. For mood, trust the human ear. This calibration is consistent across catalogs and shouldn't be relitigated for every track.
+
 ### librosa Analysis Scripts
 
 Requirements: Python 3, librosa, numpy (`pip install librosa numpy`)
@@ -46,6 +67,8 @@ python scripts/batch-full-analysis.py /path/to/mp3s/
 - Key confidence below 0.5 is low reliability
 - Enharmonic equivalents: D# = Eb, C# = Db, A# = Bb, F# = Gb
 - librosa is deterministic — same file always produces the same results. Use as ground truth for BPM/key baseline, but always apply genre-aware correction before acting on the number.
+- **Slow contemplative songs (felt tempo 70-80 BPM) trigger halftime detection consistently.** librosa raw values around 150-160 BPM with felt tempo around 75-80 BPM is a well-documented pattern. When librosa reports 152 BPM on a song that "feels" much slower than that, the felt tempo is likely half (76). Cross-verify with hi-hat counting before trusting either value.
+- **Manual hi-hat counting is the cheap reliable BPM verification** when AI tools disagree. Count hi-hat hits in a 10-second window of a steady-groove section. Most rock/pop songs play hi-hats as straight eighth notes. Calculation: `(hat hits in 10 sec ÷ 2) × 6 = quarter-note BPM`. Example: 25 hi-hat hits in 10 sec → (25 ÷ 2) × 6 = 75 BPM. When sources contest the BPM, this 30-second manual check is the tiebreaker.
 
 ### ChatGPT Audio Analysis
 
@@ -80,7 +103,7 @@ ChatGPT can analyze uploaded MP3 files. Key workflow difference from Gemini:
 
 ### Two-Pass Workflow (Mandatory for Fusion Genres)
 - Gemini's first pass flattens fusion genres into nearest pure genre (e.g., NOLA brass-metal → "ska-punk", groove-funk-metal → "sludge")
-- First pass prompt must include calibration: (a) distinguish tempo changes from volume/intensity dynamics, (b) describe genre blend not nearest pure genre, (c) verify BPM by tapping kick/snare pulse not subdivisions
+- First pass prompt must include calibration: (a) distinguish tempo changes from volume/intensity dynamics, (b) describe what's actually present without manufacturing genre fusions or instruments that aren't there, (c) verify BPM by tapping the most consistent rhythmic pulse (kick/snare/hi-hat) and reporting the quarter-note pulse, not subdivisions or "felt" impressions
 - Second pass (follow-up in same context) is mandatory. Ask specifically about: mood/feel vs. heaviness, volume/intensity dynamics without tempo change, bass techniques and independent role, stereo panning placement
 - Before/after improvement is dramatic — example: first pass = "NWOBHM speed metal, zero funk, bass follows guitar." Follow-up = "funk-metal party groove, standout slap bass, Les Claypool comparison." Same audio.
 
@@ -97,8 +120,9 @@ You are analyzing a track from the band [BAND NAME] for cataloging purposes. Lis
 
 IMPORTANT LISTENING NOTES:
 - Distinguish between tempo changes (BPM actually shifts) and dynamic changes (volume/intensity shifts without tempo change). A song can get quieter or sparser without slowing down. Report both separately.
-- This band plays genre fusion — multiple genres blended, not pure genres. Describe the blend of influences you hear rather than picking the single closest genre. If you hear funk ELEMENTS within a metal song, say so — don't round to the nearest pure genre.
-- For BPM, tap along to the kick/snare pattern to verify. If the song feels fast but the underlying pulse is moderate with busy subdivisions, report the actual pulse BPM, not the subdivision speed.
+- Describe the genre or genres you actually hear without assuming a fusion is present. If the track is in a single sub-genre, name that single sub-genre. If you hear multiple genre influences blended together, name all the ingredients you actually hear — but do NOT manufacture a fusion that isn't present in the audio.
+- Only describe instruments and elements you can clearly identify. Do NOT manufacture content that isn't there. If you're uncertain whether something is an actual instrument or a production effect (reverb tails, delay echoes, atmospheric pads, ambient swells), describe what you hear without assigning it to a specific instrument category. Reverb-heavy production can sound similar to brass or strings in places — don't guess.
+- For BPM, tap along to the most consistent rhythmic pulse (usually kick/snare or hi-hat). Report the underlying quarter-note pulse, not subdivision rates (don't count eighth notes or sixteenths as the BPM). Do NOT adjust your BPM estimate to fit a "feels fast" or "feels slow" impression — report what your tap-along count actually gives you, then separately note if the song feels different from that count.
 
 Provide your analysis in this exact format:
 
@@ -149,7 +173,7 @@ Send this as a follow-up in the same conversation after the first pass:
 ```
 Good analysis. A few areas I'd like you to listen again more carefully for:
 
-1. **Mood/feel vs. heaviness:** Does this track feel aggressive/dark, or does the heaviness carry an upbeat, playful, or ironic energy? Heavy instrumentation doesn't always mean dark mood.
+1. **Mood/feel vs. heaviness:** How does this track feel — describe what you actually perceive. Heavy instrumentation doesn't predict mood; a heavy song can feel many ways and so can a light one. Don't pick from a suggested list — describe what's there.
 2. **Volume/intensity dynamics:** Are there moments where the band gets noticeably quieter or sparser WITHOUT the tempo changing? Describe those shifts.
 3. **Bass specifics:** Listen to the bass independently. Is it using any specific techniques — slap/pop, fingerstyle, pick attack, melodic runs independent of guitar? Does it ever take a lead role?
 4. **Stereo placement:** Are any instruments panned notably left or right, especially in the intro?
@@ -163,26 +187,29 @@ For songs not part of a band project (solo work, one-offs), replace the opening 
 You are analyzing an AI-generated music track for cataloging purposes. Listen to the full track carefully before responding.
 ```
 
-And adjust the fusion genre note:
+And adjust the genre note:
 
 ```
-- Describe the genre blend you hear rather than picking the single closest genre. AI-generated music often combines multiple genre influences — name all the ingredients.
+- Describe the genre or genres you actually hear without assuming a fusion is present. If the track is in a single sub-genre, name that single sub-genre. If you hear multiple genre influences blended together, name them — but do not manufacture a fusion that isn't present in the audio.
 ```
 
 ### What Gemini Does Well
-- Instrument identification — reliably catches what's present
-- Genre classification at macro level — right family even if specific fusion label is wrong
+- Instrument identification (basic rhythm section + lead vocal) — reliably catches guitar, bass, drums, and vocals when they're actually present. Less reliable for non-basic instruments (brass, strings, synths, ambient pads) — see "What Gemini Misses or Gets Wrong."
+- Genre classification at macro level — right family even if specific fusion label is wrong (with the caveat that prompting Gemini to "look for fusion" will cause it to manufacture fusions that aren't there)
 - Style Prompt Accuracy feedback — the most valuable output. Honest about what Suno delivered vs. what was requested
 - Structural timeline with timestamps — dynamic arc breakdowns useful for songbook documentation
 - Stereo placement (when asked) — catches hard-panned guitars, center-anchored bass/drums
 
 ### What Gemini Misses or Gets Wrong
-- Cannot hear fusion — rounds to nearest pure genre even after calibration. Needs directed follow-up
-- Misses mood/irony — reads heaviness as aggression by default. Cannot detect playful or ironic energy in heavy music
-- BPM unreliable — may read subdivisions as pulse. Treat estimates as approximate
+- Cannot hear fusion when present — rounds to nearest pure genre even after calibration. Needs directed follow-up to surface real fusions
+- Misses mood/irony — reads heaviness as aggression by default. Cannot detect playful or ironic energy in heavy music without explicit prompting
+- BPM unreliable — may read subdivisions as pulse, or be biased by "feels fast/slow" leading language in prompts. Treat estimates as approximate; verify with manual hi-hat counting when it matters
 - Misses volume dynamics on first pass — describes tracks as "consistently dense" when they have significant intensity shifts
 - Cannot parse detailed endings — fine detail on last 10 seconds is unreliable
 - Misses bass techniques on first pass — slap/pop, melodic runs, lead bass consistently missed until follow-up
+- **Hallucinates atmospheric/effect content as instruments** — reverb tails, delay echoes, and ambient pads on guitars/vocals can be misidentified as brass section, string pads, or other instruments that aren't actually present. Atmospheric production framing in the style prompt ("cathedral roominess," "intimate studio room ambience," "wide analog stereo," "shimmer") increases hallucination risk. When Gemini reports a non-basic instrument, verify against the actual audio before filing as fact. **Documented case:** Gemini reported a "very prominent brass section" on a track with no brass at all — what it heard was reverb tails on the vocals and guitars from an atmospheric production stack.
+- **Inconsistent key detection vs. librosa** — there is a documented pattern of Gemini consistently leaning toward minor-key readings while librosa consistently leans toward major-key readings on the same track. Without ground truth verification (perfect-pitch listener, manual chord identification), neither source is automatically correct. Use lyric content / emotional context as a tiebreaker, or accept that key is uncertain and document both readings.
+- **Sensitive to leading language in prompts** — phrases like "this band plays genre fusion" or "a heavy song can feel upbeat, playful, or ironic" prime Gemini to invent content matching those framings. Use neutral, descriptive prompt language that asks Gemini to describe what it perceives without suggesting what categories to find. The prompt templates in this doc have been progressively de-led to minimize these effects.
 
 ### Temperature Findings — 0.5 Outperforms 0.3
 
