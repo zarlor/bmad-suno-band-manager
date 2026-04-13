@@ -22,6 +22,37 @@ $ErrorActionPreference = 'Stop'
 
 $Archive = Join-Path $ProjectRoot 'docs/portable-sync.tar.gz'
 $Manifest = Join-Path $ProjectRoot 'portable-manifest.yaml'
+$Validator = Join-Path $ProjectRoot 'scripts/validate-sidecar.py'
+
+# Pre-sync validation gate. Stops stale sidecar state from propagating to
+# other machines. The validator reads songbook + band profiles + sidecar
+# index and reports drift. A non-zero exit from the validator blocks the
+# pack. Warnings (pre-existing content gaps) do not block.
+#
+# Bypass: set $env:BMAD_SKIP_VALIDATE=1 to skip (e.g., emergency syncs).
+# Missing validator script or missing Python falls through gracefully with
+# a warning so older installs keep working.
+if ($env:BMAD_SKIP_VALIDATE -eq '1') {
+    [Console]::Error.WriteLine('NOTE: BMAD_SKIP_VALIDATE=1 -- skipping sidecar validation.')
+} elseif (-not (Test-Path $Validator)) {
+    [Console]::Error.WriteLine("NOTE: $Validator not found -- skipping sidecar validation.")
+} else {
+    $python = (Get-Command python3 -ErrorAction SilentlyContinue)
+    if (-not $python) {
+        $python = (Get-Command python -ErrorAction SilentlyContinue)
+    }
+    if (-not $python) {
+        [Console]::Error.WriteLine('NOTE: python not available -- skipping sidecar validation.')
+    } else {
+        & $python.Source $Validator $ProjectRoot 1>&2
+        if ($LASTEXITCODE -ne 0) {
+            [Console]::Error.WriteLine('')
+            [Console]::Error.WriteLine('ERROR: Sidecar validation failed -- refusing to pack stale state.')
+            [Console]::Error.WriteLine('Fix the errors above, or override with $env:BMAD_SKIP_VALIDATE=1 if intentional.')
+            exit 1
+        }
+    }
+}
 
 $files = New-Object System.Collections.Generic.List[string]
 

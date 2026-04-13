@@ -35,7 +35,7 @@ Quick-reference for Suno models, plans, parameters, metatags, and common pitfall
 - Same audio engine, metatags, and character limits as v5 -- all v5 prompts work identically, often with better results
 - 48kHz sample rate, up to 8 min generation, internal codename "chirp-fenix" (v5 was "chirp-crow")
 - Most expressive model yet -- better at interpreting subtle and nuanced descriptors
-- More varied output per generation -- generate 3-5 versions and pick the standout
+- More varied output per generation -- each Create produces 2 songs; 2-3 Creates (20-30 credits) gives 4-6 takes to pick from
 - v5.5-optimized prompts can be more specific: "deep sub 808s, glitchy hi-hat rolls, pitched vocal chops" where v5 would use simpler "808s, hi-hats"
 - **Voices** (replaces Personas): actual voice cloning with anti-deepfake verification, 15s-4min audio sample required. Pro/Premier only. **Skill Level dropdown** (Beginner/Intermediate/Advanced/Professional) actively reshapes how the model interprets your voice — always select **Professional** regardless of actual ability for the most stable, usable results.
 - **Custom Models**: train on 6+ original tracks, 2-5 min training time, up to 3 custom models. Pro/Premier only. **Privacy/consent note (AudioNewsRoom):** consent grants Suno permission to use your data for training their global models — not optional, not a private silo.
@@ -59,6 +59,7 @@ Quick-reference for Suno models, plans, parameters, metatags, and common pitfall
 |---------|-----------|---------------------|--------------------------|
 | **Model access** | v4.5-all only | All models incl. v5 | All models + Studio |
 | **Credits** | 50/day (~10 songs) | 2,500/mo (~500 songs) | 10,000/mo (~2,000 songs) |
+| **Credit cost** | 10 credits per Create (produces 2 songs) | Same | Same |
 | **Commercial use** | No | Yes (new songs) | Yes (new songs) |
 | **Weirdness slider** | No | Yes (0-100) | Yes (0-100) |
 | **Style Influence slider** | No | Yes (0-100) | Yes (0-100) |
@@ -76,6 +77,8 @@ Quick-reference for Suno models, plans, parameters, metatags, and common pitfall
 | **Studio** | No | No | Yes |
 | **Queue** | Shared | Priority, 10 at once | Priority, 10 at once |
 | **Add-on credits** | No | Yes | Yes |
+
+**Credit model:** Every press of the Create button costs **10 credits** and produces **2 songs** (a pair to choose from — Suno always generates two takes for variety). This means: 50 credits/day = 5 Creates = 10 songs to evaluate. 2,500 credits/mo = 250 Creates = 500 songs. When budgeting credits for a session, count in **Creates (10 credits each)**, not individual songs. Replace Section and Extend also cost credits (amount varies by section length). **When daily credits run low:** Suno provides 50 bonus credits per day on all tiers, refreshing daily.
 
 Free-tier "More Options" includes: Vocal Gender, Manual/Auto Lyrics mode, Song Title only.
 
@@ -296,8 +299,8 @@ This table covers problems with Suno's output. For issues with Mac itself (wrong
 
 | Issue | What Happens | Fix |
 |-------|-------------|-----|
-| **Single generation** | One generation rarely nails it | Always generate 3-5 versions with the same prompt |
-| **Same prompt, wildly different results** | Normal Suno behavior | This is expected. Generate 3-5 versions and pick the best. For v5 Pro, results vary more -- that is a feature, not a bug. |
+| **Single Create** | One Create (2 songs) rarely nails it | 2-3 Creates (4-6 songs, 20-30 credits) is the practical minimum for finding a keeper |
+| **Same prompt, wildly different results** | Normal Suno behavior | This is expected — each Create produces 2 different takes from the same inputs. Budget accordingly. |
 | **Cliche amplification** | Subtle lyrical cliches become obvious when sung | Run cliche detection before submitting lyrics |
 | **`[Intro]` unreliability** | Suno's `[Intro]` tag often produces unexpected results | Regenerate just the first 10 seconds, or skip the tag |
 | **"Not what I imagined"** | Output doesn't match your vision | Use the Refine Song flow (RS). Mac's feedback elicitation helps you articulate what needs to change. |

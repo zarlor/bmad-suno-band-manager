@@ -222,7 +222,7 @@ document_output_language: English
 output_folder: '{project-root}/_bmad-output'
 suno:
   name: BMad Suno Band Manager
-  version: 1.6.4
+  version: 1.6.5
   suno_tier: pro          # free, pro, or premier
   default_mode: studio    # demo, studio, or jam
   band_profiles_folder: '{project-root}/docs/band-profiles'

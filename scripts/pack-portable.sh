@@ -21,6 +21,30 @@ set -euo pipefail
 PROJECT_ROOT="${1:-.}"
 ARCHIVE="$PROJECT_ROOT/docs/portable-sync.tar.gz"
 MANIFEST="$PROJECT_ROOT/portable-manifest.yaml"
+VALIDATOR="$PROJECT_ROOT/scripts/validate-sidecar.py"
+
+# Pre-sync validation gate. Stops stale sidecar state from propagating to
+# other machines. The validator reads songbook + band profiles + sidecar
+# index and reports drift. Exit code 1 from the validator blocks the pack.
+# Warnings (pre-existing content gaps) do not block.
+#
+# Bypass: set BMAD_SKIP_VALIDATE=1 to skip (e.g., emergency syncs). Missing
+# validator script or missing Python falls through gracefully with a warning
+# so older installs keep working.
+if [ "${BMAD_SKIP_VALIDATE:-0}" = "1" ]; then
+    echo "NOTE: BMAD_SKIP_VALIDATE=1 — skipping sidecar validation." >&2
+elif [ ! -f "$VALIDATOR" ]; then
+    echo "NOTE: $VALIDATOR not found — skipping sidecar validation." >&2
+elif ! command -v python3 >/dev/null 2>&1; then
+    echo "NOTE: python3 not available — skipping sidecar validation." >&2
+else
+    if ! python3 "$VALIDATOR" "$PROJECT_ROOT" >&2; then
+        echo "" >&2
+        echo "ERROR: Sidecar validation failed — refusing to pack stale state." >&2
+        echo "Fix the errors above, or override with BMAD_SKIP_VALIDATE=1 if intentional." >&2
+        exit 1
+    fi
+fi
 
 # Build file list from manifest if it exists, otherwise use defaults
 FILES=()

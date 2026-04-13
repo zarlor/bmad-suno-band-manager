@@ -4,6 +4,114 @@ All notable changes to the Suno Band Manager module are documented here.
 
 ---
 
+## [1.6.5] - 2026-04-13
+
+### Sidecar Drift Protection
+
+A structural release that eliminates a class of bug where the Mac sidecar `index.md` could silently drift out of sync with the authoritative songbook. The drift was discovered in a real session: `index.md` still listed a published song as WIP and omitted another published track entirely — yet the catalog status section had been updated in the same save cycle. That partial-update pattern motivated the fix.
+
+### Root Cause
+
+`index.md` mixed two categories of facts and treated them identically:
+
+1. **Derivable facts** — catalog count, which tracks are published, publish dates, catalog roster. These have an authoritative source (songbook frontmatter + body Status markers + playlist YAMLs). They should be machine-derived.
+2. **Narrative facts** — current work focus, pending threads, session history, next steps. These live only in the narrator's head. They need to be hand-written.
+
+Both were hand-written. When the save-memory workflow ran, Mac read the conversation and narratively updated the sections he remembered touching. Sections he didn't touch silently kept stale values. Nothing compared the written index against the ground truth, so drift accumulated invisibly. Similar drift was independently found in a songbook file's frontmatter `notes:` block and body `**Status:**` marker (both still said WIP for a song that had been published two days earlier).
+
+### Added
+
+- **`scripts/validate-sidecar.py`** — read-only validator that scans `docs/songbook/**/*.md`, `docs/band-profiles/*.yaml`, `docs/*-playlist.yaml`, and `_bmad/_memory/band-manager-sidecar/index.md`, then reports drift as structured findings (JSON or text output). Checks:
+  - Songbook internal consistency — frontmatter `status`/`date` vs. body `**Status:**` marker
+  - Audio file existence for published songs
+  - Sidecar Recently Published list vs. songbook ground truth
+  - Sidecar Catalog Status counts vs. actual songbook counts
+  - Playlist YAML track count vs. songbook count
+
+  Exit 0 on clean, 1 on errors (for CI-friendliness). Warnings (pre-existing content gaps like missing body markers on older songs) do not fail the run. Standalone CLI with `--format json` and `--warn-only` flags.
+
+- **`scripts/regenerate-index-sections.py`** — writer-side companion to the validator. Reads songbook + playlist ground truth, derives the Recently Published and Catalog Status sections, rewrites them in-place in `index.md` between HTML comment markers:
+
+  ```markdown
+  <!-- derived:recently-published:start -->
+  ...auto-generated content...
+  <!-- derived:recently-published:end -->
+  ```
+
+  Narrative sections (Current Work, Pending / Parked Work, Session History, etc.) are preserved unchanged — only the derivable sections are rewritten. `--dry-run` prints without writing.
+
+### Changed
+
+- **`scripts/pack-portable.sh` and `pack-portable.ps1`** — run `validate-sidecar.py` before packing. A non-zero exit from the validator blocks the pack, preventing stale sidecar state from propagating to other machines via the sync archive. Warnings do not block. Bypass via `BMAD_SKIP_VALIDATE=1` (or `$env:BMAD_SKIP_VALIDATE=1` on PowerShell) for emergency syncs. Missing validator script or Python interpreter falls through gracefully with a note so older installs keep working. Cross-platform parity: both shell and PowerShell scripts implement the same gate with the same bypass semantics.
+
+- **`src/skills/suno-agent-band-manager/references/save-memory.md`** — Step 4 now updates only narrative sections of `index.md`; Step 4a invokes `regenerate-index-sections.py` to rewrite derivable sections; Step 4b invokes `validate-sidecar.py` to confirm cleanliness before finalizing the save. Step 7 reconciliation narrowed to cross-file drift since sidecar-level drift is covered automatically by 4b.
+
+### Fixed
+
+- **`docs/songbook/lennys-voice/from-now-until.md` — frontmatter/body drift cleanup.** Frontmatter said `status: published` with `date: 2026-04-11`, but the `notes:` block and body `**Status:**` marker both still described WIP state ("Plan: re-test with Lenny - Rock clone when credits return"). The song had actually been published 2026-04-12 after Rock A/B testing — the Lenny-Soft wild card variant with "driving rock band weight" took the published slot. All three locations now agree. This drift is what motivated the release.
+
+### Migration (one-time, per project)
+
+Existing projects need to add the derived-section markers to `index.md` on first upgrade:
+
+```markdown
+## Recently Published
+
+<!-- derived:recently-published:start -->
+
+...existing content...
+
+<!-- derived:recently-published:end -->
+
+## Catalog Status
+
+<!-- derived:catalog-status:start -->
+
+...existing content...
+
+<!-- derived:catalog-status:end -->
+```
+
+The regenerator reports clearly if markers are missing and exits without modifying the file, so a missed migration can't corrupt the index.
+
+### Impact
+
+| Previously | After v1.6.5 |
+|---|---|
+| `index.md` Recently Published and Catalog Status hand-written → could silently skip updates | Regenerated from songbook ground truth every save → can't drift |
+| No mechanism to detect sidecar inconsistency | Validator reports drift with exit code + JSON for CI |
+| Stale sidecar could propagate to other machines via sync | Pre-sync gate blocks packs that fail validation |
+| Songbook internal drift (frontmatter vs. body marker) invisible | Validator surfaces it as structured findings |
+| Windows and Linux/macOS used independent sync paths | Both platforms run the validator identically |
+
+### Verification
+
+- **Validator on current state:** 0 errors, 14 warnings — all warnings are pre-existing content gaps (older Solitary Fire songbook entries missing body `**Status:**` markers, and a 2-track count mismatch between the SF playlist YAML and the SF songbook directory). These are legitimate drift findings; the validator correctly flags them as warnings rather than blocking errors since they predate v1.6.5.
+- **Regenerator dry-run:** produces clean Recently Published list (7 most recent published songs) and Catalog Status (per-band counts + playlist integration) from songbook frontmatter alone.
+- **Pre-sync gate on Linux:** packs correctly when validator passes; `BMAD_SKIP_VALIDATE=1` bypass works.
+- **Cross-platform parity:** bash and PowerShell implementations of the pre-sync gate inspected side-by-side for identical exit semantics and bypass behavior.
+
+### Version Bumps
+
+- `package.json`: 1.6.4 → 1.6.5
+- `src/skills/suno-setup/assets/module.yaml`: 1.6.4 → 1.6.5
+- `.claude-plugin/marketplace.json`: 1.6.4 → 1.6.5
+- `INSTALLATION.md`: 1.6.4 → 1.6.5
+
+### Additionally (reference doc refinements)
+
+Two small in-flight documentation refinements are also folded into this release since they were already staged:
+
+- **`SUNO-REFERENCE.md` — Credit model clarifications.** Replaces the older "generate 3-5 versions" framing with budgeting in **Creates** (10 credits, 2 songs per press) to match how users actually think about Suno spending. Adds an explicit credit-cost row to the tier comparison table, a dedicated "Credit model" paragraph explaining that 50 credits/day = 5 Creates = 10 songs to evaluate, and a note on the 50 bonus credits/day that refresh on all tiers. Updates the Common Pitfalls table entries to reference Creates rather than individual generations. No behavior change — it's a framing update that brings the reference in line with how Pro users budget sessions.
+
+- **`persona.md` — Adds "Dawlin'" to the NOLA vocabulary list.** Captures the distinctive Yat/Marigny/Bywater/9th Ward pronunciation (the `aw` diphthong) as separate from generic Southern "darlin'" so Mac uses the correct form.
+
+### Scope Note
+
+This release adds **two new scripts** (`validate-sidecar.py`, `regenerate-index-sections.py`) and **modifies several existing module files** (`pack-portable.sh`, `pack-portable.ps1`, `save-memory.md`, plus the two reference doc refinements above). User data (`docs/`, `_bmad/`) is not part of the module and remains untouched by the module upgrade. One-time project migration (adding derived-section markers to `index.md`) is the only user-facing action required.
+
+---
+
 ## [1.6.4] - 2026-04-11
 
 ### pack-portable.sh Bug Fixes (Linux/macOS)
