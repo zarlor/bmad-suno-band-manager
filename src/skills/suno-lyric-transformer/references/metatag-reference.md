@@ -583,6 +583,60 @@ These are NOT metatags but critical formatting techniques that directly control 
 - Confirmed working: Suno rendered `(blasting)` as a distinct backing vocal layer.
 - **Genre-dependent:** Parentheses produce true backing vocals in pop/R&B/soul/gospel/hip-hop contexts. In thrash/metal they come in as whispered phrases or ambience rather than a second voice. Not suitable for rapid intrusive-voice dialogue in heavy genres — see Dual Vocals section above for genre-appropriate alternatives.
 
+**Doubled-word parentheticals — atmospheric/ritualistic backing (April 2026 production observation):**
+
+Identical doubled words inside parens — `(plunging plunging)`, `(watching watching)`, `(caressing caressing)` — produce a ritualistic/trance group-vocal effect that intensifies the preceding lyrical image rather than echoing it. Different use case from the traditional `word(echo)` backing-vocal technique. Works well for psychedelic, swamp-blues, voodoo-atmosphere, gothic, and ritual-trance genres.
+
+**Two production problems observed with doubled-word parentheticals:**
+
+1. **Single-word truncation** — Suno sometimes renders `(plunging plunging)` as just `(plunging)`, interpreting the doubled word as a typo. **Fix: exclamation-separator.** `(plunging! plunging!)` forces Suno to read them as two distinct utterances by placing punctuation between. Genre caveat: exclamations trigger aggressive vocal attacks in metal and heavy-rock contexts — use with care outside psych/blues/folk/Americana/atmospheric-rock genres.
+
+2. **First-section failure** — Suno uses the first lyrical section to establish the song's sonic palette. Non-default vocal arrangements (like group-backing-on-parens in rockabilly or psychedelic-blues, where backing vocals aren't the genre default) frequently fire on V2+ but MISS on V1 entirely. Once Suno "commits" to the absence of backing vocals in V1, it often continues inconsistently even if tags explicitly request them. See **"Establishing Non-Default Vocal Arrangements"** subsection below for production-tested remediation.
+
+**Inline vs. line-separated parentheticals:** When the backing-vocal pattern fires inconsistently across verses, inline parentheticals (`The knife (plunging! plunging!)` on the same line as the lyric) are more reliable than line-separated indented parens. The line-separated style signals "spoken interjection" to Suno (see next subsection); inline signals "sung backing vocal."
+
+### Establishing Non-Default Vocal Arrangements (April 2026)
+
+When a song requires a non-default vocal arrangement — group backing vocals throughout, call-and-response, dual vocal interplay, parenthetical chants — that isn't typical for the target genre, Suno's first-section behavior frequently becomes load-bearing. Suno treats the first lyrical section as arrangement establishment; if the arrangement element doesn't fire on V1, Suno often "locks in" its absence and the pattern continues inconsistently through the rest of the song.
+
+**Production-tested remediation: wordless-chant intro** — the most reliable single lever.
+
+Add a dedicated `[Intro]` section with **non-lyrical content that demonstrates the vocal arrangement pattern before any story-bearing lyrics arrive**. Example:
+
+```
+[Intro]
+[Instrumental groove with group vocal chants establishing the pattern]
+(oh oh) (ah ah) (oh oh) (ah ah)
+
+[Verse 1]
+[Energy: hypnotic, established groove]
+[Vocal Style: lead with prominent group backing vocals on every parenthetical]
+The knife (plunging! plunging!)
+The door (slamming! slamming!)
+...
+```
+
+Suno hears the pattern first, commits to it as part of the song's sonic identity, then applies it consistently through V1+.
+
+**What does NOT work alone** (observed across multiple gens on a rockabilly-primary / psychedelic-blues-wild-card song, April 2026):
+
+- **Renaming `[Verse 1]` to `[Intro]` without adding pre-lyrical content.** Section-type relabel doesn't carry enough weight. Tried across 1 Create (2 gens) — both missed backing vocals on the renamed-Intro section anyway.
+- **Strong per-verse `[Vocal Style:]` tags on V1 alone.** Suno interprets per-section vocal style tags as advisory and frequently ignores them for arrangement elements that would require the whole arrangement to shift (e.g., bringing in group backing vocals that the song "doesn't have").
+- **Global `[Vocal Arrangement:]` tag at the top of lyrics alone.** Necessary but not sufficient — contributes reinforcement only when combined with an actual pre-lyrical demonstration section.
+
+**Belt-and-suspenders combination** (confirmed-working for group-backing-in-parens on Lenny-Soft v5.5, psychedelic swamp voodoo blues, April 2026):
+
+1. Wordless-chant intro section demonstrating the pattern (primary lever)
+2. Global `[Vocal Arrangement: lead vocal with group responses on parenthetical lines throughout]` at the top of the lyrics block
+3. Per-section `[Vocal Style: lead with backing vocal in parenthesis]` on every verse
+4. Stronger-phrased tag on V1 specifically (`lead with prominent group backing vocals on every parenthetical`)
+5. Critical-zone style prompt placement: the arrangement descriptor at position 1 of the style prompt (e.g., `group backing vocals throughout, psychedelic swamp voodoo blues, ...`)
+6. Exclamation-separators on doubled-word parentheticals across all verses
+
+**Energy tag interaction caution:** `[Energy: building]` on V1 can fight vocal-arrangement establishment. "Building" signals start-minimal-and-layer-in and may suppress group backing vocals Suno would otherwise include. When V1 needs the arrangement present from bar 1, use `[Energy: hypnotic, established groove]` or similar locked-in framing and reserve `[Energy: building]` for later verses where escalation is the actual goal.
+
+**Why this pattern exists (hypothesis):** Suno's arrangement decisions appear to lock in early based on the first vocal section's delivery. Non-default vocal arrangements require Suno to "decide" the song has that arrangement — and the decision happens during the first sung section. A wordless intro with the pattern demonstrated gives Suno pre-commit evidence that the arrangement is part of the song's identity, not a per-section advisory.
+
 **Isolated parentheticals as performed speech (April 2026 production observation):**
 
 When parentheticals are placed on their own indented lines — not attached to a preceding line as `word(echo)` — Suno often delivers them as **spoken interjections** rather than sung backing vocal harmonies. This is a practical observation from production generations across multiple songs, not documented behavior.
