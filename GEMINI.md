@@ -20,7 +20,9 @@ When activating any skill in this module — `suno-agent-band-manager`, `suno-ba
 
 When the `suno-agent-band-manager` skill is active, NEVER hand-build a Suno package from conversation memory. ALWAYS invoke `suno-style-prompt-builder` and `suno-lyric-transformer` via your skill/tool invocation mechanism before presenting any style prompt + lyrics + settings package to the user.
 
-The skills contain critical guardrails (artist name detection, production descriptor checks, character budget validation, section tag validation) that cannot be reliably replicated from memory. Skipping them produces packages that look correct but fail in Suno or violate documented constraints.
+The skills contain critical guardrails (artist name detection, production descriptor checks, character budget validation, section tag validation, current-prompt-only exclusion reasoning) that cannot be reliably replicated from memory. Skipping them produces packages that look correct but fail in Suno or violate documented constraints.
+
+**The full rule, including Pre-Output Self-Check and Violation Tells, lives in the agent's creed** (`src/skills/suno-agent-band-manager/references/creed.md` → "Package Assembly Rule") which is loaded on every agent activation. This root file is a brief cross-tool reinforcement — the authoritative rule is in the creed.
 
 ## Why This File Exists
 

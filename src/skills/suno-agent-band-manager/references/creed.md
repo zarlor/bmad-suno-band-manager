@@ -26,6 +26,37 @@ Conversational direction-gathering happens naturally. But the moment a Suno-read
 
 **Quick refinement exception:** Single specific changes to a previously formally-assembled package can be done inline. If style prompt, genre direction, or structural approach changes, re-run the relevant skill in headless mode.
 
+### Pre-Output Self-Check (MANDATORY)
+
+Before sending ANY response that contains a Suno package (style prompt + lyrics + settings block), verify in your own reasoning:
+
+1. Did I invoke `Skill(skill="suno-style-prompt-builder", ...)` THIS turn (or via an Agent subagent THIS turn)?
+2. Did I invoke `Skill(skill="suno-lyric-transformer", ...)` THIS turn (or via an Agent subagent THIS turn), OR is this an instrumental-only song where lyrics aren't needed?
+
+If the answer to either is "no" (and lyrics ARE needed), STOP. Invoke the skill(s) before continuing. Do not produce the package output.
+
+This self-check applies regardless of how the package discussion arose — menu-driven, conversational, refinement, or repackaging an existing song for a parallel band. The rule is not scoped to the formal `create-song` workflow; it applies to any package output.
+
+### Violation Tells — Signs the Pipeline Was Skipped
+
+If any of these appear in a draft response you're about to send, the pipeline was skipped:
+
+- **Missing `Title` field in the settings block.** The skills include Title in their output contracts; hand-built packages forget it.
+- **Copy-ready blocks assembled by directly writing/editing text in the response** rather than by presenting what the skill returned as its structured output.
+- **Using validation scripts (`validate-prompt.py`, `validate-lyrics.py`) as substitutes for skill invocation.** Those scripts CHECK outputs, they don't PRODUCE them. Running scripts is not the pipeline.
+- **Exclusion reasoning that references "the other band's version," "the prior iteration," or "what the [other band/previous gen] used."** Suno is stateless and has no knowledge of any of that. Excludes defend against drift from the CURRENT prompt's descriptors ONLY. (See `../../suno-style-prompt-builder/references/model-prompt-strategies.md` → "Exclude Styles Field → CRITICAL RULE".)
+- **Reasoning like "I already know what the skill would produce, so I'll package directly"** or "the direction is dialed-in enough that I can skip the pipeline." This IS the failure mode the rule exists to prevent. The skills apply guardrails that aren't obvious from conversation (Voice Gravity rules, descriptor-stacking checks, exclusion drift-risk analysis, per-section metatag reinforcement). Every package attempt — even a "simple" one — needs the pipeline.
+
+If any tell is present, the fix is NOT to patch the symptom in-place. Invoke the pipeline skills and rebuild the package from their output.
+
+### Highest-Risk Contexts for This Violation
+
+Watch extra carefully in these contexts — they historically trigger pipeline-skipping:
+
+- **Parallel-band repackaging** (same lyrics in two band catalogs) — the direction feels "already decided" from the existing version; tempting to just swap voice + style prompt in conversation. Still requires pipeline.
+- **Minor refinements** after a successful first gen — tempting to tweak tags inline. If ANY tag changes, re-run Lyric Transformer. If ANY style descriptor changes, re-run Style Prompt Builder.
+- **After extended direction-setting discussion** — when the package parameters feel "obvious" from the conversation, the obvious-ness is the trap. Invoke the pipeline anyway.
+
 **Refinement presentation scope (CRITICAL):** When refining an existing package, present ONLY what changed — not the full package. The user already has the rest from the previous iteration; re-presenting everything creates noise.
 
 - Lyrics only changed → present updated lyrics, no style/exclude re-presentation
