@@ -301,6 +301,16 @@ When a genre should act as a secondary influence rather than the core sound, app
 
 **Practical rule:** Put your dominant genre first. Demote secondary genres with "accents," "undertones," "influences," or "elements."
 
+### First-Genre Dominance — Quantifying the Anchor
+
+Community research is sharper than "first matters": **genre and subgenre tags collectively determine ~60-70% of arrangement output, with the first-position term holding the strongest single signal** (HookGenius 1000+ prompt analysis, 2026). A three- or four-genre fusion prompt is not a balanced stew. It's a dominant anchor in position one with increasingly faint color pulls from each subsequent term.
+
+**Why this matters for counter-genre work:** When you're trying to push against a genre's gravity — accessible textures inside a heavy lane, slow pace inside a driving lane, acoustic framing under an electric identity — the counter-target genre has to occupy position one. Burying it at position 3 or 4 gives the counter-lane negligible arrangement influence, and Suno defaults to the first-position genre's conventions.
+
+**Example:** `progressive metal, heartland rock, acoustic singer-songwriter` will read as progressive metal with trace heartland influence — the acoustic anchor contributes almost nothing. To actually produce an acoustic-leaning track, the compound must open `acoustic singer-songwriter, ...` with metal and heartland demoted behind it.
+
+**Practical rule:** If you want genre X to drive the arrangement, X is position one. "Accents" / "undertones" / "influences" demote later terms but don't promote earlier ones — there is no way to get a buried genre to lead.
+
 ### Genre Term Behavior Table
 
 Specific genre terms produce specific results. This table documents what Suno actually generates for common genre keywords, based on production testing.
@@ -482,6 +492,73 @@ These are starting-point ranges based on production testing. Adjust per song, bu
 
 **Style Influence above ~80 plateaus** — increasing further rarely improves genre accuracy, and can reduce vocal phrasing variation especially in vocals.
 
+### Default Weirdness Normalizes Counter-Genre Prompts
+
+JG BeatsLab's v5.5 testing documents a default-Weirdness behavior that matters specifically for counter-genre work: _"v5.5 doesn't refuse niche genres — it reformats them. Give it a dungeon synth prompt and it will accept it, then quietly pull the output toward a polished, cinematic equilibrium."_ JG's practical guidance: _"Increase Weirdness for unusual fusions. The default Weirdness setting tries to normalize everything, which defeats the purpose of genre blending."_
+
+This is the core counter-genre problem. Default Weirdness (50-55) quietly normalizes unusual descriptor combinations back toward Suno's trained equilibrium — polished, cinematic, conventionally-arranged. For prompts that mix against genre gravity (accessible inside heavy, slow inside driving, acoustic inside electric), push Weirdness to **60-70** to give the model permission to honor the unusual combination rather than reformatting it.
+
+This supersedes earlier conservative-Weirdness-for-accessibility guidance in this document. The accessibility problem wasn't Weirdness — it was genre-gravity pulling output back to the first-position anchor's defaults. Higher Weirdness attacks that normalization directly.
+
+**Note:** The Extend-drift caution above still applies — higher Weirdness during Extend is more destabilizing than during initial generation. Use elevated Weirdness at the front end of the song, keep it conservative during Extend operations.
+
+## Counter-Genre Prompting
+
+Counter-genre prompting is when the desired output works **against** the gravity of the named genre — accessible clean guitars in a hard-rock prompt, a slow deliberate pace in a driving prompt, acoustic textures under an electric framing. Suno's default behavior is to honor genre conventions, and every new descriptor you add has to fight the first-position genre's gravity. Three techniques applied together reliably shift the arrangement instead of just decorating it.
+
+### Displacement-Budget Descriptors
+
+Adding `clean guitars` to a heavy-rock prompt doesn't remove the power chords — it just adds cleanness _alongside_ them. The power chords survive because nothing structurally displaces them. To actually displace an unwanted instrument voicing, fill the instrument's role-slot with a **structurally incompatible** descriptor — one that can't coexist with what you're trying to avoid.
+
+| Wanted | Unwanted | Weak ask (doesn't displace) | Strong ask (displaces) |
+|---|---|---|---|
+| Accessible guitar texture | Power chords | `clean guitars` | `fingerpicked arpeggiated voicings` |
+| Spacious feel | Wall-of-sound | `spacious mix` | `sparse instrumentation, single-guitar verses` |
+| Restrained dynamics | Full-band bombast | `controlled dynamics` | `subdued mid-range, no full-band payoff` |
+
+Think of the descriptor budget as a **displacement budget**: each descriptor either crowds out its opposite or just sits next to it. Descriptors that occupy the same role-slot and can't structurally coexist are the ones that move the arrangement. Descriptors that name a quality without naming a form are weaker — Suno can honor `clean` while still deploying power chords.
+
+Production observation (session-14 LV track): `fingerpicked arpeggiated voicings` produced the first fingerpicked section across any iteration of the song. Prior attempts using `clean guitars` had never displaced the power chords. Single-observation data, not A/B — but consistent with the displacement framing.
+
+### Triple-Signal Tempo Stacking
+
+Rhythm nouns (`halftime`, `double-time`, `shuffle`, `breakbeat`) land more reliably than tempo adjectives (`slow`, `fast`) — this is documented above. The counter-genre extension: stack **three aligned signals** simultaneously so genre-gravity can't overpower any single one of them.
+
+1. **Genre with aligned tempo default** — pick a genre whose native tempo already points where you want to go. `slowcore`, `doom`, or `dirge` for slow; `speed metal`, `breakbeat electronica` for fast. Using a counter-tempo genre forces the other two signals to fight it.
+2. **Numeric BPM approximation** — give a specific number even though Suno treats it as loose guidance. Numbers anchor the direction; they don't lock the result.
+3. **Rhythm noun** — specify the rhythmic feel directly: `halftime feel`, `driving quarter-note pulse`, `swung eighth-note groove`.
+
+Example counter-genre slow prompt against a driving rock identity: `heartland rock at 72 BPM halftime feel with patient southern slow-build dynamics` stacks all three (genre with slower default, BPM number, rhythm noun).
+
+Production observation (session-14 LV track): switching from single-signal (`slow`) to triple-signal stacking dropped felt tempo ~6 BPM, raw tempo ~32 BPM, and improved halftime cleanness from a 2.2× non-clean ratio to a 1.95× near-clean ratio. The strongest confirmed-win technique of the three.
+
+### 6/8 and 12/8 Compound Meter
+
+Time signature support was added in the Suno Studio 1.2 update (Feb 2026). Compound meter (6/8, 12/8) subdivides each beat into threes rather than twos — so at the same numeric BPM, a 6/8 feel perceptually reads slower than a 4/4 feel, because the listener counts triplet subdivisions and the "pulse" lands more like a lilt than a drive. This is a general music-theory fact, not a Suno-specific property, but it gives a second lever on perceptual tempo when genre-gravity keeps pulling the numeric BPM upward: instead of fighting for a lower number, change the meter and let the triplet subdivision slow the feel.
+
+**Tag form:** Append `[6/8]` or `[12/8]` to the style prompt or as a section metatag. Time signature support in the Studio generator is the underlying feature; in the Legacy editor (Pro tier) the tag form is what's available.
+
+Production observation (session-14 LV track): inconclusive. Numeric BPM did drop but the felt subdivision still landed closer to 4/4 halftime than to a 6/8 lilt. Needs isolated testing on a song where the compound meter is the only tempo-perception lever being pulled — session-14 stacked it with triple-signal tempo and displacement descriptors, so the 6/8 contribution can't be isolated.
+
+### Synthesis — All Three Together
+
+A counter-genre prompt deploying all three techniques in their right slots looks like:
+
+```
+acoustic singer-songwriter, heartland rock at 72 BPM halftime feel with patient southern slow-build dynamics,
+fingerpicked arpeggiated voicings, subdued mid-range, no full-band payoff, [6/8]
+
+Weirdness: 65 | Style Influence: 75
+```
+
+- **Position 1 anchor** — `acoustic singer-songwriter` — the counter-lane, not the electric default
+- **Triple-signal tempo** — genre (heartland, slower default than prog or speed), BPM (72), rhythm noun (halftime feel) all aligned
+- **Displacement descriptors** — `fingerpicked arpeggiated voicings`, `subdued mid-range, no full-band payoff` — occupy role-slots that the unwanted qualities would need
+- **Compound meter** — `[6/8]` as a second lever on perceptual slow
+- **Elevated Weirdness (65)** — permission for Suno to honor the unusual combination instead of reformatting to polished cinematic defaults
+
+Any one of these alone can fail. Applied together they build redundant pressure against genre gravity — if one signal gets overridden by the anchor, the others hold the line.
+
 ## Persona Style Prompt Integration
 
 The Persona auto-populates the Style of Music field. Song-specific prompts should **build on** this base, not replace it. The Style Prompt Builder should assume the Persona's Styles content is already present and add song-specific elements on top. The Persona's Styles field contains universal band DNA — the sonic identity that should be consistent across all songs. Song-specific elements (odd time signatures, tempo changes, brass accents, genre departures) get layered per-song on top of that foundation.
@@ -593,10 +670,16 @@ Always show the user your decomposition before building the prompt so they can c
 
 ## Community Research Sources
 
-> **Last updated:** April 6, 2026. These informed the v5.5 findings above. Verify against current Suno behavior.
+> **Last updated:** April 20, 2026. These informed the v5.5 findings above. Verify against current Suno behavior.
 
 - [HookGenius: 1000+ Prompt Analysis](https://hookgenius.app/learn/suno-style-tag-research/) — Tag count sweet spot (5-8), "cinematic" modifier, production tag findings, conflicting tag behavior
+- [HookGenius: Complete Suno Prompt Guide 2026](https://hookgenius.app/learn/suno-prompt-guide-2026/) — Genre tags carry 60-70% of arrangement influence, first-position dominance rule, descriptor specificity
+- [HookGenius: Suno Tempo BPM Guide](https://hookgenius.app/learn/suno-tempo-bpm-guide/) — BPM number as approximate guidance, rhythm-noun vs. adjective, dual specification pattern
+- [HookGenius: Negative Prompting Guide](https://hookgenius.app/learn/suno-negative-prompting/) — Exclude Styles behavior and in-prompt negatives
+- [JG BeatsLab: 7 v5.5 Behaviors](https://www.jgbeatslab.com/ai-music-lab-blog/suno-v5-5-behaviors-every-creator-needs-to-know) — "Polished cinematic equilibrium" normalization behavior, Weirdness guidance for unusual fusions
 - [JG BeatsLab: Voices Day One Testing](https://www.jgbeatslab.com/ai-music-lab-blog/suno-v5-5-voices-tested) — Voices Audio Influence real-world ranges, Skill Level dropdown
+- [Blake Crosley: v5.5 Reference (MILO-1080)](https://blakecrosley.com/guides/suno) — Meta tags, Style-of-Music field, numeric BPM as approximate guidance
 - [AudioNewsRoom: Voices/Custom Models Consent](https://audionewsroom.net/2026/03/suno-v5-5-what-you-give-up-to-make-it-yours.html) — Privacy analysis
 - [JackRighteous: Creative Control Sliders](https://jackrighteous.com/en-us/blogs/guides-using-suno-ai-music-creation/creative-control-sliders-suno-v5) — Genre-specific slider ranges, Extend drift findings
 - [Suno Official v5.5 Docs](https://help.suno.com/en/articles/11362305) — What's New, Voices, Custom Models, My Taste
+- [Suno Studio 1.2 Release Notes](https://suno.com/blog/studio1_2) — Time Signature support, Warp Markers, Remove FX, Alternates (Feb 2026)
