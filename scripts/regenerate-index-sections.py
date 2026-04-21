@@ -63,7 +63,16 @@ def parse_song(path: Path) -> dict | None:
         return None
     try:
         frontmatter = yaml.safe_load(fm_match.group(1)) or {}
-    except yaml.YAMLError:
+    except yaml.YAMLError as exc:
+        # Surface parse failures instead of silently dropping the song.
+        # Common cause: flow-sequence values containing inner brackets
+        # (e.g., transformations_applied: [... [Spoken] ...]) — use a quoted
+        # string or a flat list without brackets inside items. See issue #29.
+        print(
+            f"WARNING: YAML parse error in {path} — {exc}. "
+            "Song will be skipped; derived sections may be incomplete.",
+            file=sys.stderr,
+        )
         return None
 
     body = text[fm_match.end() :]

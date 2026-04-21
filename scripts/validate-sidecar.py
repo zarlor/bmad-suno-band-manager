@@ -107,17 +107,23 @@ STATUS_MARKER_RE = re.compile(
 AUDIO_REF_RE = re.compile(r"`(docs/audio/[^`]+\.(?:mp3|wav|flac|m4a))`")
 
 
-def parse_song(path: Path, project_root: Path) -> Song | None:
-    """Parse a songbook markdown file. Returns None if frontmatter is missing."""
+def parse_song(path: Path, project_root: Path) -> tuple[Song | None, str | None]:
+    """Parse a songbook markdown file.
+
+    Returns a (song, error) pair:
+      - (Song, None)       when parsing succeeds
+      - (None, None)       when the file has no frontmatter (likely not a song)
+      - (None, error_msg)  when YAML frontmatter fails to parse
+    """
     text = path.read_text(encoding="utf-8")
     fm_match = FRONTMATTER_RE.match(text)
     if not fm_match:
-        return None
+        return None, None
 
     try:
         frontmatter = yaml.safe_load(fm_match.group(1)) or {}
-    except yaml.YAMLError:
-        return None
+    except yaml.YAMLError as exc:
+        return None, f"YAML frontmatter parse error: {exc}"
 
     body = text[fm_match.end() :]
 
@@ -134,29 +140,53 @@ def parse_song(path: Path, project_root: Path) -> Song | None:
     band = frontmatter.get("band_profile", "")
     title = frontmatter.get("title", path.stem)
 
-    return Song(
-        path=path.relative_to(project_root),
-        band=band,
-        title=str(title),
-        frontmatter_status=frontmatter.get("status"),
-        frontmatter_date=str(frontmatter.get("date")) if frontmatter.get("date") else None,
-        body_status=body_status,
-        body_date=body_date,
-        body_description=body_description,
-        audio_references=audio_refs,
+    return (
+        Song(
+            path=path.relative_to(project_root),
+            band=band,
+            title=str(title),
+            frontmatter_status=frontmatter.get("status"),
+            frontmatter_date=str(frontmatter.get("date")) if frontmatter.get("date") else None,
+            body_status=body_status,
+            body_date=body_date,
+            body_description=body_description,
+            audio_references=audio_refs,
+        ),
+        None,
     )
 
 
-def load_all_songs(project_root: Path) -> list[Song]:
+def load_all_songs(project_root: Path) -> tuple[list[Song], list[Finding]]:
+    """Load every songbook entry plus any parse-failure findings.
+
+    Songs whose YAML frontmatter fails to parse used to be silently dropped,
+    which hid songs from derived sections without surfacing any error (issue #29).
+    Each parse failure now becomes a songbook_drift error so sync can't pass
+    while a song is invisible to the index generator.
+    """
     songbook_root = project_root / "docs" / "songbook"
     if not songbook_root.is_dir():
-        return []
-    songs = []
+        return [], []
+    songs: list[Song] = []
+    parse_findings: list[Finding] = []
     for path in sorted(songbook_root.rglob("*.md")):
-        song = parse_song(path, project_root)
+        song, error = parse_song(path, project_root)
         if song is not None:
             songs.append(song)
-    return songs
+        elif error is not None:
+            parse_findings.append(
+                Finding(
+                    category="songbook_drift",
+                    severity="error",
+                    path=str(path.relative_to(project_root)),
+                    message=(
+                        f"{error} — song will be skipped by derived-section "
+                        "generators. Fix by quoting values containing "
+                        "special YAML characters (e.g. inner brackets)."
+                    ),
+                )
+            )
+    return songs, parse_findings
 
 
 # ---------------------------------------------------------------------------
@@ -609,9 +639,9 @@ def check_markdown_cross_references(project_root: Path) -> list[Finding]:
 
 
 def run_checks(project_root: Path) -> tuple[list[Finding], dict[str, int]]:
-    songs = load_all_songs(project_root)
+    songs, parse_findings = load_all_songs(project_root)
 
-    findings: list[Finding] = []
+    findings: list[Finding] = list(parse_findings)
     for song in songs:
         findings.extend(check_songbook_consistency(song))
         findings.extend(check_audio_exists(song, project_root))
