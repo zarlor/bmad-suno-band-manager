@@ -4,6 +4,93 @@ All notable changes to the Suno Band Manager module are documented here.
 
 ---
 
+## [1.6.7] - 2026-04-22
+
+### Drift Protection — Round Three, plus Research Refresh
+
+v1.6.5 and v1.6.6 put the drift-protection machinery in place (validators, regenerators, reconciliation on unpack, cross-reference scanning). Real sessions since then surfaced three gaps in the machinery itself — one of which made v1.6.5 effectively unusable without hand-editing — and a fourth at the doctrine level where the module's definition of "sync" still treated cross-file consistency as a milestone-reconciliation step rather than an edit-time invariant. This release closes all four, and folds in the production-knowledge work that piled up across the same sessions (counter-genre prompting research, wordless-chant intro technique, Package Assembly Rule hardening, a CRITICAL rule on what exclusions are actually for).
+
+### Root Cause — Issue #31 (sync at point of change)
+
+Issue #18 added `reconcile.md` as a milestone-propagation protocol (title changes, publishes, playlist reorders, profile edits). Issue #31 is the orthogonal gap: **non-milestone edits** — creating a new reference file, bumping a catalog count in the sidecar, marking a source closed — never trigger `reconcile.md` and create drift windows in every file that references them. `save-memory.md` Step 6's "Companion files audit" caught drift eventually, but was operating as the **primary sync mechanism** rather than a backstop, leaving files out of sync for the entire session between the edit and the save.
+
+The doctrine-level fix: treat cross-file consistency as an invariant maintained at every write-boundary, not as a milestone reconciliation step.
+
+### Added
+
+- **`creed.md` — new foundational principle: "Sync at the point of change."** Joins the three existing principles (Always output everything / Meet them where they are / The magic is iteration) as a top-level rule. When editing a file, check in the same write-batch whether any other tracked file references what just changed (counts, descriptions, status markers, cross-references, file paths, companion-files tables) and update those references immediately. Audit-at-save-time is explicitly reframed as a backstop, not the primary sync mechanism. Drift windows between edit and save are unacceptable because the session may be interrupted or handed off at any point.
+
+- **`regenerate-index-sections.py` → `--migrate` flag.** New `migrate_section()` helper locates a `## Recently Published` or `## Catalog Status` heading, finds the end of the section (next `##` heading or EOF), and wraps the body content with the required `derived:*:start/end` marker pairs in-place. One-command migration for pre-v1.6.5 sidecars and for any sidecar that somehow slipped through First Breath without markers. Migration is idempotent (skips sections that already have markers), safe under `--dry-run` (no writes), and aborts without partial writes when a heading is missing entirely (prints which heading is missing and exits 1).
+
+- **`init.md` — `index.md` template baked into First Breath.** New sidecars are born already-migrated, with both `derived:recently-published:start/end` and `derived:catalog-status:start/end` marker pairs wrapping stub content. The template also gives the agent a concrete structure for User Preferences, Current Work, Pending / Parked Work, and Session History so First Breath output is consistent across sessions.
+
+- **`validate-lyrics.py` — HIGH-confidence standalone-tag allowlists.** Three new recognized sets mirrored from `metatag-reference.md`: `VALID_STANDALONE_MOODS` (16 tags), `VALID_STANDALONE_ENERGY` (10 tags), `VALID_TIMING_RHYTHM` (9 tags). Wired into the existing invalid-metatag check as an `is_standalone` gate alongside `is_section` / `is_vocal_cue` / `is_descriptor`. Eliminates a class of false-positive findings that had been eroding trust in the validator.
+
+- **`creed.md` → Package Assembly Rule: Pre-Output Self-Check (MANDATORY) + Violation Tells + Highest-Risk Contexts.** Before sending any response containing a Suno package, verify in reasoning that both `suno-style-prompt-builder` and `suno-lyric-transformer` were invoked *this turn* (or lyrics aren't needed). Violation Tells enumerate the concrete signs the pipeline was skipped: missing Title field, hand-assembled copy-ready blocks, using validation scripts as pipeline substitutes, prior-iteration framing in exclusion reasoning, "I already know what the skill would produce" reasoning. Highest-Risk Contexts call out parallel-band repackaging, minor refinements after a successful first gen, and extended direction-setting discussions — historically the contexts that trigger pipeline-skipping.
+
+- **`model-prompt-strategies.md` — Counter-Genre Prompting section** (fixes #28). Four additions from session-14 research (2026-04-20, 15+ 2025-2026 sources surveyed):
+  - *First-Genre Dominance* (under Genre Keyword Ordering) quantifies position 1 holding the strongest single signal, with genre + subgenre tags collectively carrying ~60-70% of arrangement output. Explains why counter-genre work requires the counter-target in position 1, not buried at position 3-4.
+  - *Default Weirdness Normalizes Counter-Genre Prompts* (under Slider Guidelines) documents v5.5's "accept then normalize" behavior and prescribes Weirdness 60-70 for counter-genre prompts. Explicitly supersedes the prior conservative-Weirdness-for-accessibility guidance, which was self-imposed caution and not grounded in evidence.
+  - *Counter-Genre Prompting* (new top-level section) with four subsections: Displacement-Budget Descriptors (role-slot filling with structurally-incompatible descriptors), Triple-Signal Tempo Stacking, 6/8 and 12/8 Compound Meter as a tempo-perception lever, and a Synthesis full-example prompt deploying all techniques.
+  - *Community Research Sources* expanded with HookGenius Complete Suno Prompt Guide 2026, HookGenius Tempo BPM Guide, HookGenius Negative Prompting Guide, JG BeatsLab 7 v5.5 Behaviors, Blake Crosley v5.5 Reference, and Suno Studio 1.2 release notes.
+
+- **`metatag-reference.md` — Wordless-chant intro + doubled-word parentheticals.** Production-tested guidance from Cities of the Dead (Lenny's Voice) generation: doubled-word parentheticals as ritualistic/trance backing technique, the exclamation-separator fix for single-word truncation, inline vs. line-separated parenthetical semantics, and a new *Establishing Non-Default Vocal Arrangements* subsection documenting the wordless-chant intro as the reliable lever when group backing vocals fail to establish on V1. `model-prompt-strategies.md` gets a paired exception: non-default vocal arrangements earn position 1 in the style prompt ahead of even genre.
+
+### Changed
+
+- **`save-memory.md` Step 6 — "Companion files audit" reframed as a backstop.** Previous wording implied the audit **was** the sync. New framing is explicit: the audit should normally find nothing; if it catches drift, that means a point-of-change sync was missed — fix the drift now AND note which edit missed the sync as a behavioral gap to correct going forward. Audit-time fixes are tolerated, not planned.
+
+- **`save-memory.md` Step 5 — pre-write sync check before chronology.** Before writing the session summary to `chronology.md`, scan the session's writes for cross-referenced updates that didn't land in the same batch as their triggering edit (new `docs/` files → voice file Companion Files table; songbook add → playlist YAML + voice catalog; sidecar Key Files path change → doc references; WIP COMPLETED → sidecar Pending / Parked). The chronology write is the last narrative write of the session and is the correct moment to self-check that cross-file invariants held at each edit, not just at save time.
+
+- **`create-song.md` Step 7 — sync at each sub-step write, not just at the Step 7 aggregate.** Per the new creed principle, Post-Publish Reconciliation is explicitly reframed as a milestone backstop. Concrete expectations at publish time: songbook entry write → voice catalog count + Companion Files entry in the same batch; playlist YAML edit → playlist ordering doc in the same batch; WIP COMPLETED → sidecar Pending / Parked drop in the same batch; title finalized → all in-session references updated in the same batch as the rename.
+
+- **`refine-song.md` — new Sync-at-Write for Refinements section.** Refinement edits that touch **published** song attributes (key/tempo/Camelot, voice clone, voice gravity, playlist position, renames) propagate in the same write batch as the triggering edit. Refinements that touch only the current-iteration package (not yet in the songbook) are scoped out — nothing references them yet.
+
+- **`regenerate-index-sections.py` — clearer missing-markers error.** Previous message said "See v1.6.5 release notes for migration guidance" — a cold trail from an error the agent routinely hits. New message names the `--migrate` flag as the one-command fix and points directly at the CHANGELOG 1.6.5 migration block for the exact template. `save-memory.md` Step 4a updated in parallel so the agent, on hitting the missing-markers error mid-session, reaches for `--migrate` instead of hand-editing markers in.
+
+- **`regenerate-index-sections.py` and `validate-sidecar.py` — YAML parse errors no longer silent** (fixes #29). `regenerate-index-sections.py::parse_song()` now prints a stderr WARNING with file path + exception detail before returning None, naming the common cause (flow-sequence values with inner brackets like `[ST + CC; added [Spoken] outro]`) and pointing to issue #29. `validate-sidecar.py::parse_song()` signature changed to return `(Song|None, error_msg|None)`; `load_all_songs()` returns `(songs, parse_findings)` and converts each YAML parse error into a `songbook_drift` error-severity Finding so the pre-pack sync-gate blocks instead of silently hiding the song. Previously: songs with bracket-inner YAML quietly vanished from Recently Published + Catalog Status and the validator still reported PASS.
+
+- **`creed.md` → Package Assembly Rule: Exclusion drift-risk CRITICAL RULE.** Excludes defend against drift risks that the CURRENT style prompt's own descriptors might introduce — nothing else. Suno is stateless; it has no knowledge of prior gens, other bands' renderings of the same lyrics, or the broader catalog. Exclusion reasoning that references "the other band's version," "the prior iteration," or "what [other band/previous gen] used" is a violation tell.
+
+- **Root `CLAUDE.md` / `GEMINI.md` / `AGENTS.md`** trimmed to a brief cross-tool reinforcement pointing to `creed.md` as authoritative on the Package Assembly Rule. Single source of truth, no duplicated content.
+
+### Fixed
+
+- **Issue #27** — `validate-lyrics.py` flagged HIGH-confidence standalone bare-bracket tags (e.g. `[Low Energy]`, `[Driving]`, `[Half-Time]`, `[Building]`, `[Haunting]`) as unrecognized metatags, producing noisy false-positive findings. Now matches `metatag-reference.md`.
+- **Issue #28** — counter-genre prompting knowledge from session-14 research (2026-04-20) was not reflected in the module. Now documented in `model-prompt-strategies.md`.
+- **Issue #29** — songbook entries using `transformations_applied` flow-sequence YAML with inner square brackets silently failed YAML parsing and got excluded from derived sidecar sections, with validator still reporting PASS. Silent failure replaced with surfaced WARNING + blocking `songbook_drift` error.
+- **Issue #30** — v1.6.5's derived-section markers were never written by any codepath in the module: First Breath (`init.md`) wrote narrative `index.md` without markers, and `pre-activate.py`'s scaffold intentionally skipped `index.md`. Every new sidecar was born un-migrated and hit the missing-markers error the first time the regenerator ran. Fixed three ways: markers baked into the First Breath template, new `--migrate` flag for one-command in-place migration, better error message naming `--migrate` as the fix.
+- **Issue #31** — cross-file sync was treated as milestone-reconciliation-only; non-milestone edits created drift windows that `save-memory.md` Step 6 caught as primary sync rather than backstop. "Sync at the point of change" principle now formalized in `creed.md`, `save-memory.md` Step 6 reframed as backstop, sync-at-write expectations added to `create-song.md` Step 7 and `refine-song.md`.
+
+### Migration
+
+None required. All changes are additive or wording-level:
+- Existing installs with pre-v1.6.5 sidecars that still lack derived-section markers can now run `python3 scripts/regenerate-index-sections.py "{project-root}" --migrate` for a one-command fix — no more hand-editing markers in.
+- Existing installs that already have markers get a clean no-op from `--migrate`.
+- `validate-lyrics.py` allowlist expansion only removes false positives; no existing lyrics break.
+- `validate-sidecar.py` now surfaces YAML parse errors that were previously silent — this may cause a pre-pack sync-gate block on installs with bracket-inner YAML values that were silently being dropped. Fix by quoting the offending value; the surfaced message names the fix.
+
+### Version Bumps
+
+- `package.json`: 1.6.6 → 1.6.7
+- `src/skills/suno-setup/assets/module.yaml`: 1.6.6 → 1.6.7
+- `.claude-plugin/marketplace.json`: 1.6.6 → 1.6.7
+- `INSTALLATION.md`: 1.6.6 → 1.6.7
+
+### Verification
+
+- **Issue #30 end-to-end** — fresh pre-v1.6.5 sidecar with both headings → `--migrate` wraps both sections, regenerator rewrites between markers, exit 0; re-running `--migrate` on already-migrated sidecar → clean no-op ("No changes needed"); sidecar missing one heading → `--migrate` aborts with clear message naming the missing heading, no partial writes; `--migrate --dry-run` → prints regenerated sections, does not write; production sidecar (already migrated) → `--migrate --dry-run` is a clean no-op.
+- **Issue #29 exact repro** — songbook entry with `transformations_applied: [ST + CC; added [Spoken] outro]` → `validate-sidecar` emits `songbook_drift` error and exits 1; `regenerate-index-sections` emits stderr warning and continues.
+- **Issue #27 smoke test** — lyrics using `[Low Energy]`, `[Driving]`, `[Half-Time]`, `[Building]`, and `[Haunting]` all pass cleanly; prior false positives eliminated.
+- **First Breath template** — new sidecars scaffold with both marker pairs in place; regenerator runs clean on first save.
+- **Package Assembly Rule self-check** — Pre-Output Self-Check language validated against the creed-as-authoritative architecture; root `CLAUDE.md`/`GEMINI.md`/`AGENTS.md` point at the creed with no duplicated content.
+
+### Scope Note
+
+This release adds **one new script flag** (`regenerate-index-sections.py --migrate`), **extends two scripts** (`validate-lyrics.py` standalone-tag allowlists; `validate-sidecar.py` + `regenerate-index-sections.py` YAML-error surfacing), and **updates seven reference docs** (`creed.md`, `save-memory.md`, `create-song.md`, `refine-song.md`, `init.md`, `model-prompt-strategies.md`, `metatag-reference.md`) plus the three root standing-orders files (`CLAUDE.md` / `GEMINI.md` / `AGENTS.md`). User data (`docs/`, `_bmad/`) is not part of the module and remains untouched by the module upgrade. No user migration required — pre-v1.6.5 sidecars have an opt-in one-command path via `--migrate`.
+
+---
+
 ## [1.6.6] - 2026-04-16
 
 ### Drift Protection — Round Two

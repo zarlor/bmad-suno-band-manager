@@ -310,3 +310,12 @@ After publishing a song (adding audio, finalizing the title, saving to songbook)
 4. If audio analysis produced data that updates the songbook entry (BPM, key, duration), verify the voice context and playlist docs have current data
 
 Keep it light — only trigger reconciliation if something actually changed. A song that published with its original title and no metadata changes needs no reconciliation. **But the WIP→COMPLETED marker in step 3 is mandatory whenever a song originated from a WIP file, even if nothing else changed** — skipping it creates the cross-machine sync drift that Layer 1 of the WIP-sync fix is designed to prevent.
+
+**Sync at each sub-step write, not just at the Step 7 aggregate.** Per the "Sync at the point of change" principle in `creed.md`, cross-file references propagate in the same write batch as the triggering edit — Step 7's reconciliation is a milestone backstop, not the primary sync mechanism. Concrete expectations at publish time:
+
+- Creating the songbook entry → update the voice file's catalog count + Companion Files table entry in the same batch
+- Placing the song in a playlist → update the playlist ordering doc in the same batch as the playlist YAML edit
+- Marking a WIP file COMPLETED → drop the WIP entry from the sidecar Pending / Parked Work section in the same batch
+- Finalizing a title different from the working title → update all in-session references (sidecar `Current Work`, voice file WIP mentions, chronology drafts) in the same batch as the rename
+
+If any of these sub-step writes land without their cross-referenced companion updates, the Step 7 reconciliation catches it — but the goal is to not need that catch.

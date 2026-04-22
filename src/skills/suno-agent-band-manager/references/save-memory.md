@@ -62,16 +62,26 @@ Immediately persist the current session context to memory.
    - `patterns.md` — Add new musical preferences discovered (genre tendencies, vocal preferences, exclusion patterns, creativity level preferences) and production knowledge (see Step 3b)
    - `chronology.md` — Add session summary if significant work was done
 
-6. **Companion files audit (bidirectional)** — If the user has a voice file, run both directions:
+   **Pre-write sync check (before chronology):** Before writing the session summary to chronology.md, scan the session's writes for any cross-referenced updates that didn't land in the same batch as their triggering edit. Example triggers to look back on:
+   - A new `docs/` file was created — did the voice file's Companion Files table get the entry in that batch?
+   - A songbook entry was added/updated — did the playlist YAML and voice catalog count get updated in that batch?
+   - A sidecar Key Files path changed — did any doc referencing that path get updated in that batch?
+   - A WIP file was marked COMPLETED — did the sidecar Pending / Parked Work section drop it in that batch?
 
-   **Forward (new files need entries):** Check whether any new `docs/` files were created during the session that aren't in the voice file's Companion Files table. If so, offer to add them: "I notice we created [file] this session — want me to add it to your companion files index?" Include: file path, one-line description, and when-to-load trigger phrase.
+   If any mismatch surfaces, surface it here rather than letting the Step 6 audit catch it. The chronology write is the last narrative write of the session — it's the correct moment to self-check that cross-file invariants held at each edit, not just at save time.
+
+6. **Companion files audit (backstop, bidirectional)** — If the user has a voice file, run both directions.
+
+   **This audit should normally find nothing.** If the "Sync at the point of change" principle (see `creed.md`) is being followed, every cross-referenced update has already landed in the same write-batch as its triggering edit — the audit exists to catch the cases where a point-of-change sync was missed, not to do the sync itself. When this audit surfaces stale counts, stale descriptions, or missing companion-file entries, fix the drift now AND note which edit missed the sync — that's a behavioral gap to correct going forward, not a normal operating mode. Audit-time fixes are tolerated, not planned.
+
+   **Forward (new files need entries):** Check whether any new `docs/` files were created during the session that aren't in the voice file's Companion Files table. If so, offer to add them: "I notice we created [file] this session — want me to add it to your companion files index?" Include: file path, one-line description, and when-to-load trigger phrase. (Normally the entry would have been added in the same batch that created the file; catching it here means the batch missed it.)
 
    **Reverse (stale entries in the table):** Check every entry in the Companion Files table:
    - Does the referenced file still exist on disk? If not, the entry is stale — offer to remove it (the file may have been deleted during this or a previous session without the table being updated)
    - Does the entry contain a stale count or description? (e.g., "34 tracks" when the playlist now has 36, or "The Slide — firearm metaphor..." when The Slide is now a published song with a songbook entry). If so, offer to update the description or move the entry to point at the authoritative file (e.g., the songbook entry instead of a deleted WIP file)
    - **Is the entry a WIP file that's now resolved?** If the Companion Files table includes a `docs/wip-*.md` entry, check whether the file has a `## STATUS: COMPLETED` marker at the top (see `./references/reconcile.md` → "The COMPLETED WIP convention"). If so, the entry is stale — offer to remove it from the table. Resolved WIPs are historical records, not active reference material, and don't belong in the "load on demand" companion files table.
 
-   Present all findings in one handoff: "I checked the companion files table — here's what I found: [X new files to add, Y stale entries to remove, Z entries with outdated descriptions]. Want me to fix them all, review each, or skip?"
+   Present all findings in one handoff: "I checked the companion files table — here's what I found: [X new files to add, Y stale entries to remove, Z entries with outdated descriptions]. Want me to fix them all, review each, or skip?" If findings are non-empty, also flag it to yourself as a point-of-change sync gap so the next session's edit-time behavior tightens up.
 
    **WIP completion scan (post-publication):** Additionally, if this session included publishing a song, scan `docs/wip-*.md` for any file whose content matches the published song but lacks the `## STATUS: COMPLETED` marker. If found, surface it: "I notice `docs/wip-X.md` looks like the source fragments for the song we just published. Mark it COMPLETED? (Load `./references/reconcile.md` → 'The COMPLETED WIP convention' for the marker format.)" Apply the marker if confirmed. This is the primary mechanism by which Layer 1 of the WIP-sync fix operates — catching WIP resolution at save-memory time is the backstop if `create-song.md` Step 7 missed it.
 

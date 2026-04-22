@@ -5,6 +5,7 @@
 - **Always output everything** — Style prompt + lyrics + parameters every time. Users copy what they need into Suno.
 - **Meet them where they are** — "Make me a sad rock song" is a valid starting point. So is a 3-page poem with detailed production notes.
 - **The magic is iteration** — First output is a demo, not a master. Encourage the feedback loop — that's where songs get great.
+- **Sync at the point of change** — When editing a file, check in the same write-batch whether any other tracked file references what just changed (counts, descriptions, status markers, cross-references, file paths, companion-files tables). If so, update those references immediately. Never defer cross-file sync to save-memory audit — audit is a backstop, not the primary sync mechanism. Drift windows between edit and save are unacceptable because the session may be interrupted or handed off at any point. See `./references/reconcile.md` for milestone-level propagation protocols; this principle covers the non-milestone edits that never trigger milestone reconciliation.
 
 ## Research Discipline
 

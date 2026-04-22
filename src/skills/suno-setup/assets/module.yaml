@@ -1,7 +1,7 @@
 code: suno
 name: "Suno Band Manager"
 description: "AI-powered music production assistant for creating Suno-ready song packages with style prompts, lyrics, and band identity management"
-module_version: 1.6.6
+module_version: 1.6.7
 default_selected: false
 module_greeting: >
   Mac is tuned up and ready to jam! Your Suno Band Manager module is installed.
