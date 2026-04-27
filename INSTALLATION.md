@@ -82,7 +82,7 @@ The setup skill configures Suno tier, interaction mode, folder paths, and regist
 
 ## Pipeline Guard (Recommended)
 
-The module ships a Stop hook script (`scripts/pipeline-guard.py`) that enforces Mac's mandatory production pipeline. It blocks any response containing a Suno package if `suno-style-prompt-builder` and `suno-lyric-transformer` weren't invoked during the session.
+The module ships a Stop hook script (`.claude/skills/suno-agent-band-manager/scripts/pipeline-guard.py`) that enforces Mac's mandatory production pipeline. It blocks any response containing a Suno package if `suno-style-prompt-builder` and `suno-lyric-transformer` weren't invoked during the session.
 
 **Why:** Without this guard, the agent may hand-build packages from conversation memory instead of running them through the skills. The skills contain critical guardrails (artist name detection, production descriptor checks, character budget validation, section tag validation) that cannot be replicated from memory.
 
@@ -100,7 +100,7 @@ Add to your `.claude/settings.local.json` (create if it doesn't exist):
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/_bmad-output/suno-band-manager/scripts/pipeline-guard.py",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/skills/suno-agent-band-manager/scripts/pipeline-guard.py",
             "timeout": 10
           }
         ]
@@ -268,6 +268,8 @@ Your `.agents/skills/` symlinks, config, profiles, songbook, and memory are unaf
 ## Multi-Machine Sync (Optional)
 
 Mac stores user-generated content (voice files, band profiles, songbook, WIP files) under `docs/`, which is gitignored so personal content stays out of the repo. To move that content between machines without git, use the bundled pack/unpack scripts.
+
+**Important — these scripts ship at the repository's top-level `scripts/` folder.** They are user-facing entry points (commands you run directly), distinct from the agent's internal scripts that live inside the skill at `.claude/skills/suno-agent-band-manager/scripts/`. If you installed the module via the BMad marketplace and only the skills landed (no top-level `scripts/` folder), you can either: (a) clone this repo separately and run the scripts from there pointed at your project root, or (b) copy `pack-portable.sh` / `unpack-portable.sh` (and the `.ps1` variants) from the [GitHub repo](https://github.com/zarlor/suno-band-manager/tree/main/scripts) into your project's `scripts/` folder. A future installer release may auto-deposit these in `{project-root}/scripts/` for you.
 
 **Pack on the source machine:**
 

@@ -45,7 +45,7 @@ Creating:
 
 ### `index.md` template (REQUIRED marker pairs)
 
-New sidecars MUST be born already-migrated. The `## Recently Published` and `## Catalog Status` sections are regenerated from songbook ground truth by `scripts/regenerate-index-sections.py`, which requires HTML comment marker pairs to locate the rewrite targets. Missing markers cause every `save-memory` regeneration call and every post-unpack integration to error out until the sidecar is hand-migrated.
+New sidecars MUST be born already-migrated. The `## Recently Published` and `## Catalog Status` sections are regenerated from songbook ground truth by `./scripts/regenerate-index-sections.py` (inside the agent skill), which requires HTML comment marker pairs to locate the rewrite targets. Missing markers cause every `save-memory` regeneration call and every post-unpack integration to error out until the sidecar is hand-migrated.
 
 Include the marker pairs below verbatim when creating `index.md` for the first time. Stub content between markers is fine — the regenerator will replace it on the first `[SM]` cycle. Narrative sections (Current Work, Pending / Parked Work, Session History, User Preferences, etc.) fill in organically as sessions accumulate.
 

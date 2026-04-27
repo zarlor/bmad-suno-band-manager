@@ -33,8 +33,7 @@ echo "Unpacked $FILE_COUNT files from $ARCHIVE" >&2
 # Post-unpack reconciliation — warn if the sidecar's narrative may be stale
 # relative to the unpacked files. Never blocks: reconciliation is the agent's
 # job, not the script's. Bypass with BMAD_SKIP_RECONCILE=1.
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-RECONCILE="$SCRIPT_DIR/reconcile-sidecar.py"
+RECONCILE="$PROJECT_ROOT/.claude/skills/suno-agent-band-manager/scripts/reconcile-sidecar.py"
 if [ "${BMAD_SKIP_RECONCILE:-}" != "1" ] && [ -f "$RECONCILE" ] && command -v python3 >/dev/null 2>&1; then
     echo "" >&2
     echo "--- Post-unpack reconciliation check ---" >&2

@@ -1,7 +1,7 @@
 code: suno
 name: "Suno Band Manager"
 description: "AI-powered music production assistant for creating Suno-ready song packages with style prompts, lyrics, and band identity management"
-module_version: 1.6.7
+module_version: 1.7.0
 default_selected: false
 module_greeting: >
   Mac is tuned up and ready to jam! Your Suno Band Manager module is installed.
@@ -9,6 +9,12 @@ module_greeting: >
 
   Get started by talking to Mac (your Band Manager) or jump straight into any skill:
   Create a song, manage band profiles, build style prompts, transform lyrics, or refine your Suno output.
+
+  **Multi-machine workflow?** This module ships pack/unpack scripts for moving
+  your songbook, voice files, and WIP between machines without git. Run
+  `bash scripts/pack-portable.sh` (or `pack-portable.ps1` on Windows) when you
+  want to sync. Marketplace-install users may need to copy these from the
+  GitHub repo first — see INSTALLATION.md "Multi-Machine Sync".
 
 # Variables from Core Config inserted:
 ## user_name

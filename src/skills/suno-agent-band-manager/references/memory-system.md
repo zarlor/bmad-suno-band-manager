@@ -192,7 +192,7 @@ When a portable sync archive is unpacked on a receiving machine, the sidecar's n
 **The protocol is mandatory, not optional:**
 
 1. `unpack-portable.{sh,ps1}` invokes `reconcile-sidecar.py` automatically after extraction and prints a report.
-2. Re-run the reconcile script explicitly — `python3 {project-root}/scripts/reconcile-sidecar.py "{project-root}" --format json` — and walk every entry in `newer_files` plus every validator finding with the user via the Handoff Checkpoint Pattern.
+2. Re-run the reconcile script explicitly — `python3 ./scripts/reconcile-sidecar.py "{project-root}" --format json` — and walk every entry in `newer_files` plus every validator finding with the user via the Handoff Checkpoint Pattern.
 3. Integrate approved changes into the narrative sections of `index.md`.
 4. Run `regenerate-index-sections.py` to refresh the derived sections.
 5. Only then proceed into the normal activation flow (greeting, menu, etc.).

@@ -4,13 +4,33 @@ All notable changes to the Suno Band Manager module are documented here.
 
 ---
 
-## [Unreleased]
+## [1.7.0] - 2026-04-26
 
-### Portable Behavioral Preferences + Suno Knowledge Doctrine Fixes
+### Script Reorganization + Portable Behavioral Preferences + Suno Knowledge Doctrine Fixes
 
-Surfaced 2026-04-24 during a multi-machine session: Mac had been saving user-articulated behavioral feedback (no-disclaimed-restraint, no-false-dichotomy, no-piano-forward defaults, voice-character-not-genre-gravity, etc.) to per-machine agent memory caches (e.g., Claude Code's `~/.claude/projects/...`). Those caches don't travel in the portable sync archive, so corrections articulated on one machine never reached the other. The fix is structural: behavioral preferences belong in a portable file the sync carries; Suno platform knowledge belongs upstream in module reference docs (so every user benefits, not just the user who articulated the correction).
+Two structural threads land in this release:
 
-### Added
+1. **Script reorganization** addressing community-marketplace feedback ([bmad-code-org/bmad-plugins-marketplace#7](https://github.com/bmad-code-org/bmad-plugins-marketplace/pull/7)). Previously the module had a top-level `scripts/` folder with six scripts that didn't follow the BMad plugin install convention — skills land at `.claude/skills/{skill-name}/`, but top-level `scripts/` had no install path. Investigation showed that 4 of the 6 scripts are agent-skill-internal in practice (only ever invoked from within `suno-agent-band-manager`'s flow) and were never truly "shared" — they had simply not been placed inside the skill that owns them. They've now been moved into the agent skill's `scripts/` folder. The remaining 2 scripts (`pack-portable.{sh,ps1}`, `unpack-portable.{sh,ps1}`) are user-facing entry points that need a stable project-root path for direct user invocation, so they stay at top-level `scripts/` with documentation flagging the marketplace-install gap.
+
+2. **Portable behavioral-preferences file + production-tested Suno-knowledge corrections** (originally tracked as the v1.6.8 unreleased work — now folded into v1.7.0). Mac had been saving user-articulated behavioral feedback (no-disclaimed-restraint, no-false-dichotomy, no-piano-forward defaults, voice-character-not-genre-gravity, etc.) to per-machine agent memory caches that don't travel via portable sync — so corrections articulated on one machine never reached the other. Fixed structurally: behavioral preferences now live in a portable file the sync carries; Suno platform knowledge corrections folded upstream into module reference docs.
+
+### Added — Script Reorganization
+
+- **Agent-internal scripts moved into `src/skills/suno-agent-band-manager/scripts/`** — `validate-sidecar.py`, `regenerate-index-sections.py`, `reconcile-sidecar.py`, `pipeline-guard.py` now live with the skill that owns them. Previously top-level `scripts/`. Path references updated across the agent's reference files (`activation.md`, `init.md`, `memory-system.md`, `save-memory.md`, `creed.md`) to use the skill-relative `./scripts/X.py` convention (matches the existing `pre-activate.py` / `validate-path.py` / `check-memory-health.py` invocation pattern in the same skill).
+
+- **`pack-portable.sh` / `pack-portable.ps1` updated** to call `validate-sidecar.py` at the new agent-skill location (`$PROJECT_ROOT/.claude/skills/suno-agent-band-manager/scripts/validate-sidecar.py`).
+
+- **`unpack-portable.sh` / `unpack-portable.ps1` updated** to call `reconcile-sidecar.py` at the new agent-skill location.
+
+- **`suno-setup` SKILL.md `--guard-script-path` argument** updated from `scripts/pipeline-guard.py` to `.claude/skills/suno-agent-band-manager/scripts/pipeline-guard.py` so the Stop-hook command written into user `.claude/settings.local.json` points at the new location.
+
+- **`module_greeting` in `src/skills/suno-setup/assets/module.yaml`** expanded with a brief pointer to `pack-portable.sh` and a note for marketplace-install users — surfaces the multi-machine workflow at install completion when users are most likely to read the greeting.
+
+- **`INSTALLATION.md` "Multi-Machine Sync" section** clarifies that pack/unpack scripts are user-facing entry points distinct from agent-internal scripts, with explicit guidance for marketplace-install users on how to obtain `pack-portable.sh` / `unpack-portable.sh` (clone the repo separately, or copy the two files from the GitHub repo into their project's `scripts/` folder). Future installer release may auto-deposit these.
+
+- **`INSTALLATION.md` Pipeline Guard section** updated with the new `pipeline-guard.py` path.
+
+### Added — Portable Behavioral Preferences
 
 - **`docs/mac-preferences.md` — new portable file** for user-specific Mac behavioral preferences (communication style, pacing rules, framing rules, conversation discipline). Loaded on activation by the agent. Distinct from the voice file (which covers the user as a writer/creator) and from per-machine agent memory (which doesn't travel via portable sync).
 - **`activation.md` — Step 6b** added: load `docs/mac-preferences.md` if present and apply for the session.
@@ -18,7 +38,7 @@ Surfaced 2026-04-24 during a multi-machine session: Mac had been saving user-art
 - **`save-memory.md` — Step 2c** added: behavioral preference writes scan, ensuring corrections articulated mid-session were appended to `docs/mac-preferences.md` per "Sync at the point of change."
 - **`portable-manifest.example.yaml`** includes `docs/mac-preferences.md` in default include list.
 
-### Changed (Suno knowledge corrections — production-tested patterns folded upstream)
+### Changed — Suno Knowledge Corrections (production-tested patterns folded upstream)
 
 - **`metatag-reference.md` — paren-spacing rule REVERSED.** A prior version recommended "no space before opening paren tightens coupling: `word(echo)` not `word (echo)`." That was based on a single-song experimental finding (SF Distant Mourning, March 2026) that got mis-promoted to a general rule. Verified across catalog April 2026 — every working parenthetical-backing-vocal song uses spaces before the paren. The no-space form caused `(blasting)` to be skipped on DM-LV Bridge across multiple gens until spaces were added. Catalog-standard is `word (echo)` (with space). Doc now reflects this and explains the prior-rule provenance.
 - **`metatag-reference.md` — paren-at-end-of-line rule** added with broken-and-fixed example. Mid-line parens (text after the closing paren on the same line) get dropped inconsistently. If the sentence continues past the paren, break the line after the closing paren.
@@ -27,6 +47,23 @@ Surfaced 2026-04-24 during a multi-machine session: Mac had been saving user-art
 - **`metatag-reference.md` — Stretched Words section** added under Word-Formatting Effects. Documents vowel-collapse drift on hyphenated stretched words (`to-o-o-lling` → "tooling") and disambiguation techniques (insert `h`, alt-vowel spelling, double-consonant anchor, re-articulate with ellipses). DM-LV April 2026 production data point as the example.
 - **`metatag-reference.md` — Section-tag content rule** added under Section Structure Tags. Em-dashed descriptive labels (`[VERSE 1 — THE ROOM]`) burn character budget for nothing — Suno has no training on them. Use parameterized syntax (`[Verse 1: hushed, tense]`) for direction Suno can act on. Applies equally to cross-band conversions.
 - **`model-prompt-strategies.md` — Voice Gravity section CORRECTED.** A prior version framed v5.5 Voice clones as carrying "trained genre gravity" pulling generations toward a trained baseline. That framing was overstated. Voice cloning trains on vocal samples and captures vocal character (timbre, lilt, vibrato, attack patterns, dynamics behavior) — character is genre-neutral; Suno adapts character to the genre prompt. Section renamed to "v5.5 Voice-Character Principle" and rewritten to reflect that the captured character is what the Voice carries, the case study validates correct Audio Influence + don't-duplicate-Voice-descriptors + specify-arrangement-explicitly (NOT "voice has genre gravity"), and Voice direction should be framed as **"the captured character fits X register well"** rather than "fighting the Voice's trained gravity toward Z."
+
+### Migration
+
+None required. The script reorganization is transparent to users:
+
+- **Existing dev clones** continue to work — the moved scripts are still in the repo, just at a different path. Reference files and pack-portable shell scripts have all been updated to the new paths in the same release. After pulling v1.7.0, the Stop-hook command in `.claude/settings.local.json` will need to be re-run via `python3 .claude/skills/suno-setup/scripts/configure-guard.py` (or the suno-setup skill) to update the path string from `scripts/pipeline-guard.py` to `.claude/skills/suno-agent-band-manager/scripts/pipeline-guard.py`. The hook entry can also be edited manually.
+- **Marketplace-install users** get the moved scripts as part of the agent skill install (no change needed). For pack/unpack-portable, see the new INSTALLATION.md "Multi-Machine Sync" guidance — the marketplace install path doesn't currently deposit top-level `scripts/`, so users wanting portable sync need to copy `pack-portable.{sh,ps1}` and `unpack-portable.{sh,ps1}` from the GitHub repo manually until a future installer feature lands.
+- **No user data changes.** `docs/` and `_bmad/` are untouched.
+
+### Version Bumps
+
+- `src/skills/suno-setup/assets/module.yaml`: 1.6.7 → 1.7.0
+- `.claude-plugin/marketplace.json`: 1.6.7 → 1.7.0
+
+### Marketplace Submission
+
+The community module entry on [bmad-code-org/bmad-plugins-marketplace](https://github.com/bmad-code-org/bmad-plugins-marketplace) (`registry/community/suno-band-manager.yaml`) will be updated to point at the v1.7.0 commit SHA via a new PR so marketplace consumers see the script-reorganized version. Brian (BMad maintainer) flagged the shared-content question on PR #7 after the original merge at v1.6.7; this release addresses that feedback structurally.
 
 ---
 

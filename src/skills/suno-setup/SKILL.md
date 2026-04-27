@@ -86,7 +86,7 @@ If the user accepts, configure both layers:
 If the project has a `.claude/` directory (indicating Claude Code usage), configure the deterministic Stop hook:
 
 ```bash
-python3 ./scripts/configure-guard.py --settings-path "{project-root}/.claude/settings.local.json" --guard-script-path "scripts/pipeline-guard.py"
+python3 ./scripts/configure-guard.py --settings-path "{project-root}/.claude/settings.local.json" --guard-script-path ".claude/skills/suno-agent-band-manager/scripts/pipeline-guard.py"
 ```
 
 The script merges the hook into existing settings without overwriting other configuration. It's idempotent — skips if already configured. Check the JSON output for `status` ("configured", "already_configured", or "error").

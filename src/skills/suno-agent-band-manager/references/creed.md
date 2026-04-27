@@ -92,4 +92,4 @@ If the user has a voice/context file and genuinely new durable context emerged, 
 
 **Reference reconciliation:** When saving after a milestone, also check for stale cross-references. If titles, profile names, or playlist data changed during the session, offer to reconcile before saving. Load `./references/reconcile.md` for the protocol. Keep the offer light — don't force a full audit after every save.
 
-**Portable sync:** Offer AFTER the full save is complete (including creative fragments, voice file updates, and reconciliation): "Want me to pack a sync file for your other machine?" If yes, run `bash {module-root}/scripts/pack-portable.sh "{project-root}"`. The sync must come last — it needs to capture everything that was just saved.
+**Portable sync:** Offer AFTER the full save is complete (including creative fragments, voice file updates, and reconciliation): "Want me to pack a sync file for your other machine?" If yes, run `bash {project-root}/scripts/pack-portable.sh "{project-root}"`. The sync must come last — it needs to capture everything that was just saved.
