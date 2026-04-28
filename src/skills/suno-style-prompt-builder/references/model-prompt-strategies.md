@@ -315,6 +315,25 @@ Community research is sharper than "first matters": **genre and subgenre tags co
 
 **Practical rule:** If you want genre X to drive the arrangement, X is position one. "Accents" / "undertones" / "influences" demote later terms but don't promote earlier ones — there is no way to get a buried genre to lead.
 
+### Brass-Band Gravity — Aggressive Counter-Emphasis Required
+
+When the prompt includes brass-band genre descriptors (`brass band`, `second-line`, `sousaphone`, `New Orleans funk-rock-brass fusion`, etc.), the brass gravity is exceptionally strong — strong enough that single-mention guitar or rhythm-section descriptors get buried in the gen output even when present in the critical zone.
+
+**Production-confirmed pattern (LV Mask, 2026-04-28):**
+
+| Descriptor approach | Result |
+|---|---|
+| Genre-first + single guitar mention at position 5 (`Modern New Orleans funk-rock-brass fusion, ... electric guitar accents, ...`) | Guitar buried in output; brass dominates the mix |
+| `rock-funk fusion, funk, New Orleans second-line, brass-band, swing` (user test) | Brass-heavy output, guitar barely audible |
+| Single substantive guitar mention promoted to position 2 (`New Orleans funk-rock-brass fusion, overdriven rhythm guitar with cutting accents, ...`) | Guitar still gets buried in observed gens |
+| **`Guitar-driven New Orleans funk-rock with brass band horns, overdriven rhythm guitar with cutting electric lead, ...`** — **THREE explicit guitar mentions in critical zone (Guitar-driven framing + overdriven rhythm guitar + cutting electric lead)** | Guitar finally surfaces in the mix; brass and guitar coexist as intended |
+
+**Why this matters:** Standard guidance (single substantive descriptor at position 2-3 to promote a sub-element) is inadequate for brass-band genre gravity. Brass-band conventions are deeply trained — Suno defaults to brass-led arrangements when any brass-band-genre descriptor appears, and only aggressive counter-emphasis (genre-modifier framing + multiple explicit descriptors in the critical zone) shifts the balance.
+
+**Practical rule:** When prompting for brass-band-fusion genres where guitar (or any non-brass instrument) needs to surface in the mix, treat the counter-element as a genre-modifier first, then reinforce with multiple explicit instrument mentions in the critical zone. Do not assume single-mention promotion will work — it has been observed to fail repeatedly with brass-band gravity.
+
+**Counter-intuitive guidance:** This may LOOK like over-correction (three guitar mentions in 200 chars feels heavy-handed). Production testing confirms it's the right level for brass-band gravity specifically. The over-correction concern is wrong here — brass-band gravity requires it.
+
 ### Genre Term Behavior Table
 
 Specific genre terms produce specific results. This table documents what Suno actually generates for common genre keywords, based on production testing.
@@ -472,6 +491,24 @@ Getting Suno to bring energy back down is harder than building up. Patterns that
 ### Three-Phase Dynamic Arc (Quiet → Massive → Quiet)
 
 Getting Suno to execute a full quiet-to-massive-to-quiet arc requires redundancy. State the arc **twice** in the style prompt using different phrasing: `building from gentle to crushing then returning to gentle` AND `dynamic arc quiet to massive to quiet`. One statement is not enough — Suno latches onto "crushing" and rides it out through the end of the song. The redundancy forces Suno to register the full arc rather than just the peak.
+
+### Brass-Out-At-Outro Limitation (Brass-Band-Fusion Genres)
+
+**Documented platform limitation across v5 Pro and v5.5 Pro: brass-fade-out instructions in section tags or style prompts are unreliably honored for brass-band-fusion genres.**
+
+Two production tests on the same source song confirmed the failure:
+- **SF rendering on v5 Pro** (swamp-metal + NOLA brass fusion, 2026-03-23) — used in-bracket per-section instrumentation tags including `[OUTRO — return to slow, sparse intro feel; sung; no brass; only final word whispered]`. Result: horns persisted throughout the song instead of fading at the outro. Documented as the primary failure mode at publish time.
+- **LV rendering on v5.5 Pro** (Galactic-style modern NOLA funk-rock-brass fusion, 2026-04-28) — used v5.5 Pro's "significantly improved prompt accuracy," in-bracket per-section instrumentation (`[Intro] [Instrument: bare rock guitar, no brass]` ... `[Outro] [Instrument: no brass, bare rock guitar]`), AND stacked absence descriptors at intro/outro in the style prompt. Result: same failure — brass hits persisted into the outro and even after the whispered "nothingness" through fade.
+
+**Implication for Pro-tier users:** No surgical post-gen fix is available without Studio tier (Replace Section / 12-track stem extraction / Remove FX). Pure prompt-side techniques cannot reliably engineer brass-fade-out for brass-band-fusion genres. Re-rolls don't fix it because the failure is consistent across attempts — Suno's brass-band genre gravity overrides outro fade instructions specifically.
+
+**How to architect around this:**
+- **Plan for brass-persisting** when building brass-band-fusion songs. Don't expect the bookend-sparse three-act dynamic to land via prompt instructions alone.
+- **Lyric-level adaptation:** if the song concept needs a sparse outro, consider whether the song works as a brass-band-fusion at all, or whether a different sub-genre anchor (rock-with-horn-section, NOLA R&B, etc.) would land the dynamic better than brass-band-led territory.
+- **Subjective evaluation:** the build-up half of the three-act dynamic (Intro → V1 → Pre-Chorus carnival peak) DOES land cleanly in brass-band-fusion genres on v5.5 Pro. The failure is specifically the back-half release. Songs whose structural success doesn't depend on a sparse outro are unaffected.
+- **Studio-tier path** (NOT available to Pro users): post-gen 12-track stem extraction allows muting the brass stem on intro/outro, with Replace Section available for surgical re-gen of just the bookends.
+
+**The 8th LV dynamic archetype (build-peak-elevated-settle)** is a direct consequence of this limitation — outro can't return to bookend-sparse when brass keeps playing. This archetype emerged organically from the constraint rather than as an intentional design choice.
 
 ## Slider Guidelines
 

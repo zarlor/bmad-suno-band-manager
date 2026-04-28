@@ -292,6 +292,20 @@ Neither dimension alone is sufficient. Adjacent tracks need to work musically AN
 
 **BPM takes priority over key:** A harmonically perfect transition with a 20 BPM jump sounds worse than a minor key clash at the same tempo. Double/half time relationships (70 BPM ↔ 140 BPM) share the same pulse grid and can work together.
 
+**Camelot is a key-relationship tool, not a comprehensive transition-smoothness measure.** The Camelot wheel tracks key relationships only — it does NOT capture:
+- **Tempo gaps** — a 152 BPM power-pop banger adjacent to a 78-felt heavy-rock track will sound jarring even with a perfect 10A↔10B relative pair
+- **Genre/style register** — power-pop crashing into philosophical-heavy or piano-grief sounds abrupt regardless of Camelot match
+- **Energy/dynamic level** — sustained-high banger next to sustained-low melancholy won't blend even with key alignment
+- **Production aesthetic** — different mix character (warm analog vs. modern compressed, etc.) creates discontinuity
+
+**When Camelot perfection is misleading:** For genre-outlier tracks (e.g., a power-pop song in a non-power-pop catalog, or a thrash track in a folk-leaning album), Camelot architecture may favor placement spots where the keys line up beautifully but the listening experience is jarring because of tempo, genre, or energy mismatches. Camelot perfection on paper does NOT equal smooth listening transitions when other dimensions diverge.
+
+**Production-confirmed (LV Mirror Image placement, 2026-04-28):** Initial placement options framed Option A as Camelot-strong (three-track perfect run Slide→DID→MI at 9A→10A→10B) and Option C as a "Camelot trade-off for thematic-callback." User correction: *"Not so much trading Camelot because it's honestly just jarring in those other positions and in C it's a little less so."* Options A and B were rejected because the **listening experience was jarring** despite Camelot perfection — the 152 BPM power-pop crashing into 78-felt DID/Cities was a tempo+genre+energy mismatch that Camelot couldn't correct for. Position 3 had rougher Camelot but tonally adjacent tracks (PR 81-felt, Askin'? 92-felt) were less distant from MI's banger energy, producing a less-jarring transition.
+
+**Practical rule for placement evaluation:** When presenting placement options, describe the **listening experience** (smooth / fluid / abrupt / jarring) as the primary criterion. Camelot is one input. Explicitly call out tempo gaps, genre register gaps, and energy gaps alongside Camelot when significant. A Camelot-perfect match with a 70+ BPM gap should be flagged as "Camelot-perfect but tempo-jarring," not as "the strongest option." For genre-outlier tracks, accept that no placement will be Camelot-AND-tempo-AND-genre-perfect — pick where the listening experience is least jarring.
+
+**When Camelot is reliable:** Camelot transitions work cleanly when the songs are also tempo-and-genre-coherent. The framework breaks down specifically when other dimensions diverge. Same-genre / same-tempo-pocket placements (e.g., sequential tracks in a coherent stylistic cluster) benefit straightforwardly from Camelot architecture; cross-genre / cross-tempo placements need additional listening-experience evaluation.
+
 **Concert setlist design (W-Shape model):**
 - Featured songs at three peaks (beginning, middle, end) with complementary songs providing changes in key, tempo, timbre, and mood between them
 - Multiple peaks and valleys rather than a single arc
