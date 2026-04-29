@@ -802,6 +802,36 @@ Suno has no dictionary — it guesses pronunciation from spelling patterns. This
 - **Keep original spelling in the songbook** and note the phonetic substitution in the Suno lyrics version.
 - **Post-generation lyric editing works** for pronunciation fixes — generate, listen, then fix spellings and re-generate if needed.
 
+#### Mid-Word Vowel Anchoring with English-Word Fragments
+
+When a word's mispronunciation is localized to one syllable (typical for Latin terms, scientific vocabulary, or unusual proper nouns), respell ONLY that syllable with an English-word fragment that unambiguously encodes the target vowel sound. The principle: hand Suno a spelling-pattern it has clearly trained on, mid-word, in place of the ambiguous original.
+
+**Example — broken and fixed (The Life of Walther Who?, April 2026):**
+- Broken: `ad infinitum` → Suno reads "ahd in-fih-NIH-tuhm" (short-i in the stressed syllable, wrong)
+- Fixed: `ad in-fih-nigh-tum` → Suno reads "ahd in-fih-NIGH-tuhm" (long-i correct, Anglicized pronunciation lands)
+- Result: production-confirmed clean delivery on regen 2026-04-29 with `nigh` lowercase
+
+**Why `nigh` works:** It's an English word with unambiguous long-i pronunciation (rhymes with high/sigh/thigh). Suno's spelling-pattern prediction has clearly trained on it. The hyphenation `in-fih-nigh-tum` forces syllable breaks; the phonetic anchor sits inside that hyphenated structure and Suno renders the long-i without drifting to a more common nearby word.
+
+**Common mid-word vowel anchors (English fragments, all uniquely-pronounced in standard English):**
+- **Long-i:** `nigh`, `eye`, `igh` (stretched only — see Stretched Words section), `nye` / `dye` / `rye` family
+- **Long-a:** `way`, `ray`, `bay` family
+- **Long-o:** `oh`, `dough`, `toe`, `bow` (where unambiguous)
+- **Long-e:** `ee`, `bee`, `tea`
+- **Long-u (yoo):** `you`, `cue`, `due`
+- **Long-u (oo):** `boot`, `moo`, `flu`
+
+**How to apply:**
+1. Identify the syllable Suno is mispronouncing (single syllable, usually).
+2. Identify the target vowel sound (long-i, long-a, etc.).
+3. Substitute that syllable with an English-word fragment containing the target sound.
+4. Hyphenate to force the syllable break around the substitution: `original-fix-original`.
+5. Per the "phonetics only where ambiguous" principle, leave the syllables Suno gets right untouched. `ad infinitum` doesn't need `ad` and `tum` respelled — only the broken `nih` syllable.
+
+**Capitalization on phonetic anchors:** ALL CAPS on a phonetic-anchor syllable adds delivery loudness/intensity per the Capitalization Effects section above — NOT a different pronunciation. `nigh` and `NIGH` are pronounced the same; `NIGH` just gets sung louder. Use ALL CAPS on the phonetic anchor only when (a) the syllable is naturally stressed in correct pronunciation AND (b) the loudness boost serves the section's dynamic (not, e.g., a quiet verse where one boosted syllable would be jarring).
+
+**Distinct from Stretched Words guidance** (next section): that guidance covers DRAMATIC ELONGATION via hyphenated repeated letters (`to-o-o-lling`); this guidance covers NON-STRETCHED mid-word fixes for normal-tempo delivery. Both use the principle of substituting unambiguous English-word fragments, but apply in different contexts.
+
 ### Open-Ended Instrumental Sections Are Dangerous
 Instrumental tags without clear boundaries cause Suno to generate excessive instrumental content:
 
