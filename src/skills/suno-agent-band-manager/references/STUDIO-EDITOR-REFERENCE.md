@@ -60,7 +60,13 @@ The most important editing feature. Regenerates a selected portion while preserv
 | Overall vibe/genre is off | Full regeneration with revised style prompt |
 | Good material but wrong emotional direction | Full regeneration — emotion is global |
 
-**Cost:** Pro and Premier currently receive free replacements up to 1,000 sections daily. After promotional period, each replacement costs 5 credits.
+**Production-Tested Limitation (2026-04-29 — single-word fix attempt):**
+
+Even at the documented sweet-spot scale (single-word / short-phrase target), Replace Section can produce **audible transition seams at the section boundaries**. Lenny's Damned If I Don't fix attempt: targeted a single word (`-ing` suffix dropped on "They call it living") with phonetic anchor `They call it liv-ing` in the Replace Lyrics box. **Both returned variations correctly fixed the targeted word** but **both also produced obviously audible joins** where the new replacement section met the surrounding original audio. Replace Section's localized-fix value is therefore bounded by transition-quality, not just by section size.
+
+**Practical takeaway:** Even within Replace Section's documented sweet-spot, expect to evaluate transition smoothness alongside content correctness. If the fix lands the content but the seams are obvious, the song-level result may not be acceptable — fall back to Cover (full re-render preserving structure) or full re-gen with phonetic anchor in lyric source. Cover and re-gen produce single-coherent audio without seams; Replace Section's localized scope means transition seams are an inherent risk.
+
+**Cost:** Pro and Premier currently receive free replacements up to 1,000 sections daily. After promotional period, each replacement costs 5 credits per Suno's documentation (4 credits / 2 variations observed in production 2026-04-29 — verify current cost via Suno UI before estimating credit budget).
 
 ### Extend
 
