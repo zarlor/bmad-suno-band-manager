@@ -19,7 +19,7 @@ Conversational direction-gathering happens naturally. But the moment a Suno-read
 
 1. **Invoke the Style Prompt Builder** in headless mode — validate the style prompt against model-specific strategies, character limits, and known behavioral triggers.
 2. **Invoke the Lyric Transformer** in headless mode if lyrics were written — validate metatags, check for problematic patterns.
-3. **Both skills run in parallel** — single assistant message, two Skill tool calls (or two Agent subagent calls if Skill parallel isn't available in the current CLI).
+3. **Both skills run in parallel** via **Agent subagent calls** (not the Skill tool — see "Tool Choice: Use Agent for Headless Skill Invocation" below). Single assistant message with both Agent calls.
 4. **Suppress intermediate skill output** — do NOT present either skill's conversational output to the user between invocation and Step 5. The user sees only the final assembled package.
 5. **Present in the create-song Step 5 format** — Suno UI order, all required fields, character counts, wild card variant. Synthesize both skills' structured outputs into one clean package.
 
@@ -49,6 +49,19 @@ If any of these appear in a draft response you're about to send, the pipeline wa
 - **Reasoning like "I already know what the skill would produce, so I'll package directly"** or "the direction is dialed-in enough that I can skip the pipeline." This IS the failure mode the rule exists to prevent. The skills apply guardrails that aren't obvious from conversation (Voice Gravity rules, descriptor-stacking checks, exclusion drift-risk analysis, per-section metatag reinforcement). Every package attempt — even a "simple" one — needs the pipeline.
 
 If any tell is present, the fix is NOT to patch the symptom in-place. Invoke the pipeline skills and rebuild the package from their output.
+
+### Tool Choice: Use Agent for Headless Skill Invocation
+
+For the headless skill calls in Step 3 (Style Prompt Builder, Lyric Transformer, and Feedback Elicitor when applicable), invoke via **Agent subagent calls** rather than the Skill tool. The reason is context isolation:
+
+- **Skill tool** loads the called skill's instructions into the SAME conversation context. The called skill's headless JSON contract output becomes the assistant's next visible turn — there's no isolation layer between "called skill speaking" and "Mac speaking." The JSON that's supposed to stay internal per Step 4 ends up shown to the user.
+- **Agent tool** runs the skill in an isolated sub-context. The called skill executes its headless contract, the JSON returns inside the Agent run as a tool result, and Mac receives a clean text synthesis. Tool results are internal data — they never appear in the user-facing transcript. Mac then formats the package per Step 5 without intermediate scaffolding leaking through.
+
+**Use Skill for** interactive skill activations the user initiated directly (e.g., the user types `/manage-bands` to converse with `suno-band-profile-manager` through its menu).
+
+**Use Agent for** every headless skill invocation from inside Mac's package-assembly workflow. Embed the skill prompt + headless arguments in the Agent's `prompt` parameter; the Agent runs the skill in isolation and returns a synthesis Mac can format.
+
+**Why this matters operationally:** Step 4 (Suppress intermediate skill output) is mechanically *impossible* to enforce on the Skill-tool path — the JSON contract output IS the visible turn in that invocation pattern. Agent is the correct tool to make Step 4 enforceable rather than aspirational. Documented by user observation 2026-04-28 after Mac slipped from Agent-based to Skill-based invocation across two consecutive package presentations and the headless JSON appeared in chat both times.
 
 ### Highest-Risk Contexts for This Violation
 
