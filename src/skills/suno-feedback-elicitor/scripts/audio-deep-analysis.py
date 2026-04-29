@@ -30,6 +30,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "_shared"))
 from audio_deps import require_audio_deps
+from json_archiver import resolve_archive_arg, write_archive
 
 SCRIPT_NAME = "audio-deep-analysis"
 VERSION = "1.0.0"
@@ -308,6 +309,18 @@ def main():
         default=None,
         help="Output file path (default: stdout)",
     )
+    parser.add_argument(
+        "--archive", nargs="?", const="", default="",
+        help=(
+            "Persist full JSON output to a per-song archive. "
+            "With no path: writes to docs/audio-analysis/songs/<song-slug>.json. "
+            "Pass an explicit path to override. Default: ON."
+        ),
+    )
+    parser.add_argument(
+        "--no-archive", dest="archive", action="store_const", const=None,
+        help="Skip writing the JSON archive.",
+    )
     args = parser.parse_args()
 
     filepath = args.audio_file
@@ -334,6 +347,13 @@ def main():
             Path(args.output).write_text(output + "\n")
         else:
             print(output)
+
+        # Per-song JSON archive (default ON unless --no-archive)
+        song_slug = os.path.splitext(os.path.basename(filepath))[0]
+        archive_target = resolve_archive_arg("songs", song_slug, args.archive)
+        if archive_target is not None:
+            res = write_archive(archive_target, result)
+            print(f"  ARCHIVED: {res['path']} ({res['bytes_written']} bytes)", file=sys.stderr)
 
 
 if __name__ == "__main__":

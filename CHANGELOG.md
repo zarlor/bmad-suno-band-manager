@@ -6,9 +6,49 @@ All notable changes to the Suno Band Manager module are documented here.
 
 ## [Unreleased]
 
-### Suno Knowledge — Three Production-Tested Findings
+(Nothing yet — entries land here as work accumulates.)
 
-Three findings from 2026-04-28 production sessions (LV Mask + LV Mirror Image) folded upstream into reference docs as documentation-only updates. No version bump — accumulating for the next release that bundles enough material to warrant one.
+---
+
+## [1.7.1] - 2026-04-29
+
+### Audio Analysis — Persistent JSON Archives + Auto-Refreshing Companion Docs
+
+Closes a long-running drift problem where audio-analysis script output never made it back to the canonical companion `.md` files. Sessions ran `playlist-sequencing-data.py` / `batch-full-analysis.py` / `analyze-audio.py`, used the JSON for the immediate question, and never refreshed the human-readable summary docs. Sync-archive carried the stale `.md` files between machines, so a fresh laptop session would pull a version of "the catalog state" months out of date and have to re-run analyses that had already been done. Today's desktop session diagnosed this when `docs/playlist-sequencing-data.md` was 35 days old and missing all four 2026-04-29 SF regens.
+
+**Two new layers, both default-on:**
+
+1. **JSON archive layer** — every analysis script now writes its full structured output to a persistent path under `docs/audio-analysis/`. The archives are the durable raw-data layer; future sessions can read the archive directly instead of re-running the script to ask a different question of the same audio. Layout:
+
+   ```
+   docs/audio-analysis/
+     songs/<song-slug>.json          ← audio-deep-analysis.py per-song archive
+     playlists/<album-slug>.json     ← playlist-sequencing-data.py per-playlist archive
+     catalog/<YYYY-MM-DD>-summary.json   ← analyze-audio.py dated catalog snapshot
+     catalog/<YYYY-MM-DD>-deep.json      ← batch-full-analysis.py dated catalog snapshot
+   ```
+
+2. **Companion `.md` auto-refresh layer** — every analysis script that has a canonical summary doc now refreshes it automatically. The doc is rewritten between `<!-- AUTOGEN-START: ... -->` / `<!-- AUTOGEN-END -->` markers; hand-curated content outside the markers (e.g. the Felt BPM Corrections + LLM BPM Comparison sections in `docs/audio-analysis-reference.md`) is preserved across refreshes. Title + generation timestamp live inside the markers and refresh with each run.
+
+Both layers default ON. Pass `--no-archive` to skip the JSON write; `--no-companion` to skip the MD refresh; `--archive PATH` / `--companion PATH` to override the canonical paths. JSON-to-stdout still works for piping/Skill-based callers — archive + companion happen IN ADDITION.
+
+### Added — Module Code
+
+- **`src/skills/_shared/companion_writer.py`** — marker-based MD-companion-file refresh helper. Provides `update_companion()` that writes new content between AUTOGEN markers, with three modes: `created` (file didn't exist, created with markers), `refreshed` (file had markers, content between them replaced, hand-curated sections outside markers preserved), `wrapped` (file existed without markers, existing content preserved below the new AUTOGEN block as a one-shot migration).
+
+- **`src/skills/_shared/json_archiver.py`** — JSON archive writer for analysis output. Provides `write_archive()` + `archive_path()` + `resolve_archive_arg()` for the per-script flag handling. Knows the canonical archive layout under `docs/audio-analysis/{songs,playlists,catalog}/`.
+
+- **`--archive` and `--companion` flags** added to four analysis scripts in `src/skills/suno-feedback-elicitor/scripts/`:
+  - `playlist-sequencing-data.py` — archive at `docs/audio-analysis/playlists/<album>.json`, companion at `docs/playlist-sequencing-data.md`
+  - `batch-full-analysis.py` — archive at `docs/audio-analysis/catalog/<YYYY-MM-DD>-deep.json`, companion at `docs/catalog-analysis-report.md`
+  - `analyze-audio.py` — archive at `docs/audio-analysis/catalog/<YYYY-MM-DD>-summary.json`, companion at `docs/audio-analysis-reference.md` (preserves hand-curated Felt BPM + LLM Comparison sections)
+  - `audio-deep-analysis.py` — per-song archive at `docs/audio-analysis/songs/<song-slug>.json` (no companion — there's no aggregate doc for per-song deep analysis)
+
+  Each flag accepts `--archive` / `--companion` (use canonical path), `--archive PATH` / `--companion PATH` (use explicit path), or `--no-archive` / `--no-companion` (skip).
+
+### Suno Knowledge — Production-Tested Findings (folded upstream)
+
+Findings from 2026-04-28 and 2026-04-29 production sessions folded into module reference docs:
 
 - **`model-prompt-strategies.md` → "Brass-Out-At-Outro Limitation"** (new subsection under Three-Phase Dynamic Arc). Documents the platform limitation: brass-fade-out instructions in section tags or style prompts are unreliably honored for brass-band-fusion genres across both v5 Pro and v5.5 Pro. Two production tests on the same source song (SF swamp-metal funk-fusion 2026-03-23 + LV Galactic-style modern NOLA funk-rock-brass fusion 2026-04-28) confirmed identical failure mode despite v5.5 Pro's improved prompt accuracy + in-bracket per-section instrumentation tags + stacked absence descriptors. Pure prompt-side techniques cannot reliably engineer brass-fade-out for brass-band-fusion genres. **Tier-availability correction (2026-04-29):** Initial framing claimed Replace Section was Studio-only — that was wrong. Replace Section IS available at Pro tier in the Legacy Editor / Song Editor, but with documented quality limitations (melody drift on long sections, audio degradation when chained, no prior-gen reuse, best on single-line/short-phrase spots) that make it an unreliable fallback for the brass-out outro use case specifically. Premier (Suno Studio) tier offers more surgical tools (12-track stem extraction, Remove FX, Quick Replace variants) but is the $24/mo upgrade. Architects-around guidance + 8th LV dynamic archetype emergence noted.
 
