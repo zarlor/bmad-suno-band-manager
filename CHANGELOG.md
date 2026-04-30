@@ -6,6 +6,12 @@ All notable changes to the Suno Band Manager module are documented here.
 
 ## [Unreleased]
 
+### `portable-manifest.example.yaml` — Updated for v1.7.1 + v1.7.2 file patterns
+
+The example manifest now suggests per-band playlist YAML pattern, per-band sequencing companion pattern, and the v1.7.1 audio-analysis JSON archive directory in its commented-out playlist artifacts section. Users who copied earlier versions of the example to their own `portable-manifest.yaml` should review the updated example and add the new patterns — without them, the per-band YAMLs (v1.7.2), the auto-refreshed sequencing companions (v1.7.1+v1.7.2), and the JSON archives (v1.7.1) won't sync between machines and you'll see the same drift class the architecture was designed to fix.
+
+The new generic patterns (`docs/*-playlist.yaml`, `docs/*-playlist-ordering.md`, `docs/*-playlist-sequencing.md`, `docs/audio-analysis/**/*.json`) work for any current or future band — no need to enumerate each band by name.
+
 ### Suno Knowledge — Foundational Principle: Suno Does Not Actually Shift Tempo Within a Song
 
 Production-confirmed 2026-04-29 across multiple LV catalog tracks where the style prompt explicitly requested "tempo changes" or "tempo shifts" (Damned If I Don't Redux, Obviously, Schizo). librosa-measured BPM is steady end-to-end despite clear felt-shifts between lucid and dense sections. **What Suno actually produces** when a prompt asks for tempo shifts is **arrangement-density variation** — instrumentation pullback to create a halftime *feel*, compression to create a double-time *feel* — not actual BPM changes. The underlying tempo stays absolutely constant.

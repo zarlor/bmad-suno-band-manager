@@ -26,11 +26,17 @@ include:
   # - "docs/*-deep-dive.md"
   # - "docs/notes-*.md"
 
-  # Playlist artifacts and audio analysis outputs:
-  # - "docs/*-playlist.yaml"
-  # - "docs/*-playlist-ordering.md"
+  # Playlist artifacts and audio analysis outputs.
+  # The per-band patterns (added with the v1.7.2 multi-band architecture)
+  # work for any current or future band in the project — they catch
+  # `solitary-fire-playlist.yaml`, `your-band-playlist.yaml`, etc.
+  # without needing to enumerate each band by name.
+  # - "docs/*-playlist.yaml"             # canonical per-band playlist YAMLs (single source of truth for sequencing)
+  # - "docs/*-playlist-ordering.md"      # narrative ordering docs per band
+  # - "docs/*-playlist-sequencing.md"    # script-generated per-band sequencing companions (auto-refreshed by playlist-sequencing-data.py)
   # - "docs/audio-analysis-reference.md"
   # - "docs/catalog-analysis-report.md"
+  # - "docs/audio-analysis/**/*.json"    # full JSON archives (per-song, per-playlist, per-catalog-snapshot) from the v1.7.1 archive layer
 
   # Session findings, lessons learned, and other working notes:
   # - "docs/session-findings-*.md"
