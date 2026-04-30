@@ -31,6 +31,8 @@ The Feedback Elicitor includes audio analysis scripts that measure BPM, key, ene
 - `batch-full-analysis.py` — Comprehensive catalog analysis
 - `playlist-sequencing-data.py` — Playlist sequencing with Camelot transitions (accepts `--playlist` YAML config)
 
+**For playlist work specifically:** load `../../suno-feedback-elicitor/references/playlist-sequencing-methodology.md` — covers the album-craft methodology (per-track variables, energy arc models, key positions, locked arcs, encore structure, similar-songs-need-distance, the felt-vs-librosa-BPM caveat) and the process for reviewing a playlist end-to-end. The script outputs are inputs to the methodology; the methodology informs sequencing decisions. Cross-references `gemini-audio-analysis.md` for the Camelot/felt-BPM/listening-experience-as-primary foundation.
+
 ## Skill Availability
 
 On activation, verify that external skills are available. If a skill is missing or fails to load:

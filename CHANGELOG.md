@@ -6,7 +6,13 @@ All notable changes to the Suno Band Manager module are documented here.
 
 ## [Unreleased]
 
-(Nothing yet — entries land here as work accumulates.)
+### Added — Playlist Sequencing Methodology Reference Doc
+
+- **`src/skills/suno-feedback-elicitor/references/playlist-sequencing-methodology.md`** (new) — consolidated reference for album-level playlist sequencing methodology. Covers the album-craft layer that sits above pairwise transition scoring: per-track variables (the 9 measurable + 3 contextual), energy arc models (inverted-U / W-shape / concert peak-end), key positions (1/4/7/10), sonic palette variety, tempo variety, same-key adjacency rules, similar-songs-need-distance, locked arcs / preserved sequences, encore structure, the felt-BPM-vs-librosa caveat, parallel-key transitions, and a 10-step process for reviewing a playlist end-to-end. Cross-references `gemini-audio-analysis.md` for the Camelot wheel mechanics, felt-BPM corrections, and listening-experience-as-primary criterion (foundational material that this doc builds on rather than duplicates).
+
+  Closes a documentation gap: the methodology had been accumulated in production-session findings (project-private, gitignored) and was scattered across `gemini-audio-analysis.md`, `capabilities.md`, and `reconcile.md` mentions. Other module users now have the framework as a primary reference, and Mac sessions have it ready-to-load instead of grep-discoverable.
+
+- **`src/skills/suno-agent-band-manager/references/capabilities.md`** — updated to add a cross-reference pointer to the new methodology doc under the playlist scripts list.
 
 ---
 
