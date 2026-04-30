@@ -38,8 +38,10 @@ ARCHIVE_ROOT = "docs/audio-analysis"
 
 
 def _slugify(name: str) -> str:
-    """Lowercase, replace non-alphanumeric with hyphens, collapse repeats."""
+    """Lowercase, drop apostrophes (so "Lenny's" → "lennys"), replace
+    remaining non-alphanumeric with hyphens, collapse repeats."""
     s = name.lower()
+    s = s.replace("'", "").replace("’", "")  # drop straight + curly apostrophes
     s = re.sub(r"[^a-z0-9]+", "-", s)
     s = re.sub(r"-+", "-", s).strip("-")
     return s or "untitled"

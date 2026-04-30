@@ -25,10 +25,10 @@ Reconciliation is triggered after these events:
 
 | Data | Authoritative Source | May Be Referenced In |
 |------|---------------------|---------------------|
-| Song title | Songbook entry (`docs/songbook/{band}/{song}.md`) | Playlist YAML, playlist ordering doc, voice context, sidecar index/chronology, WIP files, companion files |
-| Song status (WIP/published) | Songbook entry | Voice context (WIP sections, catalog), sidecar index, WIP files that should be deleted |
-| Playlist order & track numbers | Playlist ordering doc (`docs/*-playlist-ordering.md`) | Voice context (catalog section), songbook placement notes |
-| Band profile (genre, vocal, name) | Band profile YAML (`docs/band-profiles/*.yaml`) | Voice context, songbook entries referencing profile values, sidecar index |
+| Song title | Songbook entry (`docs/songbook/{band}/{song}.md`) | Per-band playlist YAML, playlist ordering doc, voice context, sidecar index/chronology, WIP files, companion files |
+| Song status (WIP/published) | Songbook entry | Voice context (WIP sections, catalog), sidecar index, per-band playlist YAML, WIP files that should be deleted |
+| Playlist order & track numbers | **Per-band playlist YAML** (`docs/{band-slug}-playlist.yaml`) — authoritative as of v1.7.2 | Playlist ordering doc (derived narrative companion), voice context (catalog section), songbook placement notes, sidecar position references, script-generated companion at `docs/{band-slug}-playlist-sequencing.md` |
+| Band profile (genre, vocal, name) | Band profile YAML (`docs/band-profiles/*.yaml`) | Voice context, songbook entries referencing profile values, sidecar index. **Note:** the band profile YAML must NOT carry a `playlist:` block as of v1.7.2 — playlist data lives in the per-band playlist YAML to avoid drift. |
 | Tier/preferences | Sidecar index / config (`_bmad/config*.yaml`) | Voice context (Suno Setup section), band profile tier field |
 | Voice file location | The file itself (`docs/voice-context-*.md`) | Pre-activate expectations, sidecar index (Key Files section) |
 
@@ -48,8 +48,9 @@ Search these locations for the OLD value:
 
 - `docs/songbook/` — all .md files
 - `docs/band-profiles/` — all .yaml files
-- `docs/*-playlist-ordering.md` — playlist ordering docs
-- `docs/*.yaml` — playlist YAML files
+- `docs/{band-slug}-playlist.yaml` — **canonical per-band playlist YAML files** (one per band; iterate all `docs/*-playlist.yaml` matches)
+- `docs/*-playlist-ordering.md` — playlist ordering docs (derived narrative companions; not authoritative)
+- `docs/*-playlist-sequencing.md` — script-generated per-band sequencing companions (auto-refreshed; do not hand-edit between AUTOGEN markers)
 - `docs/voice-context-*.md` — voice/context files (including the Companion Files table)
 - `docs/wip-*.md` — WIP files (may need deletion if song published)
 - Any companion files listed in the voice file's Companion Files table — discover dynamically from that table rather than guessing patterns

@@ -69,7 +69,7 @@ Immediately persist the current session context to memory.
 
    **Pre-write sync check (before chronology):** Before writing the session summary to chronology.md, scan the session's writes for any cross-referenced updates that didn't land in the same batch as their triggering edit. Example triggers to look back on:
    - A new `docs/` file was created — did the voice file's Companion Files table get the entry in that batch?
-   - A songbook entry was added/updated — did the playlist YAML and voice catalog count get updated in that batch?
+   - A songbook entry was added/updated — did the **per-band playlist YAML** (`docs/{band-slug}-playlist.yaml`) and voice catalog count get updated in that batch? **This is REQUIRED, not optional** — the per-band playlist YAML is the single source of truth for the band's sequence; not updating it means the next session pulls a stale playlist (see `suno-band-profile-manager/references/profile-schema.md` "Per-Band Playlist YAML" section).
    - A sidecar Key Files path changed — did any doc referencing that path get updated in that batch?
    - A WIP file was marked COMPLETED — did the sidecar Pending / Parked Work section drop it in that batch?
 

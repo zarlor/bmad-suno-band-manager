@@ -52,11 +52,9 @@ STATUS_MARKER_RE = re.compile(
 # How many entries to include in Recently Published
 RECENT_LIMIT = 7
 
-# Display name → band slug mapping for Catalog Status output
-BAND_DISPLAY = {
-    "lennys-voice": "Lenny's Voice",
-    "solitary-fire": "Solitary Fire",
-}
+# Display name lookups are derived dynamically from band profile YAMLs at
+# runtime (see `band_display_map()` below) so this script works for any
+# project's bands, not just one specific project's hardcoded list.
 
 
 def parse_song(path: Path) -> dict | None:
@@ -109,6 +107,32 @@ def parse_song(path: Path) -> dict | None:
     }
 
 
+def band_display_map(project_root: Path) -> dict[str, str]:
+    """Build {slug: display_name} from band profile YAMLs.
+
+    Falls back to a Title-Cased version of the slug when a profile is missing
+    or doesn't carry a `name:` field. Generic across projects — does not
+    hardcode any specific band names.
+    """
+    out: dict[str, str] = {}
+    profiles_dir = project_root / "docs" / "band-profiles"
+    if not profiles_dir.is_dir():
+        return out
+    for profile_path in sorted(profiles_dir.glob("*.yaml")):
+        slug = profile_path.stem
+        try:
+            profile = yaml.safe_load(profile_path.read_text(encoding="utf-8"))
+        except yaml.YAMLError:
+            profile = None
+        display = ""
+        if isinstance(profile, dict):
+            display = (profile.get("name") or "").strip()
+        if not display:
+            display = " ".join(w.capitalize() for w in slug.replace("_", "-").split("-") if w)
+        out[slug] = display
+    return out
+
+
 def known_band_slugs(project_root: Path) -> set[str]:
     """Band profile YAML filenames (without extension) define valid band slugs."""
     profiles_dir = project_root / "docs" / "band-profiles"
@@ -148,7 +172,8 @@ def publish_date(song: dict) -> str:
     return song["body_date"] or song["frontmatter_date"] or ""
 
 
-def generate_recently_published(songs: list[dict]) -> str:
+def generate_recently_published(songs: list[dict], project_root: Path) -> str:
+    band_display = band_display_map(project_root)
     published = [s for s in songs if is_published(s)]
     published.sort(key=publish_date, reverse=True)
     published = published[:RECENT_LIMIT]
@@ -157,8 +182,8 @@ def generate_recently_published(songs: list[dict]) -> str:
     for s in published:
         title = s["title"]
         date = publish_date(s)
-        band_display = BAND_DISPLAY.get(s["band"], s["band"])
-        desc = s["body_desc"] or f"{band_display}."
+        band_display_name = band_display.get(s["band"], s["band"])
+        desc = s["body_desc"] or f"{band_display_name}."
         path_display = s["path"].relative_to(s["path"].parents[3])
         lines.append(
             f"- **{title}** ({date}, PUBLISHED) — {desc} Songbook: "
@@ -168,6 +193,7 @@ def generate_recently_published(songs: list[dict]) -> str:
 
 
 def generate_catalog_status(songs: list[dict], project_root: Path) -> str:
+    band_display = band_display_map(project_root)
     # Per-band published counts
     per_band: dict[str, list[dict]] = {}
     for s in songs:
@@ -175,7 +201,7 @@ def generate_catalog_status(songs: list[dict], project_root: Path) -> str:
 
     lines = []
     for band_slug in sorted(per_band.keys()):
-        band_display = BAND_DISPLAY.get(band_slug, band_slug)
+        band_display_name = band_display.get(band_slug, band_slug)
         band_songs = per_band[band_slug]
         published = [s for s in band_songs if is_published(s)]
         published.sort(key=publish_date, reverse=True)
@@ -193,18 +219,18 @@ def generate_catalog_status(songs: list[dict], project_root: Path) -> str:
 
         # Line format depends on whether there's a playlist
         if playlist_count is not None and playlist_count > len(published):
-            # Catalog with a playlist (like Solitary Fire's full album)
+            # Catalog with a full-album playlist that's longer than the published list
             lines.append(
-                f"- **{band_display}:** {playlist_count}-track playlist "
+                f"- **{band_display_name}:** {playlist_count}-track playlist "
                 f"(songbook: {len(band_songs)} entries, {len(published)} with "
                 f"complete LOCKED markers). See playlist YAML at "
                 f"`docs/{band_slug}-playlist.yaml`."
             )
         else:
-            # Catalog is the published list (like Lenny's Voice)
+            # Catalog is the published list (no extended playlist beyond it)
             titles = ", ".join(s["title"] for s in published)
             lines.append(
-                f"- **{band_display}:** **{len(published)} published tracks** — {titles}."
+                f"- **{band_display_name}:** **{len(published)} published tracks** — {titles}."
             )
     return "\n".join(lines)
 
@@ -303,7 +329,7 @@ def main() -> int:
         return 2
 
     songs = load_all_songs(project_root)
-    recently_published = generate_recently_published(songs)
+    recently_published = generate_recently_published(songs, project_root)
     catalog_status = generate_catalog_status(songs, project_root)
 
     if args.dry_run:

@@ -33,6 +33,8 @@ The Feedback Elicitor includes audio analysis scripts that measure BPM, key, ene
 
 **For playlist work specifically:** load `../../suno-feedback-elicitor/references/playlist-sequencing-methodology.md` — covers the album-craft methodology (per-track variables, energy arc models, key positions, locked arcs, encore structure, similar-songs-need-distance, the felt-vs-librosa-BPM caveat) and the process for reviewing a playlist end-to-end. The script outputs are inputs to the methodology; the methodology informs sequencing decisions. Cross-references `gemini-audio-analysis.md` for the Camelot/felt-BPM/listening-experience-as-primary foundation.
 
+**Per-band playlist YAML convention:** Each band has its own `docs/{band-slug}-playlist.yaml` as the single source of truth for its track sequence. The script reads `--playlist docs/{band-slug}-playlist.yaml` and writes per-band outputs at `docs/audio-analysis/playlists/{band-slug}.json` + `docs/{band-slug}-playlist-sequencing.md` so multi-band projects don't have one band overwriting another's data. Schema, scaffolding, and lifecycle rules: see `suno-band-profile-manager/references/profile-schema.md` "Per-Band Playlist YAML" section.
+
 ## Skill Availability
 
 On activation, verify that external skills are available. If a skill is missing or fails to load:

@@ -6,13 +6,55 @@ All notable changes to the Suno Band Manager module are documented here.
 
 ## [Unreleased]
 
-### Added — Playlist Sequencing Methodology Reference Doc
+(Nothing yet — entries land here as work accumulates.)
 
-- **`src/skills/suno-feedback-elicitor/references/playlist-sequencing-methodology.md`** (new) — consolidated reference for album-level playlist sequencing methodology. Covers the album-craft layer that sits above pairwise transition scoring: per-track variables (the 9 measurable + 3 contextual), energy arc models (inverted-U / W-shape / concert peak-end), key positions (1/4/7/10), sonic palette variety, tempo variety, same-key adjacency rules, similar-songs-need-distance, locked arcs / preserved sequences, encore structure, the felt-BPM-vs-librosa caveat, parallel-key transitions, and a 10-step process for reviewing a playlist end-to-end. Cross-references `gemini-audio-analysis.md` for the Camelot wheel mechanics, felt-BPM corrections, and listening-experience-as-primary criterion (foundational material that this doc builds on rather than duplicates).
+---
 
-  Closes a documentation gap: the methodology had been accumulated in production-session findings (project-private, gitignored) and was scattered across `gemini-audio-analysis.md`, `capabilities.md`, and `reconcile.md` mentions. Other module users now have the framework as a primary reference, and Mac sessions have it ready-to-load instead of grep-discoverable.
+## [1.7.2] - 2026-04-29
 
-- **`src/skills/suno-agent-band-manager/references/capabilities.md`** — updated to add a cross-reference pointer to the new methodology doc under the playlist scripts list.
+### Multi-Band Architecture — Per-Band Playlist YAML as Single Source of Truth
+
+Closes a multi-band drift problem discovered while reviewing a project's second band's playlist: the SF band had a `docs/solitary-fire-playlist.yaml` as a single source of truth, but the LV band never had one. LV's track sequence got duplicated across the band profile YAML's `playlist:` block, voice-context narratives, sidecar references, and was different in each location — drifting independently as new tracks published. The module convention had not picked a winner; per-band YAML was the right answer but wasn't documented or scaffolded.
+
+A second symptom: `playlist-sequencing-data.py --companion` wrote to a single global path `docs/playlist-sequencing-data.md`, so running the script for two different bands meant the second run overwrote the first.
+
+A third symptom: project-specific band names (`Solitary Fire`, `Lenny's Voice`) were hardcoded in `validate-sidecar.py` and `regenerate-index-sections.py` band-display lookups — multi-band module users with different band names would not see correct output.
+
+### Added — Module Code
+
+- **`src/skills/suno-band-profile-manager/scripts/scaffold-playlist.py`** (new) — bootstraps a `docs/{band-slug}-playlist.yaml` for a band. Default mode writes an empty template; `--from-songbook` pre-populates track names from the band's existing songbook entries (audio filenames left as TODO). Solves the multi-band onboarding gap for both new bands (created via the profile manager) and existing bands (which can self-heal if they pre-date this convention).
+
+- **`src/skills/_shared/companion_writer.py`** — canonical companion path resolution becomes per-album for scripts whose output is per-album (currently `playlist-sequencing-data`). `CANONICAL_COMPANION` entries can now be either a fixed string (catalog-wide scripts) or a callable that takes the album name and returns the path. `resolve_companion_path()` accepts an optional `album` argument; passes it to the callable. Apostrophe-aware slugify handles names like "Lenny's Voice" → `lennys-voice`.
+
+- **`src/skills/_shared/json_archiver.py`** — `_slugify()` strips apostrophes (straight + curly) before the alphanumeric replace so "Lenny's Voice" → `lennys-voice` instead of `lenny-s-voice`.
+
+- **`src/skills/suno-feedback-elicitor/scripts/playlist-sequencing-data.py`** — passes album name to `resolve_companion_path()`. Companion now writes to `docs/{band-slug}-playlist-sequencing.md` instead of the single global `docs/playlist-sequencing-data.md`. Multiple bands no longer overwrite each other.
+
+- **`src/skills/suno-band-profile-manager/scripts/validate-profile.py`** — adds a check: if the band has any songbook entries at `docs/songbook/{band-slug}/`, then `docs/{band-slug}-playlist.yaml` MUST exist (helpful fix message points to scaffold-playlist.py). Also flags the deprecated in-profile `playlist:` block with a migration message. Bumped to v2.1.0.
+
+- **`src/skills/suno-agent-band-manager/scripts/validate-sidecar.py`** — band-name → slug mapping is now derived dynamically from `docs/band-profiles/*.yaml` files at runtime instead of a hardcoded dict. Generic across projects.
+
+- **`src/skills/suno-agent-band-manager/scripts/regenerate-index-sections.py`** — same fix: replaced hardcoded `BAND_DISPLAY` dict with a runtime `band_display_map(project_root)` function that derives display names from band profile YAMLs. Falls back to a Title-Cased version of the slug when a profile is missing or doesn't carry a `name:` field.
+
+### Added — Module Documentation
+
+- **`src/skills/suno-band-profile-manager/references/profile-schema.md`** — new "Per-Band Playlist YAML" section documents the file convention (`docs/{band-slug}-playlist.yaml`), schema (album + tracks: name, file), bootstrapping via scaffold-playlist.py, auto-creation expectation on band profile creation, deprecation of the in-profile `playlist:` block, and workflow rules (publish/reorder/remove all touch this file in same write batch).
+
+- **`src/skills/suno-band-profile-manager/SKILL.md`** — band creation flow now explicitly includes the playlist YAML scaffolding step ("Scaffold the per-band playlist YAML in the same write batch").
+
+- **`src/skills/suno-feedback-elicitor/references/playlist-sequencing-methodology.md`** — added "Per-Band Playlist YAML" section establishing the canonical input file convention, scaffolding command, and per-band auto-output paths.
+
+- **`src/skills/suno-agent-band-manager/references/capabilities.md`** — added a "Per-band playlist YAML convention" subsection clarifying that multi-band projects keep each band's playlist independent at `docs/{band-slug}-playlist.yaml` and produce per-band auto-outputs that don't collide.
+
+- **`src/skills/suno-agent-band-manager/references/reconcile.md`** — authoritative source table updated: playlist order & track numbers authoritative source becomes `docs/{band-slug}-playlist.yaml` (was: ordering doc). Stale-reference search location list now explicitly includes the canonical YAML, the script-generated companion, and notes the band profile YAML must NOT carry a `playlist:` block.
+
+- **`src/skills/suno-agent-band-manager/references/save-memory.md`** — passive "did the playlist YAML get updated" check converted to enforced "REQUIRED, not optional — the per-band playlist YAML is the single source of truth for the band's sequence; not updating it means the next session pulls a stale playlist."
+
+- **`src/skills/suno-agent-band-manager/references/creed.md`** — new **Multi-Band Discipline** principle: each band has exactly one canonical `docs/{band-slug}-playlist.yaml`; all other playlist references derive from or reference this file rather than duplicating its track list. Activation-loaded for Mac so the rule fires on every session.
+
+### Why two releases in two days
+
+v1.7.1 (yesterday) shipped JSON archives + auto-refreshing companion docs to close one drift class (script output never written back to canonical companion). The fix worked for single-band projects but exposed a multi-band class: companion paths weren't per-album, and the broader convention question (should each band have its own playlist YAML, and how does a new band get one?) wasn't answered. v1.7.2 closes that gap structurally rather than waiting until accumulating more entries.
 
 ---
 

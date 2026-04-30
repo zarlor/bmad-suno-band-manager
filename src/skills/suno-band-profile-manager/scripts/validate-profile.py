@@ -318,6 +318,60 @@ def validate_profile(profile_path: Path) -> dict:
     for f in findings:
         severity_counts[f["severity"]] = severity_counts.get(f["severity"], 0) + 1
 
+    # Per-band playlist YAML check: if the band has any songbook entries,
+    # `docs/{band-slug}-playlist.yaml` MUST exist as the canonical source of
+    # truth for playlist sequencing. Multi-band projects need this to keep
+    # bands independent (see playlist-sequencing-methodology.md "Per-Band
+    # Playlist YAML" section).
+    band_slug = profile_path.stem  # e.g., docs/band-profiles/lennys-voice.yaml -> lennys-voice
+    project_root = profile_path.parent.parent.parent  # band-profiles -> docs -> project_root
+    songbook_dir = project_root / "docs" / "songbook" / band_slug
+    playlist_yaml = project_root / "docs" / f"{band_slug}-playlist.yaml"
+    if songbook_dir.is_dir() and any(songbook_dir.glob("*.md")):
+        if not playlist_yaml.exists():
+            findings.append({
+                "severity": "high",
+                "category": "structure",
+                "location": {"file": str(profile_path), "expected_file": str(playlist_yaml)},
+                "issue": (
+                    f"Band has songbook entries at {songbook_dir} but no canonical "
+                    f"playlist YAML at {playlist_yaml}. Per-band playlist YAML is the "
+                    f"single source of truth for sequencing."
+                ),
+                "fix": (
+                    f"Run `python3 src/skills/suno-band-profile-manager/scripts/scaffold-playlist.py "
+                    f"{band_slug} --from-songbook` to bootstrap from songbook entries, then fill in "
+                    f"audio file names and order. See profile-schema.md 'Per-Band Playlist YAML' section."
+                ),
+            })
+
+    # Deprecated: in-profile `playlist:` block. Per v1.7.2 the band profile
+    # should NOT carry playlist data — that lives in docs/{band-slug}-playlist.yaml.
+    if "playlist" in profile and isinstance(profile["playlist"], dict):
+        findings.append({
+            "severity": "medium",
+            "category": "deprecation",
+            "location": {"file": str(profile_path), "field": "playlist"},
+            "issue": (
+                "The `playlist:` block in the band profile is DEPRECATED as of v1.7.2. "
+                "Playlist data must live in docs/{band-slug}-playlist.yaml as the single "
+                "source of truth, otherwise the two locations drift independently."
+            ),
+            "fix": (
+                f"Move authoritative track list to docs/{band_slug}-playlist.yaml (or run "
+                f"scaffold-playlist.py to bootstrap), then remove the `playlist:` block "
+                f"from this profile YAML. Sequencing-history narrative notes can move to "
+                f"the band's playlist-ordering.md if you maintain one."
+            ),
+        })
+
+    # Re-tally severity counts after the playlist checks above
+    severity_counts = {"critical": 0, "high": 0, "medium": 0, "low": 0}
+    for f in findings:
+        sev = f.get("severity", "low")
+        if sev in severity_counts:
+            severity_counts[sev] += 1
+
     status = "pass"
     if severity_counts["critical"] > 0:
         status = "fail"
@@ -328,7 +382,7 @@ def validate_profile(profile_path: Path) -> dict:
 
     return {
         "script": script_name,
-        "version": "2.0.0",
+        "version": "2.1.0",
         "skill_path": str(profile_path),
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "status": status,

@@ -133,16 +133,44 @@ def update_companion(
 
 
 # Canonical companion-file paths per script.
-# When a script is invoked with --companion (no path arg), it uses these.
+#
+# - For scripts that produce a *single* catalog-wide companion (analyze-audio,
+#   batch-full-analysis), the canonical path is a fixed string.
+# - For scripts whose output is *per-album* (playlist-sequencing-data), the
+#   canonical path is computed from the album name. Use a callable that
+#   accepts the album name and returns the path. This prevents multiple bands
+#   from overwriting each other's companion files.
 CANONICAL_COMPANION = {
-    "playlist-sequencing-data": "docs/playlist-sequencing-data.md",
+    "playlist-sequencing-data": lambda album: f"docs/{_album_slug(album)}-playlist-sequencing.md",
     "batch-full-analysis": "docs/catalog-analysis-report.md",
     "analyze-audio": "docs/audio-analysis-reference.md",
 }
 
 
-def resolve_companion_path(script_name: str, arg_value: Optional[str]) -> Optional[str]:
+def _album_slug(name: str) -> str:
+    """Slugify an album/band name for use in filenames. Mirrors the slugify
+    used in json_archiver — drop apostrophes, lowercase, hyphenate non-alnum.
+    """
+    import re
+    s = (name or "").lower()
+    s = s.replace("'", "").replace("’", "")
+    s = re.sub(r"[^a-z0-9]+", "-", s)
+    s = re.sub(r"-+", "-", s).strip("-")
+    return s or "untitled"
+
+
+def resolve_companion_path(
+    script_name: str,
+    arg_value: Optional[str],
+    album: Optional[str] = None,
+) -> Optional[str]:
     """Resolve --companion arg value into an actual path.
+
+    Args:
+        script_name: Identifier for the calling script (e.g., "playlist-sequencing-data").
+        arg_value: The --companion argument value (None=skip, ""=canonical, "<path>"=explicit).
+        album: Album/band name. Required when the canonical path for the script
+            is per-album (e.g., playlist-sequencing-data). Ignored otherwise.
 
     `arg_value` semantics:
         None       -> companion mode not requested
@@ -152,13 +180,23 @@ def resolve_companion_path(script_name: str, arg_value: Optional[str]) -> Option
     if arg_value is None:
         return None
     if arg_value == "":
-        path = CANONICAL_COMPANION.get(script_name)
-        if path is None:
+        canonical = CANONICAL_COMPANION.get(script_name)
+        if canonical is None:
             print(
                 f"ERROR: no canonical companion path registered for {script_name!r}. "
                 f"Pass an explicit --companion <path>.",
                 file=sys.stderr,
             )
             sys.exit(1)
-        return path
+        if callable(canonical):
+            if not album:
+                print(
+                    f"ERROR: canonical companion path for {script_name!r} is "
+                    f"per-album. Pass `album` to resolve_companion_path() or use "
+                    f"--companion <explicit-path>.",
+                    file=sys.stderr,
+                )
+                sys.exit(1)
+            return canonical(album)
+        return canonical
     return arg_value

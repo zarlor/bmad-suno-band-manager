@@ -102,6 +102,7 @@ Gather the information needed for a complete profile through natural dialogue. T
 - Run `./scripts/validate-profile.py` (use `--derive-filename "Band Name"` for kebab-case filename)
 - Generate a **Band Identity Card** — 3-4 sentence summary of who this band is. Present this first, then the YAML.
 - On approval, save to `{project-root}/docs/band-profiles/{profile-name}.yaml`
+- **Scaffold the per-band playlist YAML in the same write batch.** Run `./scripts/scaffold-playlist.py {profile-name} --project-root {project-root}` to create `docs/{profile-name}-playlist.yaml`. This empty template is the canonical source for the band's track sequence — without it, downstream playlist work has nowhere to write to. See `references/profile-schema.md` "Per-Band Playlist YAML" section for the schema and conventions.
 
 ### List Profiles
 

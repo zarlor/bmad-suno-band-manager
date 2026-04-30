@@ -392,11 +392,21 @@ def check_index_catalog_counts(
         if song.is_published:
             published_per_band[song.band] = published_per_band.get(song.band, 0) + 1
 
-    # Band name in index → band slug mapping
-    band_slugs = {
-        "Solitary Fire": "solitary-fire",
-        "Lenny's Voice": "lennys-voice",
-    }
+    # Band name in index → band slug mapping. Derived dynamically from
+    # band profile YAMLs at runtime so this works for any project's bands,
+    # not just one specific project's hardcoded list.
+    band_slugs: dict[str, str] = {}
+    profiles_dir = project_root / "docs" / "band-profiles"
+    if profiles_dir.is_dir():
+        for profile_path in sorted(profiles_dir.glob("*.yaml")):
+            try:
+                profile = yaml.safe_load(profile_path.read_text(encoding="utf-8"))
+            except yaml.YAMLError:
+                continue
+            if isinstance(profile, dict):
+                display_name = (profile.get("name") or "").strip()
+                if display_name:
+                    band_slugs[display_name] = profile_path.stem
 
     for match in per_band_claims:
         band_display = match.group("band").strip()

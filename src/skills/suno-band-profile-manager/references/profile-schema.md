@@ -193,3 +193,61 @@ generation_history: []
 - **Multi-profile Voice strategy** — profiles can reference multiple Voice IDs when the project uses several Voice recordings (e.g., "Narrative Rock" for mid-tempo rock tracks, "Ballad Intimate" for tender songs, "Speak-Sing Confessional" for literary/narrative tracks). Each Voice should be internally consistent (single stable character, 20-30 sec per recording, Skill Level Professional mandatory). Variety lives across Voices, not within one Voice sample. Document the mapping and per-Voice use cases in the profile.
 - **Custom Models (v5.5):** When `custom_model_id` is set, the Style Prompt Builder should complement the model's learned production style rather than fight it. Include `custom_model_notes` context when building prompts.
 - **Inspo Playlist Guidance:** Using your own songs as Inspo homogenizes the catalog sound. Drop Inspo when a song needs its own identity within the same band — let the style prompt and persona/voice do the work instead.
+
+---
+
+## Per-Band Playlist YAML (the canonical playlist source)
+
+Each band in the project owns exactly **one** canonical playlist file:
+
+```
+docs/{band-slug}-playlist.yaml
+```
+
+The slug matches the band profile filename — `docs/band-profiles/solitary-fire.yaml` pairs with `docs/solitary-fire-playlist.yaml`. This file is the single source of truth for the band's track sequence; **do not duplicate the track list elsewhere.** Other files (sidecar narrative, voice context, ordering doc) reference or derive from this YAML.
+
+### Schema
+
+```yaml
+album: "<Band display name>"
+tracks:
+  - name: "<Song title (must match the songbook entry's frontmatter title)>"
+    file: "<exact filename in docs/audio/, e.g. My Song.mp3>"
+  - name: "<next song>"
+    file: "<next file>"
+  # ...
+```
+
+The two required fields per track are `name` (the human-readable song title — must match the songbook entry's frontmatter `title`) and `file` (the audio filename in `docs/audio/`, used as the input to `playlist-sequencing-data.py`).
+
+### Why this file exists
+
+The audio analysis script (`playlist-sequencing-data.py`) needs a per-band ordered list with audio file mappings. Without a canonical YAML, this list inevitably gets duplicated in several places — the band profile YAML, an ordering doc, the sidecar narrative, the voice context — and each copy drifts independently. Consolidating to a single file with a deterministic location ends the drift class.
+
+### Bootstrapping
+
+If a band already has songbook entries but no playlist YAML, scaffold one:
+
+```bash
+python3 src/skills/suno-band-profile-manager/scripts/scaffold-playlist.py {band-slug} --from-songbook
+```
+
+This writes `docs/{band-slug}-playlist.yaml` with discovered song titles populated and `file:` fields left as empty strings (TODO: fill in from `docs/audio/`). The user reviews, fills in audio filenames, sets the order, and saves.
+
+For a brand new band with no songbook entries yet, run without `--from-songbook` to write an empty template.
+
+### Auto-creation on band profile creation
+
+When a new band profile is created via `suno-band-profile-manager`, the playlist YAML scaffold MUST be created in the same write batch. New bands without a playlist YAML are caught by `validate-profile.py` once they have any songbook entries.
+
+### Deprecation notice — the `playlist:` block in band profile YAML
+
+Earlier versions of this module supported a `playlist:` block inside the band profile YAML carrying track order, sequencing notes, and gap analysis. As of v1.7.2, **that block is deprecated and validators will warn on profiles that still carry it.** Move authoritative track-list data to `docs/{band-slug}-playlist.yaml`; sequencing-history narrative notes can move to a band-specific ordering doc (`docs/{band-slug}-playlist-ordering.md`) if you maintain one. Keeping playlist data in two places is the drift problem this convention was created to fix.
+
+### Workflow rules (apply in same write batch)
+
+- **On song publish:** the band's `docs/{band-slug}-playlist.yaml` MUST be updated alongside the songbook entry.
+- **On track reorder:** edit `docs/{band-slug}-playlist.yaml` first; the script's per-album companion `docs/{band-slug}-playlist-sequencing.md` auto-refreshes from this on the next run.
+- **On track removal/rename:** update the YAML, the songbook (if renaming), the sidecar narrative, and any ordering doc all in the same write batch.
+
+See also `suno-feedback-elicitor/references/playlist-sequencing-methodology.md` for the album-craft methodology that consumes this file's data.

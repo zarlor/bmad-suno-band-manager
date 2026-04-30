@@ -16,9 +16,35 @@ Skip the heavy methodology when:
 - Reordering 1-2 adjacent tracks with no upstream/downstream impact
 - The user has a fixed sequence preference and wants only sonic-transition feedback within it
 
+## Per-Band Playlist YAML — the canonical input
+
+Each band in a project owns exactly one canonical playlist file at `docs/{band-slug}-playlist.yaml`. This file is the **single source of truth** for the band's track sequence and the input to the sequencing script. The schema is straightforward:
+
+```yaml
+album: "<Band display name>"
+tracks:
+  - name: "<Song title (matches songbook frontmatter title)>"
+    file: "<exact filename in docs/audio/, e.g. My Song.mp3>"
+  # ... one entry per track, in playlist order
+```
+
+Multi-band projects keep each band's playlist independent — a band's YAML lives at its own slug and produces its own auto-generated companion + JSON archive. There's no shared global playlist file; that pattern is what causes drift between bands.
+
+If a band exists with songbook entries but no playlist YAML, scaffold one:
+
+```bash
+python3 src/skills/suno-band-profile-manager/scripts/scaffold-playlist.py {band-slug} --from-songbook
+```
+
+The schema and lifecycle rules (creation on band profile creation, deprecation of the `playlist:` block in band profile YAML, workflow rules on song publish) are documented in `suno-band-profile-manager/references/profile-schema.md` "Per-Band Playlist YAML" section.
+
 ## Tools Stack
 
-The methodology is supported by `scripts/playlist-sequencing-data.py` which generates per-track structured data (BPM, overall/entry/exit keys, Camelot codes, energy level, intro/outro energy, transition quality) for every track in a playlist YAML. Output is auto-saved to `docs/audio-analysis/playlists/<album-slug>.json` (raw archive) AND `docs/playlist-sequencing-data.md` (refreshed companion summary). See the script's `--archive` and `--companion` flags. Catalog-wide deeper analysis (energy shifts, section boundaries, spectral balance, dynamic character) comes from `scripts/batch-full-analysis.py` writing to `docs/catalog-analysis-report.md`.
+The methodology is supported by `scripts/playlist-sequencing-data.py` which generates per-track structured data (BPM, overall/entry/exit keys, Camelot codes, energy level, intro/outro energy, transition quality) for every track in a per-band playlist YAML. Output is auto-saved to:
+- `docs/audio-analysis/playlists/{band-slug}.json` — raw JSON archive (per-band; does not collide across bands)
+- `docs/{band-slug}-playlist-sequencing.md` — refreshed Markdown companion summary (per-band path so each band gets its own; AUTOGEN markers preserve hand-curated content outside)
+
+See the script's `--archive` and `--companion` flags (default ON). Catalog-wide deeper analysis (energy shifts, section boundaries, spectral balance, dynamic character) comes from `scripts/batch-full-analysis.py` writing to `docs/catalog-analysis-report.md`.
 
 The data layer is the *input* to the methodology; it doesn't make sequencing decisions on its own.
 

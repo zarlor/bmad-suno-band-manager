@@ -425,7 +425,9 @@ def main():
     # The body includes its own title + timestamp at the top so each refresh
     # updates them. Hand-curated sections live OUTSIDE the AUTOGEN markers
     # in the companion file and are preserved across refreshes.
-    companion_target = resolve_companion_path(SCRIPT_NAME, args.companion)
+    # Per-album companion path: docs/{album-slug}-playlist-sequencing.md so
+    # multiple bands don't overwrite each other's companions.
+    companion_target = resolve_companion_path(SCRIPT_NAME, args.companion, album=album_name)
     if companion_target is not None:
         from datetime import datetime, timezone as _tz
         timestamp = datetime.now(_tz.utc).isoformat()
