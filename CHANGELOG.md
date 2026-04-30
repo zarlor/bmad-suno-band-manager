@@ -6,7 +6,14 @@ All notable changes to the Suno Band Manager module are documented here.
 
 ## [Unreleased]
 
-(Nothing yet — entries land here as work accumulates.)
+### Suno Knowledge — Foundational Principle: Suno Does Not Actually Shift Tempo Within a Song
+
+Production-confirmed 2026-04-29 across multiple LV catalog tracks where the style prompt explicitly requested "tempo changes" or "tempo shifts" (Damned If I Don't Redux, Obviously, Schizo). librosa-measured BPM is steady end-to-end despite clear felt-shifts between lucid and dense sections. **What Suno actually produces** when a prompt asks for tempo shifts is **arrangement-density variation** — instrumentation pullback to create a halftime *feel*, compression to create a double-time *feel* — not actual BPM changes. The underlying tempo stays absolutely constant.
+
+This refines existing guidance that already documents "Suno delivers a single steady BPM per song" by making the foundational claim explicit: **"tempo changes" / "tempo shifts" in style prompts are arrangement directives, not tempo directives.** The practical implication is that prompt builders and lyric transformers should plan for one underlying BPM per song and use rhythm nouns + density framing to vary perceived feel within that fixed grid.
+
+- **`src/skills/suno-lyric-transformer/references/metatag-reference.md`** — added a "Foundational principle" paragraph in the Tempo Control section explicitly framing this. Adds production-confirmation reference and points to the `audio-analysis-reference.md` Felt BPM Corrections table for catalog examples.
+- **`src/skills/suno-style-prompt-builder/references/model-prompt-strategies.md`** — extended item 15 (Perceived tempo is controlled through lyrics) with the same foundational-principle framing and the practical implication that "tempo changes" in a style prompt is an arrangement directive, not a tempo directive.
 
 ---
 
