@@ -6,6 +6,28 @@ All notable changes to the Suno Band Manager module are documented here.
 
 ## [Unreleased]
 
+### Multi-Machine Audio File Verification — `audio-files-manifest.py` + `verify-audio-files.py`
+
+Closes the multi-machine audio drift class observed 2026-04-29: WSL Mac's local `docs/audio/Distant Mourning.mp3` analyzed as 4:34 / C minor / 143.55 BPM while the Desktop-published v2 was 3:49 / D# minor / 95.7 BPM — different gen of the same canonical filename. Audio MP3s are too large to ship in the portable-sync archive (small-files tar.gz), so they stay machine-local; this means two machines can have different audio for the same playlist filename without anything detecting it. v1.7.1's per-song JSON archive layer can surface mismatches once both machines have analyzed every song, but creating those archives is on-demand and the JSONs themselves don't carry a file-identity field.
+
+Two new scripts in `src/skills/suno-feedback-elicitor/scripts/`:
+
+- **`audio-files-manifest.py`** — generates `docs/audio-files-manifest.yaml` with `name + size_bytes + mtime_iso` for every audio file in `docs/audio/`. Default output is YAML to disk; `--stdout` prints to stdout, `--format json` outputs JSON, `--audio-dir`/`--output` accept overrides. Run on the canonical machine after publishes/regens. Manifest travels in the portable sync archive (small, well under 100 KB even for hundreds of tracks).
+
+- **`verify-audio-files.py`** — reads `docs/audio-files-manifest.yaml`, walks `docs/audio/`, reports three failure modes as JSON: `missing` (manifest entry has no local file), `size_mismatch` (local file exists but bytes differ — different gen), `extra` (local file with no manifest entry — orphan/abandoned gen). Optional `--playlist-context` flag joins per-band playlist YAMLs in to enrich each mismatch entry with playlist position so the report can be presented in playlist order. Exit code 0 if all match, 1 if mismatches detected, 2 on errors.
+
+**Why size, not hash:** size is fast (single `os.stat`, no read), and Suno gens are byte-for-byte non-deterministic across re-encodings — file size is a high-confidence mismatch detector for the "different gen of same song" case without the cryptographic-checksum overhead. We don't need a security guarantee; we need a reliable "did the audio change?" signal.
+
+**Why not extend per-song JSON archives with file size:** that path requires every song to have an existing per-song JSON, which currently gets created only on-demand when a song is analyzed (one of 64 LV+SF tracks has a per-song JSON locally). A separate single-file manifest is simpler to bootstrap and verify against, and it doesn't depend on having previously run deep analysis on every track.
+
+`portable-manifest.example.yaml` updated with `docs/audio-files-manifest.yaml` in the playlist-artifacts section so users adding the multi-band patterns also pick up the audio manifest pattern.
+
+**Workflow:**
+1. On canonical machine (whichever has the latest published audio after each publish/regen): `python3 audio-files-manifest.py PROJECT_ROOT`
+2. Pack portable sync — manifest travels with it
+3. On non-canonical machine after unpack: `python3 verify-audio-files.py PROJECT_ROOT --playlist-context`
+4. Report lists which files are missing, wrong-gen, or extra; user re-downloads the wrong-gen files from Suno
+
 ### `portable-manifest.example.yaml` — Updated for v1.7.1 + v1.7.2 file patterns
 
 The example manifest now suggests per-band playlist YAML pattern, per-band sequencing companion pattern, and the v1.7.1 audio-analysis JSON archive directory in its commented-out playlist artifacts section. Users who copied earlier versions of the example to their own `portable-manifest.yaml` should review the updated example and add the new patterns — without them, the per-band YAMLs (v1.7.2), the auto-refreshed sequencing companions (v1.7.1+v1.7.2), and the JSON archives (v1.7.1) won't sync between machines and you'll see the same drift class the architecture was designed to fix.
