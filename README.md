@@ -18,9 +18,13 @@ After you try the output on Suno, Mac helps you refine through a structured feed
 
 - **Three Interaction Modes** — Demo (quick and scrappy), Studio (deep customization), Jam (experimental)
 - **Band Profiles** — Persistent sonic identity across songs (genre, vocal direction, style baseline, writer voice)
+- **Multi-Band Support** — Run multiple bands in one project, each with its own canonical playlist and analysis (per-band YAML files keep sequence data independent and drift-free)
 - **Writer Voice Preservation** — Analyzes your writing samples to maintain your authentic voice when transforming lyrics
 - **Tier-Aware** — Knows what's available on Free, Pro, and Premier plans; never shows features you can't access
 - **Feedback Loop** — Five-type feedback triage with guided elicitation for users who can't articulate what's wrong
+- **Playlist Sequencing & Album Craft** — Camelot wheel transitions, felt-BPM corrections, energy arc / W-shape analysis, locked-arc preservation, narrative-aware ordering across the full per-band catalog
+- **Audio Analysis Toolkit** — Per-song deep analysis (BPM, key, energy arc, chord progression, section boundaries) with a JSON archive layer so you never re-run the same analysis twice, and auto-refreshed Markdown summary docs per band
+- **Multi-Machine Workflow** — Portable sync archive moves your songbook, profiles, playlists, and analysis between machines; an audio-file manifest with size-tolerance + filename-normalization verification flags genuine gen differences without false-positiving Suno's per-download metadata variance
 - **Instrumental Support** — Dedicated workflow for instrumental-only tracks
 - **Non-English Support** — Language detection with Suno-specific guidance
 - **Memory System** — Remembers your preferences, musical patterns, and creative history across sessions
@@ -37,25 +41,21 @@ For detailed documentation on all features, interaction modes, band profiles, th
 
 ## Architecture
 
-Mac is an orchestrating agent that coordinates four specialized skills:
+Mac is an orchestrating agent that coordinates four specialized skills — three pre-generation, one post-generation:
 
-```
-                        ┌─────────────────────┐
-                        │   Mac (Band Manager) │
-                        │   Orchestrating Agent │
-                        └──────────┬──────────┘
-                                   │
-              ┌────────────────────┼────────────────────┐
-              │                    │                     │
-    ┌─────────┴────────┐ ┌────────┴────────┐ ┌─────────┴────────┐
-    │  Band Profile    │ │ Style Prompt    │ │ Lyric            │
-    │  Manager         │ │ Builder         │ │ Transformer      │
-    └──────────────────┘ └─────────────────┘ └──────────────────┘
-                                   │
-                         ┌─────────┴────────┐
-                         │ Feedback         │
-                         │ Elicitor         │
-                         └──────────────────┘
+```mermaid
+graph TD
+    Mac["<b>Mac</b><br/>Band Manager<br/>(orchestrating agent)"]
+    Mac --> BPM["Band Profile<br/>Manager"]
+    Mac --> SPB["Style Prompt<br/>Builder"]
+    Mac --> LT["Lyric<br/>Transformer"]
+    Mac -.->|after Suno generation| FE["Feedback<br/>Elicitor"]
+    classDef agent fill:#fff3cd,stroke:#856404,stroke-width:2px
+    classDef pre fill:#e7f3ff,stroke:#0366d6,stroke-width:1px
+    classDef post fill:#f0e7ff,stroke:#6f42c1,stroke-width:1px
+    class Mac agent
+    class BPM,SPB,LT pre
+    class FE post
 ```
 
 The orchestrating agent and each skill have their own documentation:
@@ -66,9 +66,20 @@ The orchestrating agent and each skill have their own documentation:
 | [**Band Profile Manager**](src/skills/suno-band-profile-manager/references/README.md) | CRUD for band identity profiles, writer voice analysis, tier feature awareness | `validate-profile.py`, `list-profiles.py`, `tier-features.py`, `diff-profiles.py` |
 | [**Style Prompt Builder**](src/skills/suno-style-prompt-builder/references/README.md) | Model-aware style prompt generation with creativity modes and wild card variants | `validate-prompt.py` |
 | [**Lyric Transformer**](src/skills/suno-lyric-transformer/references/README.md) | Poem/text to Suno-ready structured lyrics with metatags and cliché detection | `validate-lyrics.py`, `cliche-detector.py`, `syllable-counter.py`, `analyze-input.py`, `section-length-checker.py`, `lyrics-diff.py` |
-| [**Feedback Elicitor**](src/skills/suno-feedback-elicitor/references/README.md) | Post-generation feedback triage and guided refinement with musical vocabulary translation | `parse-feedback.py`, `map-adjustments.py` |
+| [**Feedback Elicitor**](src/skills/suno-feedback-elicitor/references/README.md) | Post-generation feedback triage and guided refinement with musical vocabulary translation. Also hosts the audio-analysis toolkit, playlist sequencing, and multi-machine audio verification scripts | `parse-feedback.py`, `map-adjustments.py`, `analyze-audio.py`, `audio-deep-analysis.py`, `batch-full-analysis.py`, `chord-progression.py`, `tempo-detail.py`, `playlist-sequencing-data.py`, `audio-files-manifest.py`, `verify-audio-files.py` |
 
 Each skill can be invoked directly for standalone use — see the linked READMEs for details, headless modes, and examples.
+
+### Per-band playlist sequencing methodology
+
+Each band has a canonical `docs/{band-slug}-playlist.yaml` as its single source of truth. The `playlist-sequencing-data.py` script reads it and produces:
+
+- A persistent JSON archive at `docs/audio-analysis/playlists/{band-slug}.json` (durable raw data — read it directly to answer different questions of the same audio without re-running)
+- An auto-refreshed Markdown summary at `docs/{band-slug}-playlist-sequencing.md` (Camelot transitions, energy levels, intro/outro percentages, transition quality)
+
+The album-craft methodology (per-track variables, energy arc models including W-shape, key positions, locked-arc preservation, sonic palette variety, encore structure) is documented at [`src/skills/suno-feedback-elicitor/references/playlist-sequencing-methodology.md`](src/skills/suno-feedback-elicitor/references/playlist-sequencing-methodology.md). Multi-band projects keep each band's playlist independent — there's no shared global file that drifts between bands.
+
+For multi-machine projects, `audio-files-manifest.py` generates a small `docs/audio-files-manifest.yaml` (audio MP3s are too large to ship in the sync archive) and `verify-audio-files.py` runs on the receiving machine after sync-unpack to flag missing / wrong-gen / extra files. The verifier is filename-normalization-aware (`Foo.mp3` ≡ `Foo-Redux.mp3` ≡ `Foo (NSFW).mp3` for song-identity matching) and size-tolerance-aware (absorbs Suno's per-download ID3 metadata variance so identical-audio doesn't false-positive as different gen).
 
 ## Prerequisites
 
@@ -78,13 +89,22 @@ Each skill can be invoked directly for standalone use — see the linked READMEs
 
 ### Optional: Audio Analysis
 
-For objective audio measurements (BPM, key, energy, chord progressions, playlist sequencing), install:
+For objective audio measurements, install:
 
 ```bash
 pip install librosa numpy
 ```
 
-These are optional — the full song creation and refinement workflow works without them. Mac will offer to help install if you try to use audio analysis features without them.
+This unlocks:
+
+- **Per-song deep analysis** — BPM, key (Krumhansl-Kessler), energy arc, chord progression, section boundaries, spectral balance
+- **Playlist sequencing** — Camelot wheel transitions, entry/exit keys, intro/outro energy, BPM transition quality across the full per-band playlist
+- **Catalog-wide batch analysis** — tempo stability, dynamic character (FLAT / MODERATE / DYNAMIC / HIGHLY-DYNAMIC), energy shifts >20%, section boundary detection across every track at once
+- **JSON archive layer** — every analysis is persisted to `docs/audio-analysis/{songs,playlists,catalog}/` so future sessions read the archive instead of re-running the script
+- **Auto-refreshed Markdown summaries** — each script writes a human-readable companion doc (per-band for playlist sequencing, catalog-wide for the others) that auto-refreshes between AUTOGEN markers; hand-curated content outside the markers is preserved
+- **Multi-machine audio file verification** — `audio-files-manifest.py` + `verify-audio-files.py` close the audio-drift gap when MP3s are too large to ship in the portable sync archive
+
+These are all optional — the full song creation and refinement workflow works without librosa/numpy. Mac will offer to help install if you try to use audio analysis features without them.
 
 ## Installation
 
