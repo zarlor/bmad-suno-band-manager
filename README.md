@@ -120,14 +120,26 @@ The link script creates symlinks in both `.claude/skills/` and `.agents/skills/`
 
 Then activate Mac using your LLM CLI's skill invocation (e.g., `/suno-agent-band-manager` in Claude Code). On first run, Mac walks you through setup — Suno tier, interaction mode, preferences.
 
-### With BMad Method
+### With BMad Method — install from the community marketplace
 
-If you use [BMad Method](https://github.com/bmad-code-org/BMAD-METHOD/) (v6.2.0+):
+If you use [BMad Method](https://github.com/bmad-code-org/BMAD-METHOD/) (v6.2.0+), the easiest path is the marketplace install:
 
 ```bash
-npx bmad-method@next install    # Install BMad if not already present
+npx bmad-method install
+```
+
+When the installer asks **"Would you like to browse community modules?"**, answer yes, drill down to **Design and Creative → Audio**, and select **Suno Band Manager**. The installer clones the module from GitHub, links the skills, and walks you through setup automatically.
+
+#### Local clone install (alternative)
+
+If you've already cloned this repo (for development or to use unreleased commits ahead of the marketplace registry's approved version):
+
+```bash
+git clone https://github.com/zarlor/suno-band-manager.git
+cd suno-band-manager
+npx bmad-method install         # Install BMad if not already present
 ./link-skills.sh                # Link Suno skills
-/suno-setup                # Configure via setup skill
+/suno-setup                     # Configure via setup skill
 ```
 
 BMad provides additional module infrastructure (config management, help system registration) but is not required for core functionality.
@@ -156,7 +168,7 @@ The setup skill detects your existing config and uses your saved values as defau
 
 ### After a BMad Method upgrade (BMad users only)
 
-Running `npx bmad-method@next install` replaces the contents of `.claude/skills/` with BMad's own skills. This removes the Suno symlinks but does **not** affect your module source, config, or data. Your `.agents/skills/` symlinks are unaffected.
+Running `npx bmad-method install` replaces the contents of `.claude/skills/` with BMad's own skills. This removes the Suno symlinks but does **not** affect your module source, config, or data. Your `.agents/skills/` symlinks are unaffected.
 
 To restore:
 

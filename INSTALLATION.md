@@ -52,17 +52,29 @@ Tell Mac what kind of song you want. See the [Usage Guide](src/skills/suno-agent
 
 ## Installation with BMad Method
 
-If you use [BMad Method](https://github.com/bmad-code-org/BMAD-METHOD/) (v6.2.0+), the module integrates with BMad's config management and help system.
+If you use [BMad Method](https://github.com/bmad-code-org/BMAD-METHOD/) (v6.2.0+), the module integrates with BMad's config management and help system. Two install paths:
 
-### 1. Clone and install BMad
+### Option A: Marketplace install (recommended)
+
+The Suno Band Manager module is registered in the [BMad community plugins marketplace](https://github.com/bmad-code-org/bmad-plugins-marketplace) and is discoverable directly from BMad's interactive installer.
+
+```bash
+npx bmad-method install
+```
+
+When the installer asks **"Would you like to browse community modules?"**, answer **yes**, drill down to **Design and Creative → Audio**, and select **Suno Band Manager**. The installer clones the module from GitHub at the marketplace-registry's approved version, links the skills into your project, and runs the configuration prompts (Suno tier, interaction mode, folder paths) automatically. No separate clone step needed.
+
+### Option B: Local clone install (development / unreleased commits)
+
+Use this when you want to install from a specific branch, an unreleased commit, or a local fork:
 
 ```bash
 git clone https://github.com/zarlor/bmad-suno-band-manager.git
 cd bmad-suno-band-manager
-npx bmad-method@next install
+npx bmad-method install
 ```
 
-### 2. Link skills and run setup
+Then link skills and run setup:
 
 **macOS / Linux / WSL:**
 ```bash
