@@ -105,19 +105,7 @@ For each confirmed update:
 
 ## The COMPLETED WIP convention
 
-When a song is published from a WIP fragments file, mark the file with a standard COMPLETED block at the top — immediately after the title heading, before the original content. This preserves the brainstorming record while signaling to future sessions (and future machines after a portable sync) that the file is not active work.
-
-### Why this convention exists
-
-**The problem it solves:** WIP fragment files live in `docs/wip-*.md` and get synced across machines via the portable-sync archive. Without a resolution marker, a WIP file for a finished song looks identical to a WIP for active work. A Mac session on the other machine will:
-- List the stale WIP as "pending/parked work"
-- Potentially suggest continuing work that's already done
-- Waste credits or context on work that's already published
-- Create sync drift between the two machines' understanding of catalog state
-
-This class of drift has happened at least once in this project (2026-04-11 session: three stale WIP files across sessions 3, 4, 5 were flagged after mid-session review). The marker prevents it at the source.
-
-**Why NOT delete:** The fragments are creative history. They contain brainstorming that didn't survive into the published song, notes on direction changes, images that were cut, and the evolution of the song's working title. Deleting them erases the paper trail. Marking them preserves the trail while neutralizing the "active work" signal.
+When a song is published from a WIP fragments file, mark the file with a standard COMPLETED block at the top — immediately after the title heading, before the original content. This preserves the brainstorming record while signaling to future sessions (and future machines after a portable sync) that the file is not active work. Do NOT delete the file — fragments are creative history (brainstorming that didn't make the song, direction changes, cut images, working-title evolution).
 
 ### The exact marker format
 

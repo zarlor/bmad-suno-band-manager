@@ -219,6 +219,11 @@ After user approves, offer next steps (outcomes first, skill names parenthetical
 - `parse-feedback.py` -- Validates and extracts structured dimensions from feedback input (headless mode). Run `--help` for usage.
 - `map-adjustments.py` -- Maps feedback dimensions to Suno parameter adjustment recommendations with consistency validation. Run `--help` for usage.
 
+### Multi-Machine Audio Verification
+
+- `audio-files-manifest.py` -- Generates `docs/audio-files-manifest.yaml` (name + size + mtime per file) on the canonical machine. Travels in the portable-sync archive instead of the audio MP3s themselves.
+- `verify-audio-files.py` -- Receiving machine reads the manifest and detects missing / wrong-gen / extra audio. Filename-normalization-aware (handles `-Redux`, `-Lenny`, `(NSFW)`, em-dash variants) and size-tolerance-aware (default 1024 bytes for ID3 metadata variance). `--playlist-context` cross-references playlist YAMLs.
+
 ### Audio Analysis Scripts (optional -- requires `pip install librosa numpy`)
 
 Objective audio measurements to complement subjective feedback. If dependencies missing, returns JSON with install instructions. Core workflow works fully without them.
@@ -228,6 +233,8 @@ Objective audio measurements to complement subjective feedback. If dependencies 
 - `chord-progression.py` -- Beat-synchronized chord detection with Camelot wheel mapping.
 - `tempo-detail.py` -- Detailed tempo analysis with stability metrics and beat regularity.
 - `batch-full-analysis.py` -- Comprehensive batch analysis with energy shifts and spectral balance across a catalog.
-- `playlist-sequencing-data.py` -- Playlist sequencing with Camelot transition quality. Supports `--playlist` YAML config.
+- `playlist-sequencing-data.py` -- Playlist sequencing with Camelot transition quality. Reads per-band playlist YAML at `docs/{band-slug}-playlist.yaml`.
+
+**Persistent JSON archive + companion-doc auto-refresh:** `analyze-audio.py`, `audio-deep-analysis.py`, `batch-full-analysis.py`, and `playlist-sequencing-data.py` write JSON archives to `docs/audio-analysis/{songs,playlists,catalog}/` and refresh markdown companion docs at `docs/{...}.md` (with AUTOGEN markers preserving hand-curated sections) by default. Pass `--no-archive` / `--no-companion` to skip.
 
 All audio scripts support `--format json|text` (default: json) and `-o` for file output.

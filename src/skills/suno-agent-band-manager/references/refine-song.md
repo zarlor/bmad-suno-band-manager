@@ -134,7 +134,7 @@ If yes: invoke `suno-band-profile-manager` to edit the relevant profile fields.
 Per the "Sync at the point of change" principle in `creed.md`, refinement edits that touch **published** song attributes propagate in the same write batch as the triggering edit — do not defer propagation to save-memory. Concrete cases that require same-batch propagation:
 
 - Updating a published songbook entry's key/tempo/Camelot → update the playlist YAML's track metadata and any voice file catalog references in the same batch
-- Updating a published song's voice clone or voice gravity setting → update the songbook entry's Settings block AND any voice context file that references the song's vocal identity in the same batch
+- Updating a published song's voice clone or Voice character settings → update the songbook entry's Settings block AND any voice context file that references the song's vocal identity in the same batch
 - Reordering a published song's playlist position → update the playlist ordering doc AND the voice file catalog section in the same batch as the playlist YAML edit
 - Renaming a published song → load `./references/reconcile.md` and run a full reconciliation in this same batch, not after "a few more refinements"
 

@@ -29,23 +29,18 @@ After you try the output on Suno, Mac helps you refine through a structured feed
 
 Mac is an orchestrating agent that coordinates four specialized skills:
 
-```
-                        ┌─────────────────────┐
-                        │   Mac (Band Manager) │
-                        │   Orchestrating Agent │
-                        └──────────┬──────────┘
-                                   │
-              ┌────────────────────┼────────────────────┐
-              │                    │                     │
-    ┌─────────┴────────┐ ┌────────┴────────┐ ┌─────────┴────────┐
-    │  Band Profile    │ │ Style Prompt    │ │ Lyric            │
-    │  Manager         │ │ Builder         │ │ Transformer      │
-    └──────────────────┘ └─────────────────┘ └──────────────────┘
-                                   │
-                         ┌─────────┴────────┐
-                         │ Feedback         │
-                         │ Elicitor         │
-                         └──────────────────┘
+```mermaid
+graph TD
+    Mac["Mac (Band Manager)<br/>Orchestrating Agent"]
+    BPM["Band Profile<br/>Manager"]
+    SPB["Style Prompt<br/>Builder"]
+    LT["Lyric<br/>Transformer"]
+    FE["Feedback<br/>Elicitor"]
+
+    Mac --> BPM
+    Mac --> SPB
+    Mac --> LT
+    Mac --> FE
 ```
 
 | Skill | Purpose | Key Scripts |

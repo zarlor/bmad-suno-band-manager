@@ -47,7 +47,7 @@ If any of these appear in a draft response you're about to send, the pipeline wa
 - **Copy-ready blocks assembled by directly writing/editing text in the response** rather than by presenting what the skill returned as its structured output.
 - **Using validation scripts (`validate-prompt.py`, `validate-lyrics.py`) as substitutes for skill invocation.** Those scripts CHECK outputs, they don't PRODUCE them. Running scripts is not the pipeline.
 - **Exclusion reasoning that references "the other band's version," "the prior iteration," or "what the [other band/previous gen] used."** Suno is stateless and has no knowledge of any of that. Excludes defend against drift from the CURRENT prompt's descriptors ONLY. (See `../../suno-style-prompt-builder/references/model-prompt-strategies.md` → "Exclude Styles Field → CRITICAL RULE".)
-- **Reasoning like "I already know what the skill would produce, so I'll package directly"** or "the direction is dialed-in enough that I can skip the pipeline." This IS the failure mode the rule exists to prevent. The skills apply guardrails that aren't obvious from conversation (Voice Gravity rules, descriptor-stacking checks, exclusion drift-risk analysis, per-section metatag reinforcement). Every package attempt — even a "simple" one — needs the pipeline.
+- **Reasoning like "I already know what the skill would produce, so I'll package directly"** or "the direction is dialed-in enough that I can skip the pipeline." This IS the failure mode the rule exists to prevent. The skills apply guardrails that aren't obvious from conversation (Voice-Character rules, descriptor-stacking checks, exclusion drift-risk analysis, per-section metatag reinforcement). Every package attempt — even a "simple" one — needs the pipeline.
 
 If any tell is present, the fix is NOT to patch the symptom in-place. Invoke the pipeline skills and rebuild the package from their output.
 
@@ -62,7 +62,7 @@ For the headless skill calls in Step 3 (Style Prompt Builder, Lyric Transformer,
 
 **Use Agent for** every headless skill invocation from inside Mac's package-assembly workflow. Embed the skill prompt + headless arguments in the Agent's `prompt` parameter; the Agent runs the skill in isolation and returns a synthesis Mac can format.
 
-**Why this matters operationally:** Step 4 (Suppress intermediate skill output) is mechanically *impossible* to enforce on the Skill-tool path — the JSON contract output IS the visible turn in that invocation pattern. Agent is the correct tool to make Step 4 enforceable rather than aspirational. Documented by user observation 2026-04-28 after Mac slipped from Agent-based to Skill-based invocation across two consecutive package presentations and the headless JSON appeared in chat both times.
+**Why this matters operationally:** Step 4 (Suppress intermediate skill output) is mechanically *impossible* to enforce on the Skill-tool path — the JSON contract output IS the visible turn in that invocation pattern. Agent is the correct tool to make Step 4 enforceable rather than aspirational.
 
 ### Highest-Risk Contexts for This Violation
 

@@ -4,7 +4,7 @@
 >
 > **Critical zone:** The first ~200 characters of a style prompt carry disproportionate influence on generation. When recommending additions, prioritize the most impactful descriptors for the critical zone. Supplementary descriptors go after.
 >
-> **Last validated:** April 6, 2026 (Suno v5.5, v5, v4.5-all). Updated with corrected Voices Audio Influence ranges (JG BeatsLab testing), Weirdness-during-Extend drift finding, callback phrasing for Replace Section, Style Influence plateau note. Recommendations are based on these model versions — newer models may respond differently.
+> **Last validated:** April 6, 2026 (Suno v5.5, v5, v4.5-all). Recommendations are based on these model versions — newer models may respond differently.
 
 Maps feedback dimensions and emotional vocabulary to concrete Suno parameter adjustments.
 
@@ -103,6 +103,8 @@ When the user reports that the ending or energy arc doesn't match their intent, 
 | "All one energy level" | No dynamic language at all | Add explicit dynamic descriptors: "dynamic shifts", "quiet verses explosive chorus", etc. |
 
 ### Perceived Tempo Control (BPM Tags Are Ineffective)
+
+**Suno does NOT actually shift tempo within a song.** "Tempo changes" or "tempo shifts" in style prompts produce *arrangement-density variation* (instrumentation pullback for halftime feel, compression for double-time feel), not actual BPM change. Underlying tempo stays constant; the felt-shift is dynamic/arrangement-driven. Asking for tempo journey in the style prompt is not a path to actual BPM movement — direct the perceived tempo through lyric density and rhythm-noun metatags instead.
 
 **BPM tags in lyrics have ZERO detectable effect on Suno's actual output** — confirmed by librosa analysis across 31 songs. Suno picks a single steady tempo per song regardless of any BPM tags. Do not recommend BPM tags in lyrics as a solution for tempo issues.
 

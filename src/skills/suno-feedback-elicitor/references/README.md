@@ -38,6 +38,10 @@ Use this skill directly when you have already generated a song on Suno and want 
 |--------|-------------|
 | `parse-feedback.py` | Validates and extracts structured dimensions from feedback input in a single pass |
 | `map-adjustments.py` | Maps feedback dimensions to Suno parameter adjustments with consistency validation |
+| `audio-files-manifest.py` | Generates `docs/audio-files-manifest.yaml` on the canonical machine (name + size + mtime per file) for portable-sync drift detection |
+| `verify-audio-files.py` | Receiving machine reads the manifest and detects missing / wrong-gen / extra audio (filename-normalization + size-tolerance aware) |
+| `analyze-audio.py` / `audio-deep-analysis.py` / `batch-full-analysis.py` / `playlist-sequencing-data.py` | librosa audio analysis stack — write JSON archives to `docs/audio-analysis/` and refresh companion `.md` docs by default. See `SKILL.md` for full list. |
+| `chord-progression.py` / `tempo-detail.py` | Single-track librosa specialty analyses (chord changes, beat-level tempo). |
 
 ## Example Invocation
 

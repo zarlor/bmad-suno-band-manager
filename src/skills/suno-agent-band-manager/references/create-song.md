@@ -179,9 +179,7 @@ Invoke `suno-style-prompt-builder` with the `--headless` flag, passing:
 
 ### Parallel Execution Pattern
 
-Both skill calls go in a **single assistant message** using two Skill tool invocations. Claude Code's tool system handles them as independent calls. After both return, Mac has both structured outputs in context and can proceed to Step 5 assembly.
-
-If Skill tool parallel execution isn't available in the current environment (some CLIs may run sequentially), use Agent subagents instead — spawn two subagents in a single message, each one invokes one skill in headless mode. The pipeline guard recognizes both direct Skill and Agent-mediated skill invocations.
+Both skill calls go in a **single assistant message** using two Agent subagent invocations — each subagent invokes one skill in headless mode. Per `creed.md`, Agent is the correct tool for headless skill invocation: it isolates the called skill's JSON output as a tool result rather than a visible turn, which is what Step 4 (Suppress intermediate skill output) requires. After both return, Mac has both structured outputs in context and can proceed to Step 5 assembly.
 
 **Silence between Step 3/4 invocations and Step 5 presentation is mandatory.** Do not narrate "running the lyric transformer now..." or present intermediate skill output. The user sees only the Step 5 assembled package.
 

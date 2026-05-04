@@ -34,6 +34,8 @@ When using multiple analysis sources, you'll often get different answers for the
 
 Requirements: Python 3, librosa, numpy (`pip install librosa numpy`)
 
+**Persistent JSON archive + companion-doc auto-refresh:** `analyze-audio.py`, `audio-deep-analysis.py`, `batch-full-analysis.py`, and `playlist-sequencing-data.py` write JSON archives to `docs/audio-analysis/{songs,playlists,catalog}/` and refresh markdown companion docs at `docs/{...}.md` by default. Companion docs use AUTOGEN markers to preserve hand-curated sections across regeneration. Pass `--no-archive` / `--no-companion` to skip.
+
 **analyze-audio.py** — Batch BPM and key detection for all MP3s in a directory. Uses Krumhansl-Kessler chroma correlation for key estimation. Outputs a summary table with BPM, key, key confidence, and duration.
 ```bash
 python scripts/analyze-audio.py /path/to/mp3s/

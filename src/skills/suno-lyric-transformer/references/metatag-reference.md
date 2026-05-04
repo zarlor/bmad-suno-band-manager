@@ -607,7 +607,7 @@ When stretching a word with hyphenated letters for dramatic effect (e.g., `to-o-
 | `(words in parentheses)` | Interpreted as **backing vocals/texture**, not lead melody. Useful for dual vocal interplay: lead line with (backing harmonies). |
 
 **Parenthetical Backing Vocals — Production-Tested Details:**
-- **Space before the opening paren is catalog-standard: `word (echo)` not `word(echo)`.** A prior version of this doc recommended no-space ("tightens coupling"); that was based on a single-song experimental finding (SF Distant Mourning, March 2026) that got mis-promoted to a general rule. Verified across the LV catalog April 2026 — every song with working parenthetical backing vocals uses spaces before the paren. The no-space form caused `(blasting)` to be skipped entirely on DM-LV Bridge across multiple gens until spaces were added.
+- **Space before the opening paren is required: `word (echo)` not `word(echo)`.** Verified across the LV catalog — every song with working parenthetical backing vocals uses spaces before the paren. The no-space form caused `(blasting)` to be skipped entirely on DM-LV Bridge across multiple gens until spaces were added.
 - **Paren must be at END of line.** Mid-line parens — parens with text after the closing paren on the same line — are dropped inconsistently. If the sentence continues past the paren, break the line after the closing paren and put the continuation on a new line. Example broken-and-fixed (Distant Mourning LV, April 2026):
   ```
   Broken (mid-line, "(blasting)" dropped across gens):

@@ -183,13 +183,13 @@ generation_history: []
 - When a Persona is active (v4.5/v5), its style auto-populates the Style of Music field — keep additional style modifications simple (1-2 genres, 1 mood, 2-4 instruments max)
 - **Persona Era-Anchoring (v4.5/v5):** Personas pull the sound toward the era/style of the source song. Audio Influence at 10-15% reduces this but doesn't eliminate it. For era-specific pieces, generate without a persona or create era-specific personas from era-appropriate source songs.
 - **Voices (v5.5):** Voices replace Personas for v5.5. When `voice_id` is set, the Voice defines the vocal identity — omit gender vocal descriptors from `style_baseline`. The style prompt should focus on instrumentation, production, and mood rather than vocal character.
-- **v5.5 Voice Gravity Principle (validated April 2026):** v5.5 Voice clones carry **trained genre gravity** — the Voice pulls generations toward its trained baseline on its own. When the target song genre differs from the Voice's trained direction, the style prompt must ACTIVELY FIGHT that gravity, not describe the target. Six practical rules for Voice-aware profiles (see `suno-style-prompt-builder/references/model-prompt-strategies.md` for full details and validated case study):
-  1. **Drop descriptors the Voice already delivers** — if the Voice is a folk clone, drop "warm," "vulnerable," "clean," "storytelling vocal" from `style_baseline`. These are wasted characters and can fight the Voice.
-  2. **Load descriptors that push AGAINST the Voice's direction** — for a folk Voice doing rock songs, lean hard into "overdriven," "crunch," "driving groove," "rock urgency."
-  3. **Keep Style Influence at 65+** so the prompt leads firmly. Profiles with a Voice-genre mismatch should bump `sliders.style_influence` to 65 as the default.
+- **v5.5 Voice-Character Principle:** Voices capture vocal *character* — timbre, lilt, vibrato tendencies, attack patterns, dynamics behavior, mic artifacts. They don't carry trained genre gravity; Suno adapts the captured character to whatever genre the prompt directs. Six practical rules for Voice-aware profiles (see `suno-style-prompt-builder/references/model-prompt-strategies.md` for full details and validated case study):
+  1. **Drop descriptors that duplicate what the Voice already delivers** — if the Voice captures vulnerable-breathy delivery, drop "warm," "vulnerable," "clean," "storytelling vocal" from `style_baseline`. They're redundant and can conflict with the captured character.
+  2. **Load descriptors that specify what the song needs from the arrangement.** The style prompt drives arrangement (instrumentation, genre, production, dynamics); the Voice provides vocal character. Be explicit about arrangement — "overdriven rhythm guitar with crunch," "driving mid-tempo rock groove" — rather than relabeling what the Voice does.
+  3. **Keep Style Influence tight (65+)** so the prompt leads the arrangement firmly. Profiles using a Voice for cross-genre work should bump `sliders.style_influence` to 65 as the default.
   4. **Leave `vocal.gender` empty** when `voice_id` is set — the schema already warns about this (rule 17).
-  5. **Voice-aware `exclusion_defaults`** — when the Voice physically cannot produce harsh vocals, drop `harsh vocals`, `screamed vocals`, etc. from exclusions. Focus exclusions on production/genre-direction protection only (`heavy metal`, `heavy distortion`, `steel guitar`, `autotune`, `pop sheen`). The clean Voice IS the guardrail.
-  6. **Audio Influence floor** — use 55-60% as the default for Voice profiles. 30-40% "subtle flavor" only works with Professional-level Voices; non-Professional Voices below 40% trigger robotic timbre.
+  5. **Voice-aware `exclusion_defaults`** — when the Voice physically cannot produce harsh/screamed vocals, harsh-vocal exclusions are wasted Exclude Styles space. Focus exclusions on production/genre-direction protection (`heavy metal`, `heavy distortion`, `steel guitar`, `autotune`, `pop sheen`). The clean Voice IS the guardrail against harsh vocals.
+  6. **Audio Influence floor caution** — 55-60% is the recommended default for Voice profiles. The 30-40% "subtle flavor" range works with Professional-level Voices; for non-Professional Voices, dropping below ~40% can trigger a robotic-timbre failure mode.
 - **Multi-profile Voice strategy** — profiles can reference multiple Voice IDs when the project uses several Voice recordings (e.g., "Narrative Rock" for mid-tempo rock tracks, "Ballad Intimate" for tender songs, "Speak-Sing Confessional" for literary/narrative tracks). Each Voice should be internally consistent (single stable character, 20-30 sec per recording, Skill Level Professional mandatory). Variety lives across Voices, not within one Voice sample. Document the mapping and per-Voice use cases in the profile.
 - **Custom Models (v5.5):** When `custom_model_id` is set, the Style Prompt Builder should complement the model's learned production style rather than fight it. Include `custom_model_notes` context when building prompts.
 - **Inspo Playlist Guidance:** Using your own songs as Inspo homogenizes the catalog sound. Drop Inspo when a song needs its own identity within the same band — let the style prompt and persona/voice do the work instead.
@@ -220,10 +220,6 @@ tracks:
 
 The two required fields per track are `name` (the human-readable song title — must match the songbook entry's frontmatter `title`) and `file` (the audio filename in `docs/audio/`, used as the input to `playlist-sequencing-data.py`).
 
-### Why this file exists
-
-The audio analysis script (`playlist-sequencing-data.py`) needs a per-band ordered list with audio file mappings. Without a canonical YAML, this list inevitably gets duplicated in several places — the band profile YAML, an ordering doc, the sidecar narrative, the voice context — and each copy drifts independently. Consolidating to a single file with a deterministic location ends the drift class.
-
 ### Bootstrapping
 
 If a band already has songbook entries but no playlist YAML, scaffold one:
@@ -240,9 +236,9 @@ For a brand new band with no songbook entries yet, run without `--from-songbook`
 
 When a new band profile is created via `suno-band-profile-manager`, the playlist YAML scaffold MUST be created in the same write batch. New bands without a playlist YAML are caught by `validate-profile.py` once they have any songbook entries.
 
-### Deprecation notice — the `playlist:` block in band profile YAML
+### The `playlist:` block in band profile YAML is invalid
 
-Earlier versions of this module supported a `playlist:` block inside the band profile YAML carrying track order, sequencing notes, and gap analysis. As of v1.7.2, **that block is deprecated and validators will warn on profiles that still carry it.** Move authoritative track-list data to `docs/{band-slug}-playlist.yaml`; sequencing-history narrative notes can move to a band-specific ordering doc (`docs/{band-slug}-playlist-ordering.md`) if you maintain one. Keeping playlist data in two places is the drift problem this convention was created to fix.
+The band profile YAML must NOT contain a `playlist:` block. `validate-profile.py` warns on profiles that carry one. Authoritative track-list data lives in `docs/{band-slug}-playlist.yaml`; sequencing-history narrative notes belong in a band-specific ordering doc (`docs/{band-slug}-playlist-ordering.md`) if maintained.
 
 ### Workflow rules (apply in same write batch)
 

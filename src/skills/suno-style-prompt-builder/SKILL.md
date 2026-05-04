@@ -89,7 +89,7 @@ Load `./references/model-prompt-strategies.md` for model-specific construction r
 
 **Strategy:** From profile baseline, from scratch, or hybrid (default when profile exists).
 
-**Key limitation:** The style prompt sets ONE overall sonic mood -- it cannot describe a tempo journey. Set baseline feel here; use metatags in lyrics for section-level changes.
+**Key limitation:** The style prompt sets ONE overall sonic mood. Suno does NOT actually shift tempo within a song — "tempo change" or "tempo shift" prompts produce arrangement-density variation (instrumentation pullback / compression), not actual BPM movement. Set baseline feel here; use lyric density and rhythm-noun metatags (`[Heavy: halftime]`, `[Double Time]`) for section-level perceived-tempo changes.
 
 **Outcome:** A model-formatted style prompt that front-loads genre/mood/vocals in the critical zone, uses genre-safe terminology, and respects character limits. The prompt should:
 
